@@ -483,13 +483,12 @@ bool Player::Create(ObjectGuid::LowType guidlow, WorldPackets::Character::Charac
     SetByteValue(PLAYER_BYTES_4, PLAYER_BYTES_4_OFFSET_ARENA_FACTION, 0);
     SetInventorySlotCount(INVENTORY_DEFAULT_SIZE);
 
-    SetGuidValue(OBJECT_FIELD_DATA, ObjectGuid::Empty);
     SetUInt32Value(PLAYER_GUILDRANK, 0);
     SetGuildLevel(0);
     SetUInt32Value(PLAYER_GUILD_TIMESTAMP, 0);
 
     for (int i = 0; i < KNOWN_TITLES_SIZE; ++i)
-        SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES + i, 0);  // 0=disabled
+        SetUInt64Value(PLAYER_FIELD_KNOWN_TITLES + i, 0);  // 0=disabled
     SetUInt32Value(PLAYER_CHOSEN_TITLE, 0);
 
     SetUInt32Value(PLAYER_FIELD_KILLS, 0);
@@ -2629,14 +2628,12 @@ void Player::InitStatsForLevel(bool reapplyMods)
 
     // set armor (resistance 0) to original value (create_agility*2)
     SetArmor(int32(m_createStats[STAT_AGILITY]*2));
-    SetResistanceBuffMods(SPELL_SCHOOL_NORMAL, true, 0.0f);
-    SetResistanceBuffMods(SPELL_SCHOOL_NORMAL, false, 0.0f);
+    SetResistanceBuffMods(SPELL_SCHOOL_NORMAL, 0.0f);
     // set other resistance to original value (0)
     for (uint8 i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; ++i)
     {
         SetResistance(SpellSchools(i), 0);
-        SetResistanceBuffMods(SpellSchools(i), true, 0.0f);
-        SetResistanceBuffMods(SpellSchools(i), false, 0.0f);
+        SetResistanceBuffMods(SpellSchools(i), 0.0f);
     }
 
     SetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, 0);
@@ -6433,7 +6430,6 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
 void Player::_InitHonorLevelOnLoadFromDB(uint32 honor, uint32 honorLevel, uint32 prestigeLevel)
 {
     SetUInt32Value(PLAYER_FIELD_HONOR_LEVEL, honorLevel);
-    SetUInt32Value(PLAYER_FIELD_PRESTIGE, prestigeLevel);
     UpdateHonorNextLevel();
 
     AddHonorXP(honor);
@@ -6520,7 +6516,7 @@ void Player::SetHonorLevel(uint8 level)
 
 void Player::Prestige()
 {
-    SetUInt32Value(PLAYER_FIELD_PRESTIGE, GetPrestigeLevel() + 1);
+    //SetUInt32Value(PLAYER_FIELD_PRESTIGE, GetPrestigeLevel() + 1);
     SetUInt32Value(PLAYER_FIELD_HONOR_LEVEL, 1);
     UpdateHonorNextLevel();
 
@@ -6884,12 +6880,11 @@ uint32 Player::GetCurrencyTotalCap(CurrencyTypesEntry const* currency) const
 void Player::SetInGuild(ObjectGuid::LowType guildId)
 {
     if (guildId)
-        SetGuidValue(OBJECT_FIELD_DATA, ObjectGuid::Create<HighGuid::Guild>(guildId));
+        SetGuidValue(UNIT_FIELD_GUILD_GUID, ObjectGuid::Create<HighGuid::Guild>(guildId));
     else
-        SetGuidValue(OBJECT_FIELD_DATA, ObjectGuid::Empty);
+        SetGuidValue(UNIT_FIELD_GUILD_GUID, ObjectGuid::Empty);
 
     ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_GUILD_LEVEL_ENABLED, guildId != 0);
-    SetUInt16Value(OBJECT_FIELD_TYPE, 1, guildId != 0);
 }
 
 ObjectGuid::LowType Player::GetGuildIdFromDB(ObjectGuid guid)
@@ -16026,10 +16021,10 @@ bool Player::SatisfyQuestDay(Quest const* qInfo, bool /*msg*/) const
         return true;
     }
 
-    std::vector<uint32> const& dailies = GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
+    /*std::vector<uint32> const& dailies = GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
     for (uint32 dailyQuestId : dailies)
         if (dailyQuestId == qInfo->GetQuestId())
-            return false;
+            return false;*/
 
     return true;
 }
@@ -17652,7 +17647,7 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
     SetXP(fields[7].GetUInt32());
 
     _LoadIntoDataField(fields[66].GetString(), PLAYER_EXPLORED_ZONES_1, PLAYER_EXPLORED_ZONES_SIZE);
-    _LoadIntoDataField(fields[67].GetString(), PLAYER__FIELD_KNOWN_TITLES, KNOWN_TITLES_SIZE * 2);
+    _LoadIntoDataField(fields[67].GetString(), PLAYER_FIELD_KNOWN_TITLES, KNOWN_TITLES_SIZE * 2);
 
     SetObjectScale(1.0f);
     SetFloatValue(UNIT_FIELD_HOVERHEIGHT, 1.0f);
@@ -19294,7 +19289,7 @@ void Player::_LoadDailyQuestStatus(PreparedQueryResult result)
             if (!quest)
                 continue;
 
-            AddDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS, quest_id);
+            //AddDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS, quest_id);
             if (uint32 questBit = sDB2Manager.GetQuestUniqueBitFlag(quest_id))
                 SetQuestCompletedBit(questBit, true);
 
@@ -20071,7 +20066,7 @@ void Player::SaveToDB(bool create /*=false*/)
 
         ss.str("");
         for (uint32 i = 0; i < KNOWN_TITLES_SIZE * 2; ++i)
-            ss << GetUInt32Value(PLAYER__FIELD_KNOWN_TITLES + i) << ' ';
+            ss << GetUInt32Value(PLAYER_FIELD_KNOWN_TITLES + i) << ' ';
         stmt->setString(index++, ss.str());
 
         stmt->setUInt8(index++, GetByteValue(PLAYER_FIELD_BYTES, PLAYER_FIELD_BYTES_OFFSET_ACTION_BAR_TOGGLES));
@@ -20215,7 +20210,7 @@ void Player::SaveToDB(bool create /*=false*/)
 
         ss.str("");
         for (uint32 i = 0; i < KNOWN_TITLES_SIZE*2; ++i)
-            ss << GetUInt32Value(PLAYER__FIELD_KNOWN_TITLES + i) << ' ';
+            ss << GetUInt32Value(PLAYER_FIELD_KNOWN_TITLES + i) << ' ';
 
         stmt->setString(index++, ss.str());
         stmt->setUInt8(index++, GetByteValue(PLAYER_FIELD_BYTES, PLAYER_FIELD_BYTES_OFFSET_ACTION_BAR_TOGGLES));
@@ -20795,16 +20790,6 @@ void Player::_SaveDailyQuestStatus(SQLTransaction& trans)
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER_QUESTSTATUS_DAILY);
     stmt->setUInt64(0, GetGUID().GetCounter());
     trans->Append(stmt);
-
-    std::vector<uint32> const& dailies = GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
-    for (uint32 questId : dailies)
-    {
-        stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHARACTER_QUESTSTATUS_DAILY);
-        stmt->setUInt64(0, GetGUID().GetCounter());
-        stmt->setUInt32(1, questId);
-        stmt->setUInt64(2, uint64(m_lastDailyQuestTime));
-        trans->Append(stmt);
-    }
 
     if (!m_DFQuests.empty())
     {
@@ -24208,7 +24193,7 @@ void Player::SetDailyQuestStatus(uint32 quest_id)
     {
         if (!qQuest->IsDFQuest())
         {
-            AddDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS, quest_id);
+            //AddDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS, quest_id);
             m_lastDailyQuestTime = time(nullptr);              // last daily quest time
             m_DailyQuestChanged = true;
         }
@@ -24226,7 +24211,7 @@ bool Player::IsDailyQuestDone(uint32 quest_id)
     bool found = false;
     if (sObjectMgr->GetQuestTemplate(quest_id))
     {
-        std::vector<uint32> const& dailies = GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
+        /*std::vector<uint32> const& dailies = GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
         for (uint32 dailyQuestId : dailies)
         {
             if (dailyQuestId == quest_id)
@@ -24234,7 +24219,7 @@ bool Player::IsDailyQuestDone(uint32 quest_id)
                 found = true;
                 break;
             }
-        }
+        }*/
     }
 
     return found;
@@ -24264,15 +24249,16 @@ void Player::SetMonthlyQuestStatus(uint32 quest_id)
 
 void Player::DailyReset()
 {
-    for (uint32 questId : GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS))
+    /*for (uint32 questId : GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS))
         if (uint32 questBit = sDB2Manager.GetQuestUniqueBitFlag(questId))
-            SetQuestCompletedBit(questBit, false);
+            SetQuestCompletedBit(questBit, false);*/
 
     WorldPackets::Quest::DailyQuestsReset dailyQuestsReset;
-    dailyQuestsReset.Count = int32(GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS).size());
+    //dailyQuestsReset.Count = int32(GetDynamicValues(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS).size());
+    dailyQuestsReset.Count = 0;
     SendDirectMessage(dailyQuestsReset.Write());
 
-    ClearDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
+    //ClearDynamicValue(PLAYER_DYNAMIC_FIELD_DAILY_QUESTS);
 
     m_DFQuests.clear(); // Dungeon Finder Quests.
 
@@ -25563,7 +25549,7 @@ bool Player::HasTitle(uint32 bitIndex) const
 
     uint32 fieldIndexOffset = bitIndex / 32;
     uint32 flag = 1 << (bitIndex % 32);
-    return HasFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
+    return HasFlag(PLAYER_FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
 }
 
 bool Player::HasTitle(CharTitlesEntry const* title) const
@@ -25578,17 +25564,17 @@ void Player::SetTitle(CharTitlesEntry const* title, bool lost)
 
     if (lost)
     {
-        if (!HasFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag))
+        if (!HasFlag(PLAYER_FIELD_KNOWN_TITLES + fieldIndexOffset, flag))
             return;
 
-        RemoveFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
+        RemoveFlag(PLAYER_FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
     }
     else
     {
-        if (HasFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag))
+        if (HasFlag(PLAYER_FIELD_KNOWN_TITLES + fieldIndexOffset, flag))
             return;
 
-        SetFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
+        SetFlag(PLAYER_FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
     }
 
     WorldPackets::Character::TitleEarned packet(lost ? SMSG_TITLE_LOST : SMSG_TITLE_EARNED);

@@ -152,6 +152,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Spells::SpellCastLogData 
     data << int64(spellCastLogData.Health);
     data << int32(spellCastLogData.AttackPower);
     data << int32(spellCastLogData.SpellPower);
+    data << uint32(0); // unk 801
     data.WriteBits(spellCastLogData.PowerData.size(), 9);
     data.FlushBits();
 
@@ -167,9 +168,10 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Spells::SpellCastLogData 
 
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Spells::SandboxScalingData const& sandboxScalingData)
 {
-    data.WriteBits(sandboxScalingData.Type, 4);
+    //data.WriteBits(sandboxScalingData.Type, 4);
     data << int16(sandboxScalingData.PlayerLevelDelta);
     data << uint16(sandboxScalingData.PlayerItemLevel);
+    data << uint16(0); // unk 801
     data << uint8(sandboxScalingData.TargetLevel);
     data << uint8(sandboxScalingData.Expansion);
     data << uint8(sandboxScalingData.Class);

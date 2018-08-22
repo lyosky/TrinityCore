@@ -4724,24 +4724,24 @@ int32 Unit::GetMaxNegativeAuraModifierByAffectMask(AuraType auratype, SpellInfo 
     });
 }
 
-float Unit::GetResistanceBuffMods(SpellSchools school, bool positive) const
+float Unit::GetResistanceBuffMods(SpellSchools school) const
 {
-    return GetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school);
+    return GetFloatValue(UNIT_FIELD_BONUS_RESISTANCE_MODS+school);
 }
 
-void Unit::SetResistanceBuffMods(SpellSchools school, bool positive, float val)
+void Unit::SetResistanceBuffMods(SpellSchools school, float val)
 {
-    SetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val);
+    SetFloatValue(UNIT_FIELD_BONUS_RESISTANCE_MODS + school, val);
 }
 
-void Unit::ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply)
+void Unit::ApplyResistanceBuffModsMod(SpellSchools school, float val, bool apply)
 {
-    ApplyModSignedFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply);
+    ApplyModSignedFloatValue(UNIT_FIELD_BONUS_RESISTANCE_MODS + school, val, apply);
 }
 
-void Unit::ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply)
+void Unit::ApplyResistanceBuffModsPercentMod(SpellSchools school, float val, bool apply)
 {
-    ApplyPercentModFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply);
+    ApplyPercentModFloatValue(UNIT_FIELD_BONUS_RESISTANCE_MODS + school, val, apply);
 }
 
 void Unit::InitStatBuffMods()
@@ -13706,8 +13706,8 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
             // FIXME: Some values at server stored in float format but must be sent to client in uint32 format
             // there are some float values which may be negative or can't get negative due to other checks
             else if ((index >= UNIT_FIELD_NEGSTAT && index < UNIT_FIELD_NEGSTAT + MAX_STATS) ||
-                (index >= UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE  && index < (UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE + MAX_SPELL_SCHOOL)) ||
-                (index >= UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE  && index < (UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE + MAX_SPELL_SCHOOL)) ||
+                (index >= UNIT_FIELD_RESISTANCES  && index < (UNIT_FIELD_RESISTANCES + MAX_SPELL_SCHOOL)) ||
+                (index >= UNIT_FIELD_BONUS_RESISTANCE_MODS  && index < (UNIT_FIELD_BONUS_RESISTANCE_MODS + MAX_SPELL_SCHOOL)) ||
                 (index >= UNIT_FIELD_POSSTAT && index < UNIT_FIELD_POSSTAT + MAX_STATS))
             {
                 *data << uint32(m_floatValues[index]);

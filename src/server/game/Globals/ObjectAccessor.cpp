@@ -133,7 +133,7 @@ Object* ObjectAccessor::GetObjectByTypeMask(WorldObject const& p, ObjectGuid con
                 return ((Player const&)p).GetItemByGuid(guid);
             break;
         case HighGuid::Player:
-            if (typemask & TYPEMASK_PLAYER)
+            if (typemask & TYPEMASK_PLAYER || typemask & TYPEMASK_ACTIVEPLAYER)
                 return GetPlayer(p, guid);
             break;
         case HighGuid::Transport:

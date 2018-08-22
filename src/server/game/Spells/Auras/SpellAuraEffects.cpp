@@ -3207,7 +3207,7 @@ void AuraEffect::HandleAuraModResistance(AuraApplication const* aurApp, uint8 mo
         {
             target->HandleStatModifier(UnitMods(UNIT_MOD_RESISTANCE_START + x), TOTAL_VALUE, float(GetAmount()), apply);
             if (target->GetTypeId() == TYPEID_PLAYER || target->IsPet())
-                target->ApplyResistanceBuffModsMod(SpellSchools(x), GetAmount() > 0, (float)GetAmount(), apply);
+                target->ApplyResistanceBuffModsMod(SpellSchools(x), (float)GetAmount(), apply);
         }
     }
 }
@@ -3255,15 +3255,13 @@ void AuraEffect::HandleModResistancePercent(AuraApplication const* aurApp, uint8
                 target->HandleStatModifier(UnitMods(UNIT_MOD_RESISTANCE_START + i), TOTAL_PCT, (float)spellGroupVal, !apply);
                 if (target->GetTypeId() == TYPEID_PLAYER || target->IsPet())
                 {
-                    target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), true, (float)spellGroupVal, !apply);
-                    target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), false, (float)spellGroupVal, !apply);
+                    target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), (float)spellGroupVal, !apply);
                 }
             }
             target->HandleStatModifier(UnitMods(UNIT_MOD_RESISTANCE_START + i), TOTAL_PCT, float(GetAmount()), apply);
             if (target->GetTypeId() == TYPEID_PLAYER || target->IsPet())
             {
-                target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), true, (float)GetAmount(), apply);
-                target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), false, (float)GetAmount(), apply);
+                target->ApplyResistanceBuffModsPercentMod(SpellSchools(i), (float)GetAmount(), apply);
             }
         }
     }

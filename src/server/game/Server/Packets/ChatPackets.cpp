@@ -181,6 +181,7 @@ WorldPacket const* WorldPackets::Chat::Chat::Write()
     _worldPacket.WriteBits(_ChatFlags, 11);
     _worldPacket.WriteBit(HideChatLog);
     _worldPacket.WriteBit(FakeSenderName);
+    _worldPacket.ReadBit(); //unk 801 bit
     _worldPacket.FlushBits();
 
     _worldPacket.WriteString(SenderName);

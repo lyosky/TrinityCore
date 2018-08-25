@@ -16,7 +16,6 @@
  */
 
 #include "AccountMgr.h"
-#include "ArenaTeamMgr.h"
 #include "CellImpl.h"
 #include "Chat.h"
 #include "DatabaseEnv.h"
@@ -69,6 +68,7 @@ public:
         {
             { "additem",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddItemCommand,          "" },
             { "additemset",       rbac::RBAC_PERM_COMMAND_ADDITEMSET,       false, &HandleAddItemSetCommand,       "" },
+            { "addmkey",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddMKeyCommand,          "" },
             { "appear",           rbac::RBAC_PERM_COMMAND_APPEAR,           false, &HandleAppearCommand,           "" },
             { "aura",             rbac::RBAC_PERM_COMMAND_AURA,             false, &HandleAuraCommand,             "" },
             { "bank",             rbac::RBAC_PERM_COMMAND_BANK,             false, &HandleBankCommand,             "" },
@@ -118,6 +118,7 @@ public:
             { "wchange",          rbac::RBAC_PERM_COMMAND_WCHANGE,          false, &HandleChangeWeather,           "" },
             { "mailbox",          rbac::RBAC_PERM_COMMAND_MAILBOX,          false, &HandleMailBoxCommand,          "" },
             { "auras  ",          rbac::RBAC_PERM_COMMAND_LIST_AURAS,       false, &HandleAurasCommand,            "" },
+            { "light  ",          rbac::RBAC_PERM_COMMAND_LIST_AURAS,       false, &HandleLightCommand,            "" },
         };
         return commandTable;
     }
@@ -1314,7 +1315,15 @@ public:
         {
             Tokenizer tokens(bonuses, ';');
             for (char const* token : tokens)
-                bonusListIDs.push_back(atoul(token));
+                if (token != 0)
+                    bonusListIDs.push_back(atoul(token));
+        }
+
+        char const* context = strtok(NULL, " ");
+        if (context)
+        {
+            std::set<uint32> bonusListIDset = sDB2Manager.GetItemBonusTree(itemId, atoi(context));
+            bonusListIDs.insert(bonusListIDs.end(), bonusListIDset.begin(), bonusListIDset.end());
         }
 
         Player* player = handler->GetSession()->GetPlayer();
@@ -1450,6 +1459,16 @@ public:
             return false;
         }
 
+        return true;
+    }
+
+    static bool HandleAddMKeyCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs cArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT_OPTIONAL });
+        if (!cArgs.ValidArgs())
+            return false;
+
+        handler->getSelectedPlayerOrSelf()->AddChallengeKey(cArgs.GetArg<uint32>(0), cArgs.GetArg<uint32>(1, 2));
         return true;
     }
 
@@ -2795,6 +2814,19 @@ public:
                     handler->PSendSysMessage("%u: %s)", aura->GetId(), name);
             }
         }
+        return true;
+    }
+
+    static bool HandleLightCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        uint32 lightId = atoul(args);
+
+        Player* player = handler->GetSession()->GetPlayer();
+        player->GetMap()->SetZoneOverrideLight(player->GetAreaId(), lightId, 5000);
+
         return true;
     }
 };

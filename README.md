@@ -1,24 +1,4 @@
-# AshamaneCore
-
---------------
-
-
-* [Build Status](#build-status)
-* [Introduction](#introduction)
-* [Requirements](#requirements)
-* [Install](#install)
-* [Reporting issues](#reporting-issues)
-* [Submitting fixes](#submitting-fixes)
-* [Copyright](#copyright)
-* [Authors &amp; Contributors](#authors--contributors)
-* [Links](#links)
-
-
-
-## Build Status
-
-[![master Build Status](https://travis-ci.org/AshamaneProject/AshamaneCore.svg?branch=master)](https://travis-ci.org/AshamaneProject/AshamaneCore) 
-[![Build status](https://ci.appveyor.com/api/projects/status/orswpu6j5c5rfoj6/branch/master?svg=true)](https://ci.appveyor.com/project/Traesh/ashamanecore/branch/master)
+# LY Core
 
 ## Introduction
 
@@ -54,7 +34,7 @@ with Ashamane Database (ADB) :
 - All Mist of Pandaria zones spawns
 - All Draenor zones spawns
 - All Legion zones spawns (including Class Halls)
-- ¥Û–Õ«÷»Îµ„,«÷»Îµ„ spawns SAI
+- ‰æµÂÖ•ÁÇπ spawns SAI
 - Silithus
 
 ## Requirements
@@ -68,22 +48,6 @@ Windows, Linux and macOS.
 
 Detailed installation guides are available in the [wiki](https://www.trinitycore.info/display/tc/Installation+Guide) for
 Windows, Linux and macOS.
-
-## Contribute
-
-You can help Ashamane using our [Patreon Page](https://www.patreon.com/ashamane). All the collected money will be used to pay developers for their work using bountysource
-
-## Reporting issues
-
-Issues can be reported via our [Mantis issue tracker](https://bt.ashamane.com).
-
-Please take the time to review existing issues before submitting your own to
-prevent duplicates.
-
-## Submitting fixes
-
-C++ fixes are submitted as pull requests via Github.
-For SQL only fixes open a ticket or if a bug report exists for the bug post on existing ticket.
 
 
 ## Copyright

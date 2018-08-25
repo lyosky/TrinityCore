@@ -1,6 +1,9 @@
 SET @CGUID := 210118300;
 SET @OGUID := 51013500;
 
+DELETE FROM `creature` WHERE `map`= 1753;
+DELETE FROM `gameobject` WHERE `map`= 1753;
+
 DELETE FROM `instance_template` WHERE `map` = 1753;
 INSERT INTO `instance_template` VALUES
 (1753, 1669, "instance_seat_of_triumvirate", 1, 1);
@@ -1008,7 +1011,7 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+24, 0, 0, 0, 1, 0, 0, 0, 0, '245746'), -- Void Discharge - 245746 - -0-
 (@CGUID+25, 0, 0, 0, 1, 0, 0, 0, 0, '245746'), -- Void Discharge - 245746 - -0-
 (@CGUID+26, 0, 0, 0, 1, 0, 0, 0, 0, '245753'), -- Sapped Voidlord - 245753 - -0-
-(@CGUID+27, 0, 0, 50331648, 1, 0, 0, 0, 0, '244087 246913'), -- Zuraal the Ascended - 244087 - -0-, 246913 - -0-
+(@CGUID+27, 0, 0, 50331648, 1, 0, 0, 0, 0, '244087'), -- Zuraal the Ascended - 244087 - -0-, 246913 - -0-fix
 (@CGUID+28, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- Famished Broken
 (@CGUID+29, 0, 0, 0, 1, 0, 0, 0, 0, '244087'), -- Famished Broken - 244087 - -0-
 (@CGUID+30, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- -0-

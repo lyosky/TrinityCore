@@ -38,6 +38,8 @@
 #include "SceneMgr.h"
 #include <queue>
 #include "GarrisonMgr.h"
+#include "TaskScheduler.h"
+#include "Conversation.h"
 
 struct AccessRequirement;
 struct AchievementEntry;
@@ -1116,6 +1118,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool IsInAreaTriggerRadius(const AreaTriggerEntry* trigger) const;
 
         void SendInitialPacketsBeforeAddToMap();
+        void SendNewDiff(Difficulty difficulty);
         void SendInitialPacketsAfterAddToMap();
         void SendSupercededSpell(uint32 oldSpell, uint32 newSpell) const;
         void SendTransferAborted(uint32 mapid, TransferAbortReason reason, uint8 arg = 0) const;
@@ -1168,6 +1171,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool GetCommandStatus(uint32 command) const { return (_activeCheats & command) != 0; }
         void SetCommandStatusOn(uint32 command) { _activeCheats |= command; }
         void SetCommandStatusOff(uint32 command) { _activeCheats &= ~command; }
+
+        // TimeIsMoneyFriend
+        uint32 ptr_Interval;
+        uint32 ptr_Money;
 
         // Played Time Stuff
         time_t m_logintime;
@@ -2534,8 +2541,54 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void AddToPlayerPetDataStore(PlayerPetData* playerPetData);
 
         ArchaeologyPlayerMgr& GetArchaeologyMgr() { return m_archaeologyPlayerMgr; }
-
+		
         bool MeetPlayerCondition(uint32 conditionId) const;
+				
+		/* delay teleport */
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, float x, float y, float z, float o)
+        {
+            WorldLocation loc;
+            loc = WorldLocation(mapID);
+            loc.Relocate(x, y, z, o);
+
+            this->GetScheduler().Schedule(Milliseconds(delay), [loc](TaskContext context)
+            {
+                if (Player* player = GetContextPlayer())
+                {
+                    if (loc.GetMapId() == player->GetMapId())
+                        player->NearTeleportTo(loc, false);
+                    else
+                        player->TeleportTo(loc);
+                }
+            });
+
+        }
+        void AddDelayedTeleport(uint32 delay, uint32 mapID, Position pos)
+        {
+            AddDelayedTeleport(delay, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+        }
+
+        /*conversation delay teleport */
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, float x, float y, float z, float o)
+        {
+            Conversation::CreateConversation(conversationId, this, this->GetPosition(), { this->GetGUID() });
+            AddDelayedTeleport(delay, mapID, x, y, z, o);           
+        }
+        void AddConversationDelayedTeleport(uint32 delay, uint32 conversationId, uint32 mapID, Position pos)
+        {
+            AddConversationDelayedTeleport(delay, conversationId, mapID, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
+        }
+
+        void AddDelayedConversation(uint32 delay, uint32 conversationId)
+        {
+            this->GetScheduler().Schedule(Milliseconds(delay), [conversationId](TaskContext context)
+            {
+                if (Player* player = GetContextPlayer())
+                {
+                    Conversation::CreateConversation(conversationId, player, player->GetPosition(), { player->GetGUID() });
+                }
+            });
+        }
 
     protected:
         // Gamemaster whisper whitelist

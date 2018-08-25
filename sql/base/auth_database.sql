@@ -26,7 +26,7 @@ CREATE TABLE `account` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
   `username` varchar(32) NOT NULL DEFAULT '',
   `sha_pass_hash` varchar(40) NOT NULL DEFAULT '',
-  `sessionkey` varchar(80) NOT NULL DEFAULT '',
+  `sessionkey` varchar(128) NOT NULL DEFAULT '',
   `v` varchar(64) NOT NULL DEFAULT '',
   `s` varchar(64) NOT NULL DEFAULT '',
   `token_key` varchar(100) NOT NULL DEFAULT '',
@@ -1106,6 +1106,7 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (196,842),
 (196,843),
 (196,869),
+(196,872),
 (197,232),
 (197,236),
 (197,237),
@@ -2026,7 +2027,8 @@ INSERT INTO `rbac_permissions` VALUES
 (853,'Command: .reload conversation_template'),
 (854,'Command: .debug conversation'),
 (868,'Command: modify power'),
-(869,'Command: debug send playerchoice');
+(869,'Command: debug send playerchoice'),
+(872,'Command: server debug');
 /*!40000 ALTER TABLE `rbac_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2089,7 +2091,7 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
 INSERT INTO `realmlist` VALUES
-(1,'Ashamane','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,26972,1,1);
+(1,'Trinity','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,26972,1,1);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;
 

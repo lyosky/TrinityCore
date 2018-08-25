@@ -24,7 +24,7 @@
 
 enum Spells
 {
-    // Wrathbone Flayer
+    // Wrathbone Flayer 22953
     SPELL_CLEAVE                = 15496,
     SPELL_IGNORED               = 39544,
     SPELL_SUMMON_CHANNEL        = 40094,

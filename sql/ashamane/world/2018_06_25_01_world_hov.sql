@@ -5,7 +5,7 @@ UPDATE creature_template SET `ScriptName` = 'boss_king_haldor' WHERE `entry` = 9
 UPDATE creature_template SET `ScriptName` = 'boss_king_bjorn' WHERE `entry` = 97081;
 UPDATE creature_template SET `ScriptName` = 'boss_king_tor' WHERE `entry` = 97084;
 UPDATE creature_template SET `ScriptName` = 'boss_god_king_kovald' WHERE `entry` = 95675;
-UPDATE creature_template SET `ScriptName` = 'npc_aegis_of_aggramar' WHERE `entry` = 98364;
+UPDATE creature_template SET npcflag = npcflag | 1, `ScriptName` = 'npc_aegis_of_aggramar' WHERE `entry` = 98364;
 UPDATE creature_template SET `ScriptName` = 'npc_flame_of_woe' WHERE `entry` = 104822;
 UPDATE creature_template SET npcflag = npcflag | 1, `ScriptName` = 'npc_halls_of_valor' WHERE `entry` = 101712;
 UPDATE creature_template SET npcflag = npcflag | 1, `ScriptName` = 'npc_field_of_eternal_hunt' WHERE `entry` = 101697;
@@ -57,7 +57,7 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (192307, 'spell_sanctify'),
 (198072, 'spell_odyn_spear_of_light');
 
-UPDATE `instance_template` SET `script` = 'instance_halls_of_valor' WHERE `map` = 1477;
+UPDATE `instance_template` SET `insideResurrection`=1, `script` = 'instance_halls_of_valor' WHERE `map` = 1477;
 
 DELETE FROM creature_template_addon WHERE entry IN (97960, 101712);
 INSERT INTO `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES

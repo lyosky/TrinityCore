@@ -117,6 +117,9 @@ public:
             { "criteria",      rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugCriteriaCommand,         "" },
             { "movementforce", rbac::RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE,false, nullptr,                             "", debugMovementForceCommandTable },
             { "playercondition",rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugPlayerConditionCommand,  "" },
+            { "addphase" ,      rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugAddPhaseCommand,         "" },
+            { "removephase" ,   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugRemovePhaseCommand,      "" },
+            { "queryphase" ,    rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugQueryPhaseCommand,       "" },           
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1676,6 +1679,87 @@ public:
             handler->PSendSysMessage("True");
         else
             handler->PSendSysMessage("False");
+
+        return true;
+    }
+
+    static bool HandleDebugAddPhaseCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char const* phaseStr = strtok((char*)args, " ");
+
+        if (!phaseStr)
+            return false;
+
+        uint32 phaseEntry = atoi(phaseStr);
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        PhasingHandler::AddPhase(target, phaseEntry, true);
+        return true;
+    }
+
+    static bool HandleDebugRemovePhaseCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char const* phaseStr = strtok((char*)args, " ");
+
+        if (!phaseStr)
+            return false;
+
+        uint32 phaseEntry = atoi(phaseStr);
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        PhasingHandler::RemovePhase(target, phaseEntry, true);
+        return true;
+    }
+
+    static bool HandleDebugQueryPhaseCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char const* phaseStr = strtok((char*)args, " ");
+
+        if (!phaseStr)
+            return false;
+
+        uint32 phaseEntry = atoi(phaseStr);
+        std::ostringstream phases;
+        std::string cosmetic = sObjectMgr->GetTrinityString(LANG_PHASE_FLAG_COSMETIC, handler->GetSessionDbLocaleIndex());
+        std::string personal = sObjectMgr->GetTrinityString(LANG_PHASE_FLAG_PERSONAL, handler->GetSessionDbLocaleIndex());
+
+        phases << phaseStr;
+
+        if (PhaseEntry const* phase = sPhaseStore.LookupEntry(phaseEntry))
+        {
+            if (phase->Flags & PHASE_FLAG_COSMETIC)
+                phases << ' ' << '(' << cosmetic << ')';
+
+            if (phase->Flags & PHASE_FLAG_PERSONAL)
+                phases << ' ' << '(' << personal << ')';   
+        }
+        else
+            phases << " not found . ";
+
+        handler->PSendSysMessage(LANG_PHASESHIFT_PHASES, phases.str().c_str());
 
         return true;
     }

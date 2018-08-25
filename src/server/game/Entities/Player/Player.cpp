@@ -47,6 +47,7 @@
 #include "CombatPackets.h"
 #include "Common.h"
 #include "ConditionMgr.h"
+#include "Config.h"
 #include "CreatureAI.h"
 #include "DB2Stores.h"
 #include "DatabaseEnv.h"
@@ -228,6 +229,10 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
         m_bgBattlegroundQueueID[j].invitedToInstance = 0;
         m_bgBattlegroundQueueID[j].joinTime = 0;
     }
+
+    // TimeIsMoneyFriend
+    ptr_Interval = sConfigMgr->GetIntDefault("TimeIsMoneyFriend.Interval", 0);
+    ptr_Money = sConfigMgr->GetIntDefault("TimeIsMoneyFriend.Money", 0);
 
     m_logintime = time(nullptr);
     m_Last_tick = m_logintime;
@@ -1142,6 +1147,19 @@ void Player::Update(uint32 p_time)
         stmt->setString(2, "");
         stmt->setUInt32(3, GetSession()->GetAccountId());
         LoginDatabase.Execute(stmt);
+    }
+
+    // TimeIsMoneyFriend
+    if (ptr_Interval > 0)
+    {
+        if (ptr_Interval <= p_time)
+        {
+            GetSession()->SendNotification("Thank you for playing with LY Core. Here is some money for your loyality. :)");
+            ModifyMoney(ptr_Money);
+            ptr_Interval = sConfigMgr->GetIntDefault("TimeIsMoneyFriend.Interval", 0);
+        }
+        else
+            ptr_Interval -= p_time;
     }
 
     if (!m_timedquests.empty())
@@ -15547,6 +15565,7 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
 
     sScriptMgr->OnQuestStatusChange(this, quest_id);
     sScriptMgr->OnQuestStatusChange(this, quest, oldStatus, questStatusData.Status);
+    sScriptMgr->OnQuestAccept(this, quest);  
 }
 
 void Player::ForceCompleteQuest(uint32 quest_id)
@@ -24450,6 +24469,16 @@ void Player::SendInitialPacketsBeforeAddToMap()
     SendDirectMessage(initialSetup.Write());
 
     SetMover(this);
+}
+
+void Player::SendNewDiff(Difficulty difficulty)
+{
+    WorldPackets::Misc::WorldServerInfo worldServerInfo;
+    worldServerInfo.InstanceGroupSize = GetMap()->GetMapDifficulty() ? GetMap()->GetMapDifficulty()->MaxPlayers : 0;
+    worldServerInfo.IsTournamentRealm = 0;
+    worldServerInfo.DifficultyID = difficulty;
+
+    SendDirectMessage(worldServerInfo.Write());
 }
 
 void Player::SendInitialPacketsAfterAddToMap()

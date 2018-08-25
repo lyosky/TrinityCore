@@ -1087,6 +1087,30 @@ LOCK TABLES `character_pet_declinedname` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `character_pvp_talent`
+--
+
+DROP TABLE IF EXISTS `character_pvp_talent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `character_pvp_talent` (
+  `guid` bigint(20) unsigned NOT NULL,
+  `talentId` mediumint(8) unsigned NOT NULL,
+  `talentGroup` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`,`talentId`,`talentGroup`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `character_pvp_talent`
+--
+
+LOCK TABLES `character_pvp_talent` WRITE;
+/*!40000 ALTER TABLE `character_pvp_talent` DISABLE KEYS */;
+/*!40000 ALTER TABLE `character_pvp_talent` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `character_queststatus`
 --
 
@@ -1645,6 +1669,7 @@ CREATE TABLE `characters` (
   `customDisplay1` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `customDisplay2` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `customDisplay3` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `inventorySlots` tinyint(3) unsigned NOT NULL DEFAULT '16',
   `bankSlots` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restState` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `playerFlags` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1709,6 +1734,7 @@ CREATE TABLE `characters` (
   `prestigeLevel` int(10) unsigned NOT NULL DEFAULT '0',
   `honorRestState` tinyint(3) unsigned NOT NULL DEFAULT '2',
   `honorRestBonus` float NOT NULL DEFAULT '0',
+  `lastLoginBuild` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`),
   KEY `idx_account` (`account`),
   KEY `idx_online` (`online`),

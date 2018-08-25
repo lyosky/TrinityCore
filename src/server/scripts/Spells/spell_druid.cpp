@@ -57,6 +57,8 @@ enum DruidSpells
     SPELL_DRUID_MOONFIRE_CAT                        = 155625,
     SPELL_DRUID_SWIPE_CAT                           = 106785,
     SPELL_DRUID_SABERTOOTH                          = 202031,
+    SPELL_DRUID_SPRING_BLOSSOMS                     = 207385,
+    SPELL_DRUID_SPRING_BLOSSOMS_HEAL                = 207386,
 };
 
 enum ShapeshiftFormSpells
@@ -2097,6 +2099,44 @@ class aura_dru_feral_affinity : public AuraScript
     }
 };
 
+// 202155 - Feral Affinity
+class aura_dru_feral_affinity_bear : public AuraScript
+{
+    PrepareAuraScript(aura_dru_feral_affinity_bear);
+
+    const std::vector<uint32> LearnedSpells =
+    {
+        SPELL_DRUID_FELINE_SWIFTNESS,
+        SPELL_DRUID_SHRED,
+        SPELL_DRUID_RAKE,
+        SPELL_DRUID_RIP,
+        SPELL_DRUID_FEROCIOUS_BITE
+    };
+
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* target = GetTarget()->ToPlayer())
+        {
+            for (uint32 spellId : LearnedSpells)
+                target->LearnSpell(spellId, false);
+        }
+            
+    }
+
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* target = GetTarget()->ToPlayer())
+            for (uint32 spellId : LearnedSpells)
+                target->RemoveSpell(spellId);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_feral_affinity_bear::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_feral_affinity_bear::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 // 22842 - Frenzied Regeneration
 class aura_dru_frenzied_regeneration : public AuraScript
 {
@@ -2519,6 +2559,7 @@ void AddSC_druid_spell_scripts()
     RegisterAuraScript(aura_dru_astral_form);
     RegisterAuraScript(aura_dru_restoration_affinity);
     RegisterAuraScript(aura_dru_feral_affinity);
+    RegisterAuraScript(aura_dru_feral_affinity_bear);
     RegisterAuraScript(aura_dru_frenzied_regeneration);
 
     // AreaTrigger Scripts

@@ -20,27 +20,27 @@
 #include "InstanceScript.h"
 #include "court_of_stars.h"
 
-class instance_court_of_stars : public InstanceMapScript
+struct instance_court_of_stars : public InstanceScript
 {
-    public:
-        instance_court_of_stars() : InstanceMapScript("instance_court_of_stars", 1571) { }
+    instance_court_of_stars(InstanceMap* map) : InstanceScript(map)
+    {
+        SetHeaders(DataHeader);
+        SetBossNumber(EncounterCount);
+        ///SetChallengeDoorPos({ -3895.260742f, 4523.655273f, 84.528175f, 5.613298f });
+    }
 
-        struct instance_court_of_stars_InstanceMapScript : public InstanceScript
-        {
-            instance_court_of_stars_InstanceMapScript(InstanceMap* map) : InstanceScript(map)
-            {
-                SetHeaders(DataHeader);
-                SetBossNumber(EncounterCount);
-            }
-        };
+    void OnCreatureCreate(Creature* creature) override
+    {
+        InstanceScript::OnCreatureCreate(creature);
 
-        InstanceScript* GetInstanceScript(InstanceMap* map) const override
-        {
-            return new instance_court_of_stars_InstanceMapScript(map);
-        }
+        if (instance->IsHeroic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 2.f);
+        if (instance->IsMythic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 1.33f);
+    }
 };
 
 void AddSC_instance_court_of_stars()
 {
-    new instance_court_of_stars();
+    RegisterInstanceScript(instance_court_of_stars, 1571);
 }

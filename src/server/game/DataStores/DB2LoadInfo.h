@@ -406,12 +406,12 @@ struct ArtifactUnlockLoadInfo
     {
         static DB2FieldMeta const fields[] =
         {
-            { false, FT_INT, "ID" },
+            { false, FT_INT,   "ID" },
             { false, FT_SHORT, "ItemBonusListID" },
-            { false, FT_BYTE, "PowerRank" },
-            { false, FT_INT, "PowerID" },
-            { false, FT_INT, "PlayerConditionID" },
-            { false, FT_BYTE, "ArtifactID" },
+            { false, FT_BYTE,  "PowerRank" },
+            { false, FT_INT,   "PowerID" },
+            { false, FT_INT,   "PlayerConditionID" },
+            { false, FT_BYTE,  "ArtifactID" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, ArtifactUnlockMeta::Instance(), HOTFIX_SEL_ARTIFACT_UNLOCK);
         return &loadInfo;
@@ -2738,7 +2738,7 @@ struct ItemLimitCategoryConditionLoadInfo
             { false, FT_INT, "ID" },
             { true, FT_BYTE, "AddQuantity" },
             { false, FT_INT, "PlayerConditionID" },
-            { true, FT_INT, "ParentItemLimitCategoryID" },
+            { true,  FT_INT, "ParentItemLimitCategoryID" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, ItemLimitCategoryConditionMeta::Instance(), HOTFIX_SEL_ITEM_LIMIT_CATEGORY_CONDITION);
         return &loadInfo;

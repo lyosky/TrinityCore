@@ -19,6 +19,7 @@
 #ifndef DEF_VIOLET_HOLD_LEGION_H
 #define DEF_VIOLET_HOLD_LEGION_H
 
+#define DataHeader "VHL"
 uint32 const EncounterCount = 3 + 6;
 
 enum DataTypes

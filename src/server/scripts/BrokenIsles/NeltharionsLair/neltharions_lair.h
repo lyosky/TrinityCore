@@ -19,6 +19,10 @@
 #ifndef DEF_NELTHARIONS_LAIR_H
 #define DEF_NELTHARIONS_LAIR_H
 
+#define DataHeader "NELTHA"
+
+uint32 const EncounterCount = 4;
+
 enum DataTypes
 {
     DATA_ROKMORA            = 0,

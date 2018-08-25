@@ -398,10 +398,12 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         Difficulty GetDifficultyID() const { return Difficulty(GetSpawnMode()); }
         MapDifficultyEntry const* GetMapDifficulty() const;
         uint8 GetDifficultyLootItemContext() const;
+        void SetDifficultyID(Difficulty difficulty) { i_spawnMode = Difficulty(difficulty); }
 
         uint32 GetId() const;
         bool Instanceable() const;
         bool IsDungeon() const;
+        bool IsScenario()  const;
         bool IsNonRaidDungeon() const;
         bool IsRaid() const;
         bool IsRaidOrHeroicDungeon() const;
@@ -409,6 +411,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool IsMythic() const;
         bool Is25ManRaid() const;   // since 25man difficulties are 1 and 3, we can check them like that
         bool IsLFR() const;
+        bool IsChallengeMode()  const;
         bool IsBattleground() const;
         bool IsBattleArena() const;
         bool IsBattlegroundOrArena() const;

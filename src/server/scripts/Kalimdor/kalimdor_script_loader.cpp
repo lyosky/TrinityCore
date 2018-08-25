@@ -171,6 +171,8 @@ void AddSC_thunder_bluff();
 void AddSC_ungoro_crater();
 void AddSC_winterspring();
 
+void AddSC_silithus_legion(); 
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddKalimdorScripts()
@@ -329,4 +331,6 @@ void AddKalimdorScripts()
     AddSC_thunder_bluff();
     AddSC_ungoro_crater();
     AddSC_winterspring();
+
+    AddSC_silithus_legion(); 
 }

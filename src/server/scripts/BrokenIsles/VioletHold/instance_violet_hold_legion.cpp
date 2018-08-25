@@ -20,28 +20,27 @@
 #include "InstanceScript.h"
 #include "violet_hold_legion.h"
 
-class instance_violet_hold_legion : public InstanceMapScript
+struct instance_violet_hold_legion : public InstanceScript
 {
-    public:
-        instance_violet_hold_legion() : InstanceMapScript("instance_violet_hold_legion", 1544) { }
+    instance_violet_hold_legion(InstanceMap* map) : InstanceScript(map)
+    {
+        SetHeaders(DataHeader);
+        SetBossNumber(EncounterCount);
+        ///SetChallengeDoorPos({ -3895.260742f, 4523.655273f, 84.528175f, 5.613298f });
+    }
 
-        struct instance_violet_hold_legion_InstanceMapScript : public InstanceScript
-        {
-            instance_violet_hold_legion_InstanceMapScript(InstanceMap* map) : InstanceScript(map) { }
+    void OnCreatureCreate(Creature* creature) override
+    {
+        InstanceScript::OnCreatureCreate(creature);
 
-            void Initialize() override
-            {
-                SetBossNumber(EncounterCount);
-            }
-        };
-
-        InstanceScript* GetInstanceScript(InstanceMap* map) const override
-        {
-            return new instance_violet_hold_legion_InstanceMapScript(map);
-        }
+        if (instance->IsHeroic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 2.f);
+        if (instance->IsMythic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 1.33f);
+    }
 };
 
 void AddSC_instance_violet_hold_legion()
 {
-    new instance_violet_hold_legion();
+    RegisterInstanceScript(instance_violet_hold_legion, 1544);
 }

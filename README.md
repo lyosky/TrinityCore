@@ -22,7 +22,7 @@
 
 ## Introduction
 
-AshamaneCore is a *MMORPG* Framework based mostly in C++.
+LYCore is a *MMORPG* Framework based mostly in C++.
 
 It is fully based on *TrinityCore*, with upgrades like :
 
@@ -36,6 +36,7 @@ It is fully based on *TrinityCore*, with upgrades like :
     - Mardum (DH start zone)
     - Emerald Nightmare (1/7)
     - Tomb of Sargeras (1/9)
+    - Silithus Legion (for both Horde & Alliance)
 - Wod Scripts (WIP)
     - full blizzlike Jungle of Tanaan intro
     - Garrison pre-quests (for both Horde & Alliance)
@@ -53,11 +54,8 @@ with Ashamane Database (ADB) :
 - All Mist of Pandaria zones spawns
 - All Draenor zones spawns
 - All Legion zones spawns (including Class Halls)
-
-It is completely open source; community involvement is highly encouraged.
-
-If you wish to contribute ideas or code please visit our site linked below or
-make pull requests to our [Github repository](https://github.com/AshamaneProject/AshamaneCore/pulls).
+- 大型侵入点,侵入点 spawns SAI
+- Silithus
 
 ## Requirements
 

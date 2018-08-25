@@ -31,6 +31,8 @@ void AddSC_valsharah();
 void AddSC_zone_argus_krokuun();
 void AddSC_zone_argus_antoran_wastes();
 void AddSC_zone_argus_macaree();
+void AddSC_instance_invasion_point();
+void AddSC_broken_shore();
 
 // Demon Hunter start zone
 void AddSC_zone_mardum();
@@ -175,6 +177,10 @@ void AddSC_boss_sisters_of_moon();
 void AddSC_tomb_of_sargeras();
 void AddSC_instance_tomb_of_sargeras();
 
+//scenario
+void AddSC_scenario_the_violet_hold();
+void AddSC_scenario_artifact_ursocslair();
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddBrokenIslesScripts()
@@ -192,6 +198,8 @@ void AddBrokenIslesScripts()
     AddSC_zone_argus_krokuun();
     AddSC_zone_argus_antoran_wastes();
     AddSC_zone_argus_macaree();
+    AddSC_instance_invasion_point();
+    AddSC_broken_shore();
 
     // Demon Hunter start zone
     AddSC_zone_mardum();
@@ -335,4 +343,8 @@ void AddBrokenIslesScripts()
     AddSC_boss_sisters_of_moon();
     AddSC_tomb_of_sargeras();
     AddSC_instance_tomb_of_sargeras();
+
+    //scenario
+    AddSC_scenario_the_violet_hold();
+    AddSC_scenario_artifact_ursocslair();
 }

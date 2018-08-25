@@ -20,28 +20,27 @@
 #include "InstanceScript.h"
 #include "neltharions_lair.h"
 
-class instance_neltharions_lair : public InstanceMapScript
+struct instance_neltharions_lair : public InstanceScript
 {
-    public:
-        instance_neltharions_lair() : InstanceMapScript("instance_neltharions_lair", 1458) { }
+    instance_neltharions_lair(InstanceMap* map) : InstanceScript(map)
+    {
+        SetHeaders(DataHeader);
+        SetBossNumber(EncounterCount);
+        ///SetChallengeDoorPos({ -3895.260742f, 4523.655273f, 84.528175f, 5.613298f });
+    }
 
-        struct instance_neltharions_lair_InstanceMapScript : public InstanceScript
-        {
-            instance_neltharions_lair_InstanceMapScript(InstanceMap* map) : InstanceScript(map) { }
+    void OnCreatureCreate(Creature* creature) override
+    {
+        InstanceScript::OnCreatureCreate(creature);
 
-            void Initialize() override
-            {
-                SetBossNumber(DATA_MAX_ENCOUNTERS);
-            }
-        };
-
-        InstanceScript* GetInstanceScript(InstanceMap* map) const override
-        {
-            return new instance_neltharions_lair_InstanceMapScript(map);
-        }
+        if (instance->IsHeroic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 2.f);
+        if (instance->IsMythic())
+            creature->SetBaseHealth(creature->GetMaxHealth() * 1.33f);
+    }
 };
 
 void AddSC_instance_neltharions_lair()
 {
-    new instance_neltharions_lair();
+    RegisterInstanceScript(instance_neltharions_lair, 1458);
 }

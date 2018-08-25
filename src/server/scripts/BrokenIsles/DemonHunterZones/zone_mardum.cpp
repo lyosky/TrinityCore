@@ -148,7 +148,11 @@ public:
     bool OnGossipHello(Player* player, GameObject* /*go*/) override
     {
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
+        {
             player->CastSpell(player, SPELL_SCENE_MARDUM_LEGION_BANNER, true);
+            
+        }
+        player->CastSpell(player, SPELL_PHASE_171, true);
 
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
             player->CastSpell(player, SPELL_PHASE_171, true);
@@ -200,6 +204,7 @@ public:
 
         void HandleMountOnHit(SpellEffIndex /*effIndex*/)
         {
+            GetCaster()->RemoveAurasDueToSpell(SPELL_PHASE_171);
             GetCaster()->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_FELSABBER);
 
             // We schedule this to let hover animation pass

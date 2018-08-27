@@ -1033,9 +1033,17 @@ void InstanceScript::SendBossKillCredit(uint32 encounterId)
 void InstanceScript::CompleteScenario()
 {
     if (InstanceScenario* inScenario = instance->GetInstanceScenario())
-    {
         inScenario->CompleteScenario();
-    }
+    else
+        TC_LOG_ERROR("scripts", "InstanceScript::CompleteScenario() fail", "");
+}
+
+void InstanceScript::CompleteCurrStep()
+{
+    if (InstanceScenario* inScenario = instance->GetInstanceScenario())
+        inScenario->CompleteCurrStep();
+    else
+        TC_LOG_ERROR("scripts", "InstanceScript::CompleteCurrStep() fail", "");
 }
 
 void InstanceScript::GetScenarioData(Player* p_Player/*= nullptr*/)

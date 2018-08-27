@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -315,4 +315,9 @@ void Scenario::SendBootPlayer(Player* player)
 void Scenario::SendScenarioEvent(Player* player, uint32 eventId)
 {
     UpdateCriteria(CRITERIA_TYPE_SEND_EVENT_SCENARIO, eventId, 0, 0, nullptr, player);
+}
+
+void Scenario::CompleteCurrStep()
+{
+    CompleteStep(GetStep());
 }

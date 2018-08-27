@@ -9,6 +9,7 @@ lyosky
 #include "PhasingHandler.h"
 #include "SceneMgr.h"
 #include "ScriptMgr.h"
+#include "ObjectMgr.h"
 
 enum DataTypes
 {
@@ -206,12 +207,17 @@ struct scenario_artifact_ursocslair : public InstanceScript
         if (StepID < EVENT_STEP_8)
         {
             ++StepID;
-            SendScenarioState(ScenarioData(SCENARIO_ID, GetStepID()));                
+            if(Scenario* scenario=instance->GetInstanceScenario())
+                scenario->CompleteCurrStep();
+
+            //SendScenarioState(ScenarioData(SCENARIO_ID, GetStepID()));                
         }
         else if(StepID == EVENT_STEP_8)
         {
             if(!isComplete)
-                SendScenarioState(ScenarioData(SCENARIO_ID, GetStepID()));
+                if (Scenario* scenario = instance->GetInstanceScenario())
+                    scenario->CompleteCurrStep();
+               // SendScenarioState(ScenarioData(SCENARIO_ID, GetStepID()));
             if (GameObject* go =instance->GetGameObject(GUID_CYLINDER_COLLISION))
             {
                 TC_LOG_ERROR("server.worldserver", "====================scenario_artifact_ursocslair  TEST_EVENT GO_CYLINDER_COLLISION====================== ");
@@ -238,9 +244,11 @@ struct scenario_artifact_ursocslair : public InstanceScript
             isIntr = true;
             events.ScheduleEvent(SCENE_PLAYER_ENTER, 5s);
         }
-        events.ScheduleEvent(TEST_EVENT, 10 * IN_MILLISECONDS);
-        if (InstanceScenario* scenario = instance->ToInstanceMap()->GetInstanceScenario())
+        //events.ScheduleEvent(TEST_EVENT, 10 * IN_MILLISECONDS);
+        if (InstanceScenario* scenario = instance->GetInstanceScenario())
         {
+            DoUpdateCriteria(CRITERIA_TYPE_SEND_EVENT_SCENARIO, 46437, 0, nullptr);
+            //scenario->CompleteCurrStep();
             //TC_LOG_ERROR("server.worldserver", "====================scenario_artifact_ursocslair  InstanceScenario====================== ");
             //scenario->CompleteScenario();
             //scenario->CompleteScenario();

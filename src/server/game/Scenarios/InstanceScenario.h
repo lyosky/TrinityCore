@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ class TC_GAME_API InstanceScenario : public Scenario
         void SaveToDB();
         void LoadInstanceData(uint32 instanceId);
 
-        void CompleteScenario() override;
+        void CompleteScenario() override;       
 
     protected:
         std::string GetOwnerInfo() const override;

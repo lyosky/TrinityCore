@@ -347,6 +347,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
         bool IsScenarioComplete()  { return m_IsScenarioComplete; }
         bool m_IsScenarioComplete;
         void CompleteScenario();
+        void CompleteCurrStep();
         void RespawnCreature(uint64 p_Guid);
 
         struct CriteriaProgressData

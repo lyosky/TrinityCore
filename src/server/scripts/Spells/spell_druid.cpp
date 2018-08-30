@@ -90,6 +90,43 @@ enum GoreSpells
     SPELL_DRUID_SWIPE = 213764
 };
 
+enum BalanceAffinitySpells
+{
+    SPELL_DRUID_BALANCE_AFFINITY_DPS    = 197488,
+    SPELL_DRUID_BALANCE_AFFINITY_RESTO  = 197632,
+
+    SPELL_DRUID_ASTRAL_INFLUENCE        = 197524,
+    SPELL_DRUID_MOONKIN_FORM_TALENT     = 197625,
+    SPELL_DRUID_STARSURGE               = 197626,
+    SPELL_DRUID_LUNAR_STRIKE            = 197628,
+    SPELL_DRUID_SOLAR_WRATH             = 197629,
+    SPELL_DRUID_SUNFIRE                 = 197630
+};
+
+enum FeralAffinitySpells
+{
+    SPELL_DRUID_FERAL_AFFINITY_BALANCE  = 202157,
+    SPELL_DRUID_FERAL_AFFINITY_RESTO    = 197490,
+    SPELL_DRUID_FERAL_AFFINITY_TANK     = 202155
+};
+
+enum GuardianAffinitySpells
+{
+    SPELL_DRUID_GUARDIAN_AFFINITY_RESTO = 197491,
+    SPELL_DRUID_GUARDIAN_AFFINITY_DPS   = 217615,
+
+    SPELL_DRUID_THICK_HIDE              = 16931,
+    SPELL_DRUID_MANGLE                  = 33917,
+    SPELL_DRUID_THRASH_BEAR             = 106832,
+    SPELL_DRUID_IRON_FUR                = 192081,
+    SPELL_DRUID_FRENZIED_REGENERATION   = 22842
+};
+
+enum RestorationAffinitySpells
+{
+    SPELL_DRUID_RESTORATION_AFFINITY    = 197492
+};
+
 // 210706 - Gore 7.3.5
  class spell_dru_gore : public AuraScript
  {
@@ -107,7 +144,7 @@ enum GoreSpells
     }
  };
 
-// Thrash (Bear Form) - 77758
+// Thrash (Bear Form) - 77758, 106832
 class spell_dru_thrash_bear : public SpellScript
 {
     PrepareSpellScript(spell_dru_thrash_bear);
@@ -274,6 +311,7 @@ class spell_dru_efflorescence_heal : public SpellScript
 
         if (targets.size() > 3)
             targets.resize(3);
+
     }
 
     void Register() override
@@ -522,119 +560,95 @@ public:
     }
 };
 
-enum BalanceAffinitySpells
-{
-    SPELL_DRUID_STARSURGE     = 78674,
-    SPELL_DRUID_SUNFIRE       = 93402,
-    SPELL_DRUID_LUNAR_STRIKE  = 194153,
-    SPELL_DRUID_SOLAR_WRATH   = 190984
-};
-
 // Balance Affinity (Feral, Guardian) - 197488
-// @Version : 7.1.0.22908
-class spell_dru_balance_affinity_dps : public SpellScriptLoader
+class aura_dru_balance_affinity_dps : public AuraScript
 {
-public:
-    spell_dru_balance_affinity_dps() : SpellScriptLoader("spell_dru_balance_affinity_dps") {}
+    PrepareAuraScript(aura_dru_balance_affinity_dps);
 
-    class spell_dru_balance_affinity_dps_AuraScript : public AuraScript
+    const std::vector<uint32> LearnedSpells =
     {
-        PrepareAuraScript(spell_dru_balance_affinity_dps_AuraScript);
-
-        void LearnSpells(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (Player* player = caster->ToPlayer())
-            {
-                player->AddTemporarySpell(SPELL_DRUID_MOONKIN_FORM);
-                player->AddTemporarySpell(SPELL_DRUID_STARSURGE);
-                player->AddTemporarySpell(SPELL_DRUID_LUNAR_STRIKE);
-                player->AddTemporarySpell(SPELL_DRUID_SOLAR_WRATH);
-                player->AddTemporarySpell(SPELL_DRUID_SUNFIRE);
-            }
-        }
-
-        void UnlearnSpells(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (Player* player = caster->ToPlayer())
-            {
-                player->RemoveTemporarySpell(SPELL_DRUID_MOONKIN_FORM);
-                player->RemoveTemporarySpell(SPELL_DRUID_STARSURGE);
-                player->RemoveTemporarySpell(SPELL_DRUID_LUNAR_STRIKE);
-                player->RemoveTemporarySpell(SPELL_DRUID_SOLAR_WRATH);
-                player->RemoveTemporarySpell(SPELL_DRUID_SUNFIRE);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectRemove += AuraEffectRemoveFn(spell_dru_balance_affinity_dps_AuraScript::UnlearnSpells, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            OnEffectApply += AuraEffectApplyFn(spell_dru_balance_affinity_dps_AuraScript::LearnSpells, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        }
+        SPELL_DRUID_ASTRAL_INFLUENCE,
+        SPELL_DRUID_MOONKIN_FORM_TALENT,
+        SPELL_DRUID_STARSURGE,
+        SPELL_DRUID_LUNAR_STRIKE,
+        SPELL_DRUID_SOLAR_WRATH,
+        SPELL_DRUID_SUNFIRE
     };
 
-    AuraScript* GetAuraScript() const override
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        return new spell_dru_balance_affinity_dps_AuraScript();
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Feral or Guardian specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR))
+            for (uint32 spellId : LearnedSpells)
+                target->LearnSpell(spellId, false);
+    }
+
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Feral or Guardian specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR))
+            for (uint32 spellId : LearnedSpells)
+                target->RemoveSpell(spellId);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_balance_affinity_dps::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_balance_affinity_dps::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
 // Balance Affinity (Restoration) - 197632
-// @Version : 7.1.0.22908
-class spell_dru_balance_affinity_resto : public SpellScriptLoader
+class aura_dru_balance_affinity_resto : public AuraScript
 {
-public:
-    spell_dru_balance_affinity_resto() : SpellScriptLoader("spell_dru_balance_affinity_resto") {}
+    PrepareAuraScript(aura_dru_balance_affinity_resto);
 
-    class spell_dru_balance_affinity_resto_AuraScript : public AuraScript
+    const std::vector<uint32> LearnedSpells =
     {
-        PrepareAuraScript(spell_dru_balance_affinity_resto_AuraScript);
-
-        void LearnSpells(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (Player* player = caster->ToPlayer())
-            {
-                player->AddTemporarySpell(SPELL_DRUID_MOONKIN_FORM);
-                player->AddTemporarySpell(SPELL_DRUID_STARSURGE);
-                player->AddTemporarySpell(SPELL_DRUID_LUNAR_STRIKE);
-            }
-        }
-
-        void UnlearnSpells(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (Player* player = caster->ToPlayer())
-            {
-                player->RemoveTemporarySpell(SPELL_DRUID_MOONKIN_FORM);
-                player->RemoveTemporarySpell(SPELL_DRUID_STARSURGE);
-                player->RemoveTemporarySpell(SPELL_DRUID_LUNAR_STRIKE);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectRemove += AuraEffectRemoveFn(spell_dru_balance_affinity_resto_AuraScript::UnlearnSpells, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            OnEffectApply += AuraEffectApplyFn(spell_dru_balance_affinity_resto_AuraScript::LearnSpells, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        }
+        SPELL_DRUID_ASTRAL_INFLUENCE,
+        SPELL_DRUID_MOONKIN_FORM_TALENT,
+        SPELL_DRUID_STARSURGE,
+        SPELL_DRUID_LUNAR_STRIKE
     };
 
-    AuraScript* GetAuraScript() const override
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        return new spell_dru_balance_affinity_resto_AuraScript();
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Restoration specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
+            for (uint32 spellId : LearnedSpells)
+                target->LearnSpell(spellId, false);
+    }
+
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Restoration specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION)
+            for (uint32 spellId : LearnedSpells)
+                target->RemoveSpell(spellId);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_balance_affinity_resto::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_balance_affinity_resto::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -1587,9 +1601,9 @@ public:
 };
 
 // Ysera's Gift - 145108
-class spell_dru_ysera_gift : public AuraScript
+class aura_dru_ysera_gift : public AuraScript
 {
-    PrepareAuraScript(spell_dru_ysera_gift);
+    PrepareAuraScript(aura_dru_ysera_gift);
 
     void HandleEffectPeriodic(AuraEffect const* aurEff)
     {
@@ -1610,7 +1624,7 @@ class spell_dru_ysera_gift : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_dru_ysera_gift::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_dru_ysera_gift::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
 };
 
@@ -1620,57 +1634,42 @@ enum RakeSpells
 };
 
 // Rake - 1822
-// @Version : 7.1.0.22908
-class spell_dru_rake : public SpellScriptLoader
+class spell_dru_rake : public SpellScript
 {
-public:
-    spell_dru_rake() : SpellScriptLoader("spell_dru_rake") { }
+    PrepareSpellScript(spell_dru_rake);
 
-    class spell_dru_rake_SpellScript : public SpellScript
+    bool Load() override
     {
-        PrepareSpellScript(spell_dru_rake_SpellScript);
+        Unit* caster = GetCaster();
+        if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
+            m_stealthed = true;
 
-    public:
-        spell_dru_rake_SpellScript()
-        {
-            _stealthed = false;
-        }
-
-    private:
-        bool _stealthed;
-
-        bool Load() override
-        {
-            Unit* caster = GetCaster();
-            if (caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
-                _stealthed = true;
-            return true;
-        }
-
-        void HandleOnHit(SpellEffIndex /*effIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetExplTargetUnit();
-            if (!caster || !target)
-                return;
-
-            if (this->_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE))
-            {
-                SetHitDamage(GetHitDamage() * 2);
-                caster->CastSpell(target, SPELL_DRUID_RAKE_STUN, true);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_dru_rake_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dru_rake_SpellScript();
+        return true;
     }
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetExplTargetUnit();
+        if (!caster || !target)
+            return;
+
+        // While stealthed or have Incarnation: King of the Jungle aura, deal 100% increased damage
+        if (m_stealthed || caster->HasAura(SPELL_DRUID_INCARNATION_KING_OF_JUNGLE))
+            SetHitDamage(GetHitDamage() * 2);
+
+        // Only stun if the caster was in stealth
+        if (m_stealthed)
+            caster->CastSpell(target, SPELL_DRUID_RAKE_STUN, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dru_rake::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+
+private:
+    bool m_stealthed = false;
 };
 
 enum MaimSpells
@@ -1977,8 +1976,9 @@ public:
     }
 };
 
-// 24858  Moonkin Form
-// 102560 Chosen of Elune
+// Moonkin Form - 24858
+// Chosen of Elune - 102560
+// Moonkin Form (Balance Affinity talent) - 197625
 class aura_dru_astral_form : public AuraScript
 {
     PrepareAuraScript(aura_dru_astral_form);
@@ -1991,6 +1991,10 @@ class aura_dru_astral_form : public AuraScript
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
+
+        if (target->HasAura(SPELL_DRUID_MOONKIN_FORM) || target->HasAura(SPELL_DRUID_MOONKIN_FORM_TALENT))
+            target->SetDisplayId(target->GetModelForForm(FORM_MOONKIN_FORM));
+
         if (target->HasAura(SPELL_DRUID_GLYPH_OF_STARS))
         {
             target->SetDisplayId(target->GetNativeDisplayId());
@@ -2006,6 +2010,7 @@ class aura_dru_astral_form : public AuraScript
         if (target->HasAura(SPELL_DRUID_MOONKIN_FORM) || target->HasAura(SPELL_DRUID_CHOSEN_OF_ELUNE))
             return;
 
+        target->SetDisplayId(target->GetNativeDisplayId());
         target->RemoveAura(sSpellMgr->GetSpellInfo(SPELL_DRUID_GLYPH_OF_STARS)->GetEffect(EFFECT_0)->BasePoints);
         target->RemoveAura(SPELL_DRUID_BLUE_COLOR);
         target->RemoveAura(SPELL_DRUID_SHADOWY_GHOST);
@@ -2016,6 +2021,7 @@ class aura_dru_astral_form : public AuraScript
         switch (m_scriptSpellId)
         {
             case SPELL_DRUID_MOONKIN_FORM:
+            case SPELL_DRUID_MOONKIN_FORM_TALENT:
                 AfterEffectApply += AuraEffectApplyFn(aura_dru_astral_form::AfterApply, EFFECT_1, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
                 AfterEffectRemove += AuraEffectRemoveFn(aura_dru_astral_form::AfterRemove, EFFECT_1, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
                 break;
@@ -2029,7 +2035,7 @@ class aura_dru_astral_form : public AuraScript
     }
 };
 
-// 197492 - Restoration Affinity
+// Restoration Affinity - 197492
 class aura_dru_restoration_affinity : public AuraScript
 {
     PrepareAuraScript(aura_dru_restoration_affinity);
@@ -2044,16 +2050,22 @@ class aura_dru_restoration_affinity : public AuraScript
 
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->LearnSpell(spellId, false);
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        for (uint32 spellId : LearnedSpells)
+            target->LearnSpell(spellId, false);
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
-            for (uint32 spellId : LearnedSpells)
-                target->RemoveSpell(spellId);
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        for (uint32 spellId : LearnedSpells)
+            target->RemoveSpell(spellId);
     }
 
     void Register() override
@@ -2063,10 +2075,10 @@ class aura_dru_restoration_affinity : public AuraScript
     }
 };
 
-// 202157 - Feral Affinity
-class aura_dru_feral_affinity : public AuraScript
+// Feral Affinity (Balance, Restoration) - 202157, 197490
+class aura_dru_feral_affinity_resto : public AuraScript
 {
-    PrepareAuraScript(aura_dru_feral_affinity);
+    PrepareAuraScript(aura_dru_feral_affinity_resto);
 
     const std::vector<uint32> LearnedSpells =
     {
@@ -2080,29 +2092,42 @@ class aura_dru_feral_affinity : public AuraScript
 
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Balance or Restoration specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
             for (uint32 spellId : LearnedSpells)
                 target->LearnSpell(spellId, false);
+        }
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Balance or Restoration specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
     }
 
     void Register() override
     {
-        AfterEffectApply += AuraEffectApplyFn(aura_dru_feral_affinity::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_feral_affinity::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_feral_affinity_resto::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_feral_affinity_resto::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
-// 202155 - Feral Affinity
-class aura_dru_feral_affinity_bear : public AuraScript
+// Feral Affinity (Guardian) - 202155
+class aura_dru_feral_affinity_tank : public AuraScript
 {
-    PrepareAuraScript(aura_dru_feral_affinity_bear);
+    PrepareAuraScript(aura_dru_feral_affinity_tank);
 
     const std::vector<uint32> LearnedSpells =
     {
@@ -2115,25 +2140,32 @@ class aura_dru_feral_affinity_bear : public AuraScript
 
     void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
-        {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was really in Guardian specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR)
             for (uint32 spellId : LearnedSpells)
                 target->LearnSpell(spellId, false);
-        }
-            
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
-        if (Player* target = GetTarget()->ToPlayer())
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was really in Guardian specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_BEAR)
             for (uint32 spellId : LearnedSpells)
                 target->RemoveSpell(spellId);
     }
 
     void Register() override
     {
-        AfterEffectApply += AuraEffectApplyFn(aura_dru_feral_affinity_bear::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_feral_affinity_bear::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_feral_affinity_tank::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_feral_affinity_tank::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
     }
 };
 
@@ -2503,6 +2535,97 @@ private:
     int32 m_casterLevel;
 };
 
+// Guardian Affinity (Balance, Restoration) - 197491
+class aura_dru_guardian_affinity_resto : public AuraScript
+{
+    PrepareAuraScript(aura_dru_guardian_affinity_resto);
+
+    const std::vector<uint32> LearnedSpells =
+    {
+        SPELL_DRUID_THICK_HIDE,
+        SPELL_DRUID_MANGLE,
+        SPELL_DRUID_THRASH_BEAR,
+        SPELL_DRUID_IRON_FUR,
+        SPELL_DRUID_FRENZIED_REGENERATION
+    };
+
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was really in Balance or Restoration specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
+            for (uint32 spellId : LearnedSpells)
+                target->LearnSpell(spellId, false);
+    }
+
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was really in Balance or Restoration specialization
+        if ((target->GetSpecializationId() == TALENT_SPEC_DRUID_BALANCE) ||
+            (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
+            for (uint32 spellId : LearnedSpells)
+                target->RemoveSpell(spellId);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_guardian_affinity_resto::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_guardian_affinity_resto::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// Guardian Affinity (Feral) - 217615
+class aura_dru_guardian_affinity_dps : public AuraScript
+{
+    PrepareAuraScript(aura_dru_guardian_affinity_dps);
+
+    const std::vector<uint32> LearnedSpells =
+    {
+        SPELL_DRUID_THICK_HIDE,
+        SPELL_DRUID_MANGLE,
+        SPELL_DRUID_IRON_FUR,
+        SPELL_DRUID_FRENZIED_REGENERATION
+    };
+
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Feral specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT)
+            for (uint32 spellId : LearnedSpells)
+                target->LearnSpell(spellId, false);
+    }
+
+    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* target = GetTarget()->ToPlayer();
+        if(!target)
+            return;
+
+        // Check if the target was in Feral specialization
+        if (target->GetSpecializationId() == TALENT_SPEC_DRUID_CAT)
+            for (uint32 spellId : LearnedSpells)
+                target->RemoveSpell(spellId);
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(aura_dru_guardian_affinity_dps::AfterApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(aura_dru_guardian_affinity_dps::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Spells Scripts
@@ -2515,8 +2638,8 @@ void AddSC_druid_spell_scripts()
     new spell_dru_lifebloom();
     new spell_dru_berserk();
     new spell_dru_sunfire();
-    new spell_dru_balance_affinity_dps();
-    new spell_dru_balance_affinity_resto();
+    RegisterAuraScript(aura_dru_balance_affinity_dps);
+    RegisterAuraScript(aura_dru_balance_affinity_resto);
     RegisterSpellScript(spell_dru_ferocious_bite);
     new spell_dru_dash();
     new spell_dru_savage_roar();
@@ -2537,8 +2660,8 @@ void AddSC_druid_spell_scripts()
     new spell_dru_killer_instinct();
     new spell_dru_living_seed();
     new spell_dru_infected_wound();
-    RegisterAuraScript(spell_dru_ysera_gift);
-    new spell_dru_rake();
+    RegisterAuraScript(aura_dru_ysera_gift);
+    RegisterSpellScript(spell_dru_rake);
     RegisterSpellScript(spell_dru_maim);
     new spell_dru_rip();
     new spell_dru_bloodtalons();
@@ -2549,6 +2672,8 @@ void AddSC_druid_spell_scripts()
     RegisterSpellScript(spell_dru_brutal_slash);
     RegisterSpellScript(spell_dru_thrash_cat);
     RegisterSpellScript(spell_dru_shred);
+    RegisterAuraScript(aura_dru_guardian_affinity_resto);
+    RegisterAuraScript(aura_dru_guardian_affinity_dps);
 
     RegisterSpellScript(spell_dru_thrash_bear);
     RegisterAuraScript(aura_dru_thrash_bear);

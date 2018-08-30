@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -26418,6 +26418,14 @@ void Player::ResyncRunes() const
         data.Runes.Cooldowns.push_back(uint8((baseCd - float(GetRuneCooldown(i))) / baseCd * 255));
 
     GetSession()->SendPacket(data.Write());
+}
+
+void Player::AddRunePower(uint8 index) const
+{
+    WorldPackets::Spells::AddRunePower addrunePower;
+    addrunePower.AddedRunesMask = (index);
+
+    GetSession()->SendPacket(addrunePower.Write());
 }
 
 void Player::InitRunes()

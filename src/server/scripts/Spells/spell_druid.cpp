@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
@@ -2101,7 +2101,6 @@ class aura_dru_feral_affinity_resto : public AuraScript
             (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
             for (uint32 spellId : LearnedSpells)
                 target->LearnSpell(spellId, false);
-        }
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
@@ -2683,8 +2682,8 @@ void AddSC_druid_spell_scripts()
     RegisterAuraScript(aura_dru_lunar_empowerment);
     RegisterAuraScript(aura_dru_astral_form);
     RegisterAuraScript(aura_dru_restoration_affinity);
-    RegisterAuraScript(aura_dru_feral_affinity);
-    RegisterAuraScript(aura_dru_feral_affinity_bear);
+    RegisterAuraScript(aura_dru_feral_affinity_resto);
+    RegisterAuraScript(aura_dru_feral_affinity_tank);
     RegisterAuraScript(aura_dru_frenzied_regeneration);
 
     // AreaTrigger Scripts

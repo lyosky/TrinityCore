@@ -26,6 +26,7 @@ WorldPacket const* WorldPackets::CombatLog::SpellNonMeleeDamageLog::Write()
     *this << int32(SpellID);
     *this << int32(SpellXSpellVisualID);
     *this << int32(Damage);
+    *this << uint32(0); // unknown 8.0.1
     *this << int32(Overkill);
     *this << uint8(SchoolMask);
     *this << int32(Absorbed);
@@ -121,6 +122,7 @@ WorldPacket const* WorldPackets::CombatLog::SpellHealLog::Write()
     *this << int32(Health);
     *this << int32(OverHeal);
     *this << int32(Absorbed);
+    *this << uint32(0); // unk 801
     WriteBit(Crit);
     WriteBit(CritRollMade.is_initialized());
     WriteBit(CritRollNeeded.is_initialized());
@@ -155,6 +157,7 @@ WorldPacket const* WorldPackets::CombatLog::SpellPeriodicAuraLog::Write()
     {
         *this << int32(effect.Effect);
         *this << int32(effect.Amount);
+        *this << uint32(0); // unk 801
         *this << int32(effect.OverHealOrKill);
         *this << int32(effect.SchoolMaskOrPower);
         *this << int32(effect.AbsorbedOrAmplitude);

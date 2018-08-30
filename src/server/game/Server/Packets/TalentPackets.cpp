@@ -32,8 +32,10 @@ WorldPacket const* WorldPackets::Talent::UpdateTalentData::Write()
         for (uint16 talentID : talentGroupInfo.TalentIDs)
             _worldPacket << uint16(talentID);
 
-        for (uint16 talentID : talentGroupInfo.PvPTalentIDs)
+        for (uint16 talentID : talentGroupInfo.PvPTalentIDs) {
             _worldPacket << uint16(talentID);
+            _worldPacket << uint8(0); // unk 801
+        }
     }
 
     return &_worldPacket;

@@ -133,7 +133,7 @@ void Object::_Create(ObjectGuid const& guid)
     if (!m_uint32Values) _InitValues();
 
     SetGuidValue(OBJECT_FIELD_GUID, guid);
-    SetUInt16Value(OBJECT_FIELD_TYPE, 0, m_objectType);
+    //SetUInt16Value(OBJECT_FIELD_TYPE, 0, m_objectType);
 }
 
 std::string Object::_ConcatFields(uint16 startIndex, uint16 size) const
@@ -244,10 +244,47 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) c
         if (unit->GetVictim())
             flags |= UPDATEFLAG_HAS_TARGET;
 
+
+    uint8 advertisedTypeId = GetTypeId();
+    if(advertisedTypeId == TYPEID_PLAYER) //sandbox it, boys.
+        advertisedTypeId = TYPEID_ACTIVEPLAYER;
+
+    uint32 typeMask = TYPEMASK_OBJECT;
+    switch(advertisedTypeId) {
+        case TYPEID_ITEM:
+            typeMask = TYPEMASK_ITEM | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_CONTAINER:
+            typeMask = TYPEMASK_CONTAINER | TYPEMASK_ITEM | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_UNIT:
+            typeMask = TYPEMASK_UNIT | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_PLAYER:
+            typeMask = TYPEMASK_PLAYER | TYPEMASK_UNIT | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_ACTIVEPLAYER:
+            typeMask = TYPEMASK_ACTIVEPLAYER | TYPEMASK_PLAYER | TYPEMASK_UNIT | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_GAMEOBJECT:
+            typeMask = TYPEMASK_GAMEOBJECT | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_AREATRIGGER:
+            typeMask = TYPEMASK_AREATRIGGER | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_CORPSE:
+            typeMask = TYPEMASK_CORPSE | TYPEMASK_OBJECT;
+            break;
+        case TYPEID_DYNAMICOBJECT:
+            typeMask = TYPEMASK_DYNAMICOBJECT | TYPEMASK_OBJECT;
+            break;
+    }
+
     ByteBuffer buf(0x400);
     buf << uint8(updateType);
     buf << GetGUID();
-    buf << uint8(m_objectTypeId);
+    buf << uint8(advertisedTypeId);
+    buf << uint32(typeMask); // heirFlags
 
     BuildMovementUpdate(&buf, flags);
     BuildValuesUpdate(updateType, &buf, target);
@@ -933,12 +970,15 @@ uint32 Object::GetUpdateFieldData(Player const* target, uint32*& flags) const
     {
         case TYPEID_ITEM:
         case TYPEID_CONTAINER:
+        case TYPEID_AZERITEEMPOWEREDITEM:
+        case TYPEID_AZERITEITEM:
             flags = ItemUpdateFieldFlags;
             if (((Item const*)this)->GetOwnerGUID() == target->GetGUID())
                 visibleFlag |= UF_FLAG_OWNER | UF_FLAG_ITEM_OWNER;
             break;
         case TYPEID_UNIT:
         case TYPEID_PLAYER:
+        case TYPEID_ACTIVEPLAYER:
         {
             Player* plr = ToUnit()->GetCharmerOrOwnerPlayerOrPlayerItself();
             flags = UnitUpdateFieldFlags;

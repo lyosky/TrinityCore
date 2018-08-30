@@ -14147,8 +14147,8 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
             // FIXME: Some values at server stored in float format but must be sent to client in uint32 format
             // there are some float values which may be negative or can't get negative due to other checks
             else if ((index >= UNIT_FIELD_NEGSTAT && index < UNIT_FIELD_NEGSTAT + MAX_STATS) ||
-                (index >= UNIT_FIELD_RESISTANCES && index < (UNIT_FIELD_RESISTANCES + MAX_SPELL_SCHOOL)) ||
-                (index >= UNIT_FIELD_BONUS_RESISTANCE_MODS && index < (UNIT_FIELD_BONUS_RESISTANCE_MODS + MAX_SPELL_SCHOOL)) ||
+                (index >= UNIT_FIELD_RESISTANCES  && index < (UNIT_FIELD_RESISTANCES + MAX_SPELL_SCHOOL)) ||
+                (index >= UNIT_FIELD_BONUS_RESISTANCE_MODS  && index < (UNIT_FIELD_BONUS_RESISTANCE_MODS + MAX_SPELL_SCHOOL)) ||
                 (index >= UNIT_FIELD_POSSTAT && index < UNIT_FIELD_POSSTAT + MAX_STATS))
             {
                 *data << uint32(m_floatValues[index]);

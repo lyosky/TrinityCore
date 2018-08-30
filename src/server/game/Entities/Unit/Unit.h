@@ -1566,10 +1566,10 @@ class TC_GAME_API Unit : public WorldObject
         int32 GetMaxNegativeAuraModifierByAffectMask(AuraType auratype, SpellInfo const* affectedSpell) const;
         int32 GetTotalSpellPowerValue(SpellSchoolMask mask, bool heal) const;
 
-        float GetResistanceBuffMods(SpellSchools school, bool positive) const;
-        void SetResistanceBuffMods(SpellSchools school, bool positive, float val);
-        void ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply);
-        void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply);
+        float GetResistanceBuffMods(SpellSchools school) const;
+        void SetResistanceBuffMods(SpellSchools school, float val);
+        void ApplyResistanceBuffModsMod(SpellSchools school, float val, bool apply);
+        void ApplyResistanceBuffModsPercentMod(SpellSchools school, float val, bool apply);
         void InitStatBuffMods();
         void ApplyStatBuffMod(Stats stat, float val, bool apply);
         void ApplyStatPercentBuffMod(Stats stat, float val, bool apply);

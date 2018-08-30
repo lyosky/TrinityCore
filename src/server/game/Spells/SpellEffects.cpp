@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -5765,9 +5765,8 @@ void Spell::EffectLearnGarrisonBuilding(SpellEffIndex /*effIndex*/)
     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
         return;
 
-<<<<<<< HEAD
     if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison(GARRISON_TYPE_GARRISON))
-        garrison->ToWodGarrison()->LearnBlueprint(GetEffect(effIndex)->MiscValue);
+        garrison->ToWodGarrison()->LearnBlueprint(effectInfo->MiscValue);
 }
 
 void Spell::EffectGrip(SpellEffIndex /*effIndex*/)
@@ -5782,10 +5781,6 @@ void Spell::EffectGrip(SpellEffIndex /*effIndex*/)
         m_caster->GetMotionMaster()->MoveJump(worldObject->GetPosition(), 63.0f, 3.75f, m_spellInfo->Id);
     else if (Unit* target = m_targets.GetUnitTarget())
         m_caster->GetMotionMaster()->MoveJump(target->GetPosition(), 63.0f, 3.75f, m_spellInfo->Id);
-=======
-    if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison())
-        garrison->LearnBlueprint(effectInfo->MiscValue);
->>>>>>> upstream/master
 }
 
 void Spell::EffectCreateGarrison(SpellEffIndex /*effIndex*/)
@@ -5818,12 +5813,9 @@ void Spell::EffectAddGarrisonFollower(SpellEffIndex /*effIndex*/)
     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
         return;
 
-<<<<<<< HEAD
-    unitTarget->ToPlayer()->AddGarrisonFollower(GetEffect(effIndex)->MiscValue);
-=======
-    if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison())
+    if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison(GARRISON_TYPE_GARRISON))
         garrison->AddFollower(effectInfo->MiscValue);
->>>>>>> upstream/master
+
 }
 
 void Spell::EffectCreateHeirloomItem(SpellEffIndex effIndex)
@@ -5854,13 +5846,8 @@ void Spell::EffectActivateGarrisonBuilding(SpellEffIndex /*effIndex*/)
     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
         return;
 
-<<<<<<< HEAD
     if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison(GARRISON_TYPE_GARRISON))
-        garrison->ToWodGarrison()->ActivateBuilding(GetEffect(effIndex)->MiscValue);
-=======
-    if (Garrison* garrison = unitTarget->ToPlayer()->GetGarrison())
-        garrison->ActivateBuilding(effectInfo->MiscValue);
->>>>>>> upstream/master
+        garrison->ToWodGarrison()->ActivateBuilding(effectInfo->MiscValue);
 }
 
 void Spell::EffectHealBattlePetPct(SpellEffIndex /*effIndex*/)

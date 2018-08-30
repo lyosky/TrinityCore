@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1364,8 +1364,8 @@ void Spell::DoCreateItem(uint32 /*i*/, uint32 itemtype, uint8 context /*= 0*/, s
     }
 
     // Archaeology research project
-    if (player->GetArchaeologyMgr().IsCurrentArtifactSpell(m_spellInfo->Id))
-        player->GetArchaeologyMgr().CompleteArtifact(m_spellInfo->Id);
+    //if (player->GetArchaeologyMgr().IsCurrentArtifactSpell(m_spellInfo->Id))
+    //    player->GetArchaeologyMgr().CompleteArtifact(m_spellInfo->Id);
 
     // bg reward have some special in code work
     uint32 bgType = 0;
@@ -4085,7 +4085,7 @@ void Spell::EffectSummonObject(SpellEffIndex effIndex)
 }
 
 void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
-{
+{/*
     if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT)
         return;
 
@@ -4216,6 +4216,7 @@ void Spell::EffectSummonSurveyTools(SpellEffIndex /*effIndex*/)
             m_caster->m_ObjectSlot[1] = go->GetGUID();
         }
     }
+    */
 }
 
 void Spell::EffectResurrect(SpellEffIndex effIndex)

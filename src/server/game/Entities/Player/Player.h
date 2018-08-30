@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -2540,7 +2540,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void DeleteFromPlayerPetDataStore(uint32 petNumber);
         void AddToPlayerPetDataStore(PlayerPetData* playerPetData);
 
-        ArchaeologyPlayerMgr& GetArchaeologyMgr() { return m_archaeologyPlayerMgr; }
+        //ArchaeologyPlayerMgr& GetArchaeologyMgr() { return m_archaeologyPlayerMgr; }
 		
         bool MeetPlayerCondition(uint32 conditionId) const;
 				
@@ -2950,7 +2950,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         bool _usePvpItemLevels;
 
-        ArchaeologyPlayerMgr m_archaeologyPlayerMgr;
+        //ArchaeologyPlayerMgr m_archaeologyPlayerMgr;
 };
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);

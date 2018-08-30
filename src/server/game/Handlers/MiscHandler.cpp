@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1113,7 +1113,7 @@ void WorldSession::SendLoadCUFProfiles()
 }
 
 void WorldSession::HandleResearchHistory(WorldPackets::Misc::ResearchHistory& /*resHistory*/)
-{
+{/*
     Player* player = GetPlayer();
     ArchaeologyHistoryMap history = player->GetArchaeologyMgr().GetHistory();
 
@@ -1129,7 +1129,7 @@ void WorldSession::HandleResearchHistory(WorldPackets::Misc::ResearchHistory& /*
         rHistory.ResearchHistory.push_back(rHistory.researchHistory);
     }
 
-    SendPacket(rHistory.Write());
+    SendPacket(rHistory.Write());*/
 }
 
 void WorldSession::HandleSetAdvancedCombatLogging(WorldPackets::ClientConfig::SetAdvancedCombatLogging& setAdvancedCombatLogging)

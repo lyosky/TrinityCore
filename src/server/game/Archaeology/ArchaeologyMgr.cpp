@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
     uint16 selectProject = 0;
     uint32 count = 0;
     std::vector<uint16> BranchProjects;
-
+/*
     for(uint32 i = 0; i < 9; ++i)
         if (player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
             count = i + 1;
@@ -110,12 +110,13 @@ void ArchaeologyMgr::InitBranch(Player* player, uint32 currencyId)
         selectProject = BranchProjects[urand(0, BranchProjects.size()-1)];
         player->SetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + count / 2, count % 2, selectProject);
         BranchProjects.clear();
-    }
+    }*/
 }
 
 void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 {
     std::vector<uint16> SitesInMap;
+    /*
     std::vector<uint32> digsites = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
 
     for(DigsitesMap::iterator itr = mResearchDigsitesMap.begin(); itr != mResearchDigsitesMap.end(); ++itr)
@@ -162,9 +163,9 @@ void ArchaeologyMgr::ChangeDigsite(Player* player, uint8 memId)
 
         player->GetArchaeologyMgr().SetDigsitePosition(i, 0, 0, 0);
     }
-
+   
     tempContainer.clear();
-
+    */
     SitesInMap.clear();
 }
 
@@ -197,7 +198,7 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
 
     if (!SitesInMap.size())
         return;
-
+    /*
     for(uint32 addedsites = 0; addedsites < 4; ++addedsites)
     {
         bool isActiveDigsite = false;
@@ -224,14 +225,14 @@ void ArchaeologyMgr::AddDigsitesToMap(Player* player, uint32 mapId)
         player->AddDynamicValue(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE_PROGRESS, 0);
         ++count;
     }
-
+    */
     SitesInMap.clear();
 }
 
 bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
 {
     for(uint32 i=0; i < 9; ++i)
-    {
+    {/*
         if (player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2))
         {
             uint16 projectId = player->GetUInt16Value(PLAYER_FIELD_RESEARCHING_1 + i / 2, i % 2);
@@ -240,13 +241,13 @@ bool ArchaeologyMgr::IsActiveBranch(Player* player, uint32 currencyId)
 
             if (ab->CurrencyId == currencyId)
                 return true;
-        }
+        }*/
     }
     return false;
 }
 
 void ArchaeologyMgr::GenerateRandomPosition(Player* player, uint8 count)
-{
+{/*
     float x, y, z;
     Position treasurePos = player->GetPosition();
     uint8 memId = player->GetArchaeologyMgr().GetDigsite(player->GetPositionX(), player->GetPositionY());
@@ -259,7 +260,7 @@ void ArchaeologyMgr::GenerateRandomPosition(Player* player, uint8 count)
 
     //std::vector<uint32> const& site_now = player->GetDynamicValues(PLAYER_DYNAMIC_FIELD_RESEARCH_SITE);
 
-    player->GetArchaeologyMgr().SetDigsitePosition(memId, x, y, count);
+    player->GetArchaeologyMgr().SetDigsitePosition(memId, x, y, count);*/
 }
 
 int ArchaeologyMgr::GetCurrencyId(uint16 digsiteId)

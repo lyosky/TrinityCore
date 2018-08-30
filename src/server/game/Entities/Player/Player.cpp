@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -139,7 +139,7 @@ static uint32 copseReclaimDelay[MAX_DEATH_COUNT] = { 30, 60, 120 };
 
 uint64 const MAX_MONEY_AMOUNT = 99999999999ULL;
 
-Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeologyPlayerMgr(this)
+Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this)//, m_archaeologyPlayerMgr(this)
 {
     m_speakTime = 0;
     m_speakCount = 0;
@@ -18800,9 +18800,9 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
 
     _LoadCUFProfiles(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_CUF_PROFILES));
 
-    GetArchaeologyMgr().LoadArchaeologyDigSites(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_DIGSITES));
-    GetArchaeologyMgr().LoadArchaeologyBranchs(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_BRANCHS));
-    GetArchaeologyMgr().LoadArchaeologyHistory(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_HISTORY));
+    //GetArchaeologyMgr().LoadArchaeologyDigSites(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_DIGSITES));
+    //GetArchaeologyMgr().LoadArchaeologyBranchs(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_BRANCHS));
+    //GetArchaeologyMgr().LoadArchaeologyHistory(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_HISTORY));
 
     std::unique_ptr<WodGarrison> wodGarrison = Trinity::make_unique<WodGarrison>(this);
     if (wodGarrison->LoadFromDB())
@@ -20902,9 +20902,9 @@ void Player::SaveToDB(bool create /*=false*/)
     _SaveCurrency(trans);
     _SaveCUFProfiles(trans);
 
-    GetArchaeologyMgr().SaveArchaeologyDigSites(trans);
-    GetArchaeologyMgr().SaveArchaeologyBranchs(trans);
-    GetArchaeologyMgr().SaveArchaeologyHistory(trans);
+    //GetArchaeologyMgr().SaveArchaeologyDigSites(trans);
+    //GetArchaeologyMgr().SaveArchaeologyBranchs(trans);
+    //GetArchaeologyMgr().SaveArchaeologyHistory(trans);
 
     for (auto const& garrison : GetGarrisons())
         if (garrison.second)

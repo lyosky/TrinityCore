@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -548,7 +548,7 @@ void Player::UpdateLeechPercentage()
 {
     float value = GetTotalAuraModifier(SPELL_AURA_MOD_LEECH);
     value += GetRatingBonusValue(CR_LIFESTEAL);
-    SetFloatValue(PLAYER_LIFESTEAL, value);
+    //SetFloatValue(PLAYER_LIFESTEAL, value);
 }
 
 void Player::UpdateAllCritPercentages()

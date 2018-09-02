@@ -616,13 +616,9 @@ Facing: 4.793286
 
 
 // 103875 Malfurion Stormrage
-
-
     struct npc_malfurion_stormrage_103875 : public ScriptedAI
     {
         npc_malfurion_stormrage_103875(Creature* creature) : ScriptedAI(creature)  {}
-
-        void Reset() override { }
 
         void MoveInLineOfSight(Unit* who) override
         {
@@ -633,73 +629,74 @@ Facing: 4.793286
 
             Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
 
-            if (!player || player->IsGameMaster())
+            if (!player)
                 return;
 
-            if (player->HasQuest(QUEST_THE_DREAMWAY))
+            if (player->HasQuest(QUEST_THE_DREAMWAY) && player->GetQuestStatus(QUEST_THE_DREAMWAY) == QUEST_STATUS_INCOMPLETE)
             {
                 if (!player->GetQuestObjectiveData(QUEST_THE_DREAMWAY, 1))
                 {
-                    player->CastSpell(player, SPELL_ASSIGN_DRUID_SPELL_BAR, true);
+                    
                     player->CastSpell(player, SPELL_DRUID_ORDER_FORMATION, true);
+                    _scheduler.Schedule(Milliseconds(5000), [this, player](TaskContext context)
+                    {
+                        player->CastSpell(player, SPELL_ASSIGN_DRUID_SPELL_BAR, true);
+                    });
+
                 }
-                else  if (!player->GetQuestObjectiveData(QUEST_THE_DREAMWAY, 2))
+                else if (!player->GetQuestObjectiveData(QUEST_THE_DREAMWAY, 2))
                 {
                     player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_40644); // QUEST_THE_DREAMWAY storageIndex 2 KillCredit
                 }
             }
-            if(player->GetQuestStatus(QUEST_THE_DREAMWAY)== QUEST_STATUS_REWARDED)
+            if(player->GetQuestStatus(QUEST_THE_DREAMWAY) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_THE_DREAMWAY)== QUEST_STATUS_REWARDED)
                 player->RemoveAurasDueToSpell(SPELL_ASSIGN_DRUID_SPELL_BAR);
 
         }
-        void UpdateAI(uint32 /*diff*/) override { }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _scheduler.Update(diff);
+        }
 
         void sQuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_TO_THE_DREAMGROVE)
-            {
                 if(Creature * keeper_remulos= me->FindNearestCreature(NPC_KEEPER_REMULOS_101065,25.0f,true))
-                {
                     keeper_remulos->AI()->Talk(0);
-                }
-            }
         }
 
         void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             if (quest->GetQuestId() == QUEST_THE_DREAMWAY)
-            {
                 player->RemoveAurasDueToSpell(SPELL_ASSIGN_DRUID_SPELL_BAR);
+        }
+    private:
+        TaskScheduler _scheduler;
+    };
+    ///GUID 448291
+    struct npc_generic_bunny_quest_to_the_dreamgrove_59115 : public ScriptedAI
+    {
+        npc_generic_bunny_quest_to_the_dreamgrove_59115(Creature* creature) : ScriptedAI(creature) {  }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld())
+                return;
+            if (!me->IsWithinDist(who, 5.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (player->HasQuest(QUEST_TO_THE_DREAMGROVE) )
+            {
+                player->CastSpell(player, 200083, true);
+                player->TeleportTo(1540, 1508.42f, 1650.51f, 31.54f, 5.910209f);
             }
         }
     };
 
-    /*
-
-    ServerToClient: SMSG_QUEST_UPDATE_ADD_CREDIT (0x2A8B) Length: 15 ConnIdx: 1 Time: 09/07/2016 13:37:16.409 Number: 23866
-    VictimGUID: Full: 0x0
-    QuestID: 40645
-    ObjectID: 73451
-    Count: 1
-    Required: 1
-    ObjectiveType: 0
-    ServerToClient: SMSG_SPELL_GO (0x2C39) Length: 132 ConnIdx: 1 Time: 09/07/2016 13:37:16.409 Number: 23868
-    (Cast) CasterGUID: Full: 0x082118000000000000000000034F64BA Player/0 R2118/S0 Map: 0 Low: 55534778
-    (Cast) SpellID: 200083 (-Unknown-)
-    (Cast) TargetPointsCount: 0
-    (Cast) (Target) Flags: 66 (Unit, DestinationLocation)
-    (Cast) (Target) HasDstLocation: True
-    (Cast) (Target) HasOrientation: True
-    (Cast) (Target) hasMapID : True
-    (DstLocation) Location: X: 1508.42 Y: 1650.51 Z: 31.54
-    (Cast) (Target) Orientation: 5.910209
-    (Cast) (Target) MapID: 1540
-    (Cast) [0] HitTarget: Full: 0x082118000000000000000000034F64BA Player/0 R2118/S0 Map: 0 Low: 5553477
-    ---
-    Map: 1540 (-Unknown-)
-    Position: X: 1508.42 Y: 1650.51 Z: 31.54 O: 5.910209
-
-    */
     /*
     --  .go xyz 1695.939 1545.063 2.556631 1540
    1700.725 1547.835  2.549316
@@ -1192,13 +1189,10 @@ Facing: 4.793286
                     ///The weapons of the first druids can surely turn the tide in our favor, but is there anyone with the strength to wield them?
                     ///103626 There is no one better suited for this task than $n.
                     ///Very well, your task will not be easy but I shall do all that I can to aid you.
-                }
-                
-            }
-                
-
-
+                }              
+            }              
         }
+
         void UpdateAI(uint32 diff) override
         {
             _scheduler.Update(diff);
@@ -1248,7 +1242,6 @@ Facing: 4.793286
             player->CastSpell(player, SPELL_WEAPONS_OF_LEGEND_PLAYER_CHOICE, true);
         }
         
-
     private:
         TaskScheduler _scheduler;
         std::set<ObjectGuid> pList;
@@ -1269,17 +1262,11 @@ Facing: 4.793286
             
             TC_LOG_ERROR("server.worldserver", "druid_playerchoice %u, %u", choiceId, responseId);
             if (player->HasQuest(QUEST_WEAPONS_OF_LEGEND))
-            {
                 player->KilledMonsterCredit(101296);
-            }
             if (player->HasQuest(QUEST_ANOTHER_WEAPON_OF_OLD))
-            {
                 player->KilledMonsterCredit(112077);
-            }
             if (player->HasQuest(QUEST_MORE_WEAPONS_OF_OLD)|| player->HasQuest(QUEST_WEAPONS_OF_THE_ANCIENTS))
-            {
                 player->KilledMonsterCredit(113814);
-            }
             switch (responseId)
             {
             case PLAYER_CHOICE_DRUID_BALANCE:
@@ -1859,6 +1846,7 @@ void AddSC_class_hall_druid()
     RegisterCreatureAI(npc_zentabra_103136);
     RegisterCreatureAI(npc_naralex_103133);
     RegisterCreatureAI(npc_malfurion_stormrage_103875);
+    RegisterCreatureAI(npc_generic_bunny_quest_to_the_dreamgrove_59115);
     new quest_to_the_dreamgrove();
     RegisterCreatureAI(npc_keeper_remulos_103489);
     RegisterCreatureAI(npc_keeper_remulos_103488);

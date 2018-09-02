@@ -313,11 +313,16 @@ struct npc_lady_liadrin_122065 : public ScriptedAI
             ///talk
             if (Creature* boros = me->FindNearestCreature(NPC_VINDICATOR_BOROS, 15.0f))
             {
-                boros->Say(133222, player);
+                boros->AI()->Talk(1);
             }
             _scheduler.Schedule(3s, 4s, [this, player](TaskContext context)
             {
-                me->Say(133221, player);
+                me->AI()->Talk(0);
+            });
+
+            _scheduler.Schedule(5s, 6s, [this, player](TaskContext context)
+            {
+                me->AI()->Talk(1);
             });
            
             m_playerGUID = ObjectGuid::Empty;
@@ -504,7 +509,7 @@ public:
                     player->PrepareQuestMenu(creature->GetGUID()); /* return true*/
                 SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());    
             }
-            else if (player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_INCOMPLETE )
+            else if (player->GetMapId()==1750 && (player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_INTO_THE_NIGHT) == QUEST_STATUS_REWARDED))
             {
                 //TC_LOG_ERROR("server.worldserver", "QUEST_INTO_THE_NIGHT OnGossipHello ");
                 ClearGossipMenuFor(player);

@@ -1877,8 +1877,8 @@ INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `Name`, `IconNa
 (269836, 5, 9008, '船只', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 
 */
 DELETE FROM `gameobject_template` WHERE (`entry`=269836);
-INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES 
-(269836, 5, 18810, '船只', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 27326);
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
+(269836, 43, 9008, '船只', '', '', 1, 1752, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26124); -- 269836
 
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=244989; -- 碎石
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=272208; -- 维迪卡尔
@@ -1991,4 +1991,18 @@ INSERT INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `P
 (32295, 1, 0, 0, 0, 0, 0, 0, 0, 133220, 0, 0, 0, 0, 0, 0, 0, 27326); -- 32295
 
 UPDATE `npc_text` SET `VerifiedBuild`=27326 WHERE `ID`=31708; -- 31708
+
+SET @GROUP_ID=0;
+SET @ID=0;
+DELETE FROM `creature_text` WHERE (`CreatureID`=121756 AND `GroupID`=@GROUP_ID+1 AND `ID`=@ID+0) OR (`CreatureID`=122065 AND `GroupID`=@GROUP_ID+1 AND `ID`=@ID+0) OR (`CreatureID`=122065 AND `GroupID`=@GROUP_ID+0 AND `ID`=@ID+0) ;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(121756, @GROUP_ID+1, @ID+0, '先知维伦很高兴你响应了他的召唤。德莱尼一直在盼着这一天。', 12, 0, 100, 0, 0, 87999, 133222, '守备官波鲁斯'),
+(122065, @GROUP_ID+1, @ID+0, '我们将一起见证军团走向末路。', 12, 0, 100, 0, 0, 0, 133220, '女伯爵莉亚德琳'),
+(122065, @GROUP_ID+0, @ID+0, '军团已经在艾泽拉斯肆虐太久了。该结束这一切了。', 12, 0, 100, 0, 0, 87183, 133221, '女伯爵莉亚德琳');
+
+DELETE FROM `creature_text_locale` WHERE ((`CreatureID`=121756 AND `GroupID`=@GROUP_ID+1 AND `ID`=@ID+0) OR (`CreatureID`=122065 AND `GroupID`=@GROUP_ID+1 AND `ID`=@ID+0) OR (`CreatureID`=122065 AND `GroupID`=@GROUP_ID+0 AND `ID`=@ID+0)) AND  (`locale`='zhCN') ;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Text`) VALUES
+(121756, @GROUP_ID+1, @ID+0, 'zhCN', '先知维伦很高兴你响应了他的召唤。德莱尼一直在盼着这一天。'),
+(122065, @GROUP_ID+1, @ID+0, 'zhCN', '我们将一起见证军团走向末路。'),
+(122065, @GROUP_ID+0, @ID+0, 'zhCN', '军团已经在艾泽拉斯肆虐太久了。该结束这一切了。');
 

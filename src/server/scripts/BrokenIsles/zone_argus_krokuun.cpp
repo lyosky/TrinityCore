@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -74,18 +74,17 @@ class spell_garothi_obliterator_fiery_mortars : public SpellScript
 #define GOSSIP_VEREESA_READY "I'm ready."
 enum
 {
-    QUEST_THE_HAND_OF_FATE = 47221,
-    KILLED_MONSTER_CREDIT_290124 = 121751,
-
-    QUEST_TWO_IF_BY_SEA = 47222,
-    KILLED_MONSTER_CREDIT_290157 = 121787,
+    QUEST_A_THE_HAND_OF_FATE = 47221,
+    QUEST_H_THE_HAND_OF_FATE = 47835,
+    KILLED_MONSTER_CREDIT_THE_HAND_OF_FATE = 121751,
+       
+    QUEST_A_TWO_IF_BY_SEA = 47222,   
     SPELL_TELEPORT_AZUREMYST_ISLE = 243270,
+    QUEST_H_TWO_IF_BY_SEA = 47867,
+    KILLED_MONSTER_CREDIT_TWO_IF_BY_SEA = 121787,
 
     QUEST_LIGHTS_EXODUS = 47223,
-
-
     QUEST_THE_VINDICAAR = 47224,
-
     QUEST_INTO_THE_NIGHT = 48440,
     SPELL_PLAY_MOVIE_TO_ARGUS = 243785,
 
@@ -94,7 +93,9 @@ enum
 
     NPC_VINDICATOR_BOROS = 121756, //??????
     NPC_ARATOR_THE_REDEEMER = 121755, //???????
-    NPC_VEREESA_WINDRUNNER =  121754,
+    NPC_VEREESA_WINDRUNNER =  121754,///Alliance
+    NPC_LADY_LIADRIN_122065 = 122065,///Horde
+
     NPC_ILLIDAN_STORMRAGE_120978 = 120978,
     NPC_ILLIDAN_STORMRAGE_126408 = 126408,
     NPC_PROPHET_VELEN_120977 = 120977, ///???? map in 1750
@@ -137,21 +138,17 @@ class npc_vereesa_windrunner_121754 : public CreatureScript
 public:
     npc_vereesa_windrunner_121754() : CreatureScript("npc_vereesa_windrunner_121754") { }
 
-
-
-
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
         if (!player)
             return false;
 
         CloseGossipMenuFor(player);
-        //if (player->HasQuest(QUEST_TWO_IF_BY_SEA))
+        //if (player->HasQuest(QUEST_A_TWO_IF_BY_SEA))
         //{
-            player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_290157);
+            player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_TWO_IF_BY_SEA);
             player->TeleportTo(1750 ,-4235.34f, -11335.4f, 8.85f, 4.432787f);
         //}
-    
         return true;
     }
 
@@ -173,13 +170,13 @@ public:
             if (!player)
                 return;
             
-            if (player->HasQuest(QUEST_THE_HAND_OF_FATE))
+            if (player->HasQuest(QUEST_A_THE_HAND_OF_FATE))
             {  
-                if (!player->GetQuestObjectiveData(QUEST_THE_HAND_OF_FATE, 0))
+                if (!player->GetQuestObjectiveData(QUEST_A_THE_HAND_OF_FATE, 0))
                 {
                     if (!Intr)
                         Intr = true;
-                    player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_290124); // QUEST_THE_HAND_OF_FATE storageIndex 0 KillCredit
+                    player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_THE_HAND_OF_FATE); // QUEST_A_THE_HAND_OF_FATE storageIndex 0 KillCredit
                 }
             }
             
@@ -221,7 +218,7 @@ public:
 
         bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) 
         {
-            if (quest->GetQuestId() == QUEST_TWO_IF_BY_SEA)
+            if (quest->GetQuestId() == QUEST_A_TWO_IF_BY_SEA)
             {
 
             }
@@ -248,6 +245,89 @@ public:
     }
 };
 
+struct npc_lady_liadrin_122065 : public ScriptedAI
+{
+    npc_lady_liadrin_122065(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+    void Reset() override
+    {
+        Initialize();
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _scheduler.Update(diff);
+     }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    {
+        CloseGossipMenuFor(player);
+
+        if (player->HasQuest(QUEST_H_TWO_IF_BY_SEA) || player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA)== QUEST_STATUS_COMPLETE|| player->GetQuestStatus(QUEST_H_TWO_IF_BY_SEA) == QUEST_STATUS_REWARDED)
+        {
+            player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_TWO_IF_BY_SEA);
+            player->TeleportTo(1750, -4295.41f, -11368.2f, 10.64f, 5.764124f);///SMSG_CUSTOM_LOAD_SCREEN TeleportSpellID: 247215 LoadingScreenID: 1377
+        }
+    }
+    void Initialize()
+    {
+        m_playerGUID = ObjectGuid::Empty;
+    }
+
+    void AddPlayer()
+    {
+        if (!HasPlayer(m_playerGUID))
+            pList.insert(m_playerGUID);
+    }
+
+    bool HasPlayer(ObjectGuid guid)
+    {
+        return (pList.find(guid) != pList.end());
+    }
+
+    void RemovePlayer()
+    {
+        if (HasPlayer(m_playerGUID))
+            pList.erase(m_playerGUID);
+        m_playerGUID = ObjectGuid::Empty;
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld())
+            return;
+        if (!me->IsWithinDist(who, 15.0f, false))
+        {
+            RemovePlayer();
+            return;
+        }
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (!player)
+            return;
+        if (!HasPlayer(player->GetGUID()) && (player->HasQuest(QUEST_H_THE_HAND_OF_FATE) ) && !player->GetQuestObjectiveData(QUEST_H_THE_HAND_OF_FATE, 0))
+        {
+            m_playerGUID = player->GetGUID();
+            AddPlayer();
+            //Conversation::CreateConversation(5335, player, player->GetPosition(), { player->GetGUID() });
+            player->KilledMonsterCredit(KILLED_MONSTER_CREDIT_THE_HAND_OF_FATE); // QUEST_THE_HAND_OF_FATE storageIndex 0 KillCredit
+            ///talk
+            if (Creature* boros = me->FindNearestCreature(NPC_VINDICATOR_BOROS, 15.0f))
+            {
+                boros->Say(133222, player);
+            }
+            _scheduler.Schedule(3s, 4s, [this, player](TaskContext context)
+            {
+                me->Say(133221, player);
+            });
+           
+            m_playerGUID = ObjectGuid::Empty;
+        }
+    }
+private: 
+    TaskScheduler _scheduler;
+    std::set<ObjectGuid> pList;
+    ObjectGuid   m_playerGUID;
+};
 
 // npc_vindicator_boros_121756
 class npc_vindicator_boros_121756 : public CreatureScript
@@ -274,9 +354,9 @@ public:
             if (!player)
                 return;
 
-            if (player->HasQuest(QUEST_TWO_IF_BY_SEA))
+            if (player->HasQuest(QUEST_A_TWO_IF_BY_SEA))
             {
-                if (player->GetQuestObjectiveData(QUEST_TWO_IF_BY_SEA, 0))
+                if (player->GetQuestObjectiveData(QUEST_A_TWO_IF_BY_SEA, 0))
                 {
                     if (!Intr)
                         Intr = true;
@@ -981,6 +1061,7 @@ void AddSC_zone_argus_krokuun()
     RegisterSpellScript(spell_garothi_obliterator_fiery_mortars);
 
     new npc_vereesa_windrunner_121754();
+    RegisterCreatureAI(npc_lady_liadrin_122065);
     new npc_vindicator_boros_121756();
     new npc_lightforged_beacon_122045();
     new play_to_argus_cast_to_argus();

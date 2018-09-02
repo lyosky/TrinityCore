@@ -6,7 +6,27 @@
 # Parsing date: 09/01/2018 23:22:41
 -- 补充部落阵营缺少的NPC add some horde Npc for argus pre quest
 SET @CGUID = 447346;
-DELETE FROM `conversation_actors` WHERE (`ConversationId`=5337 AND `ConversationActorId`=120223 AND `Idx`=0) OR (`ConversationId`=5708 AND `Idx`=3) OR (`ConversationId`=5708 AND `Idx`=0) OR (`ConversationId`=5708 AND `Idx`=2) OR (`ConversationId`=5070 AND `Idx`=0) OR (`ConversationId`=5710 AND `Idx`=2) OR (`ConversationId`=5710 AND `Idx`=1) OR (`ConversationId`=5710 AND `Idx`=0) OR (`ConversationId`=5073 AND `Idx`=0) OR (`ConversationId`=5335 AND `Idx`=1) OR (`ConversationId`=5335 AND `Idx`=0) OR (`ConversationId`=5711 AND `Idx`=0) OR (`ConversationId`=5220 AND `Idx`=0) OR (`ConversationId`=5063 AND `ConversationActorId`=120223 AND `Idx`=0) OR (`ConversationId`=5062 AND `Idx`=1) OR (`ConversationId`=5065 AND `ConversationActorId`=121617 AND `Idx`=0) OR (`ConversationId`=5213 AND `Idx`=3) OR (`ConversationId`=5213 AND `Idx`=2) OR (`ConversationId`=5213 AND `Idx`=1) OR (`ConversationId`=5213 AND `Idx`=0) OR (`ConversationId`=5066 AND `Idx`=1) OR (`ConversationId`=5066 AND `Idx`=0);
+
+DELETE FROM `creature_queststarter` WHERE `id` = '122065';
+INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES
+('122065', '47867');
+
+DELETE FROM `creature_questender` WHERE `id` = '122065';
+INSERT INTO `creature_questender` (`id`, `quest`) VALUES
+('122065', '47835'),
+('122065', '48507');
+
+DELETE FROM `creature_queststarter` WHERE `id` = '121756';
+INSERT INTO `creature_queststarter` (`id`, `quest`) VALUES
+('121756', '47223');
+
+DELETE FROM `creature_questender` WHERE `id` = '121756';
+INSERT INTO `creature_questender` (`id`, `quest`) VALUES
+('121756', '47222'),
+('121756', '47867');
+
+
+DELETE FROM `conversation_actors` WHERE (`ConversationId`=5337 AND `ConversationActorId`=120223 AND `Idx`=0) OR (`ConversationId`=5708 AND `Idx`=3) OR (`ConversationId`=5708 AND `Idx`=0) OR (`ConversationId`=5708 AND `Idx`=2) OR (`ConversationId`=5070 AND `Idx`=0) OR (`ConversationId`=5710 AND `Idx`=2) OR (`ConversationId`=5710 AND `Idx`=1) OR (`ConversationId`=5710 AND `Idx`=0) OR (`ConversationId`=5073 AND `Idx`=0) OR (`ConversationId`=5335 AND `Idx`=1) OR (`ConversationId`=5335 AND `Idx`=0) OR (`ConversationId`=5711 AND `Idx`=0) OR (`ConversationId`=5220 AND `Idx`=0) OR (`ConversationId`=5063 AND `Idx`=0) OR (`ConversationId`=5062 AND `Idx`=1) OR (`ConversationId`=5065 AND `Idx`=0) OR (`ConversationId`=5213 AND `Idx`=3) OR (`ConversationId`=5213 AND `Idx`=2) OR (`ConversationId`=5213 AND `Idx`=1) OR (`ConversationId`=5213 AND `Idx`=0) OR (`ConversationId`=5066 AND `Idx`=1) OR (`ConversationId`=5066 AND `Idx`=0);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx`, `VerifiedBuild`) VALUES
 (5337, 120223, 0, 27326),
 (5708, 60352, 3, 27326), -- Full: 0x0
@@ -629,6 +649,49 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 (@CGUID+38, 0, 19608, 50331648, 257, 0, 0, 0, 0, ''), -- -Unknown-
 (@CGUID+39, 0, 19608, 50331648, 257, 0, 0, 0, 0, ''); -- -Unknown-
 
+
+SET @CGUID = 443493;
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+11;
+INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
+(@CGUID+0, 122065, 1, 14, 4982, 1, '11695', 0, 0, 0, 1382.197, -5044.78, 2.920438, 4.236743, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 女伯爵莉亚德琳 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+1, 40891, 1, 14, 4982, 1, '11695', 0, 0, 0, 1390.208, -4919.457, 11.42539, 3.205439, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- -Unknown- (Area: -Unknown- - Difficulty: 0)
+(@CGUID+2, 49837, 1, 14, 4982, 1, '11695', 0, 0, 0, 1370.925, -4961.067, 2.143142, 3.741962, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- -Unknown- (Area: -Unknown- - Difficulty: 0)
+(@CGUID+3, 124370, 1, 14, 4982, 1, '11695', 0, 0, 0, 1383.394, -5002.798, 3.481735, 4.816267, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 库卡隆猎头者 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+4, 3296, 1, 14, 4982, 1, '11695', 0, 0, 0, 1444.422, -5016.543, 12.16008, 1.692844, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- -Unknown- (Area: -Unknown- - Difficulty: 0) (Auras: )
+(@CGUID+5, 86884, 1, 14, 4982, 1, '11695', 0, 0, 0, 1463.828, -5010.762, 11.91627, 6.038839, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 暗矛拥护者 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+6, 124367, 1, 14, 4982, 1, '11695', 0, 0, 0, 1377.917, -5004.172, 3.40875, 4.810535, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 舰队司令扎戈夫 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+7, 88750, 1, 14, 4982, 1, '11695', 0, 0, 0, 1464.589, -5014.644, 11.90094, 0.4363323, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 迅猛龙 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+8, 124373, 1, 14, 4982, 1, '11695', 0, 0, 0, 1376.224, -5018.644, 2.709967, 4.740976, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 逐日号高阶卫士 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+9, 124370, 1, 14, 4982, 1, '11695', 0, 0, 0, 1372.875, -5003.559, 3.481912, 4.816267, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 库卡隆猎头者 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+10, 124434, 1, 14, 4982, 1, '11695', 0, 0, 0, 1381.789, -5018.289, 2.709998, 4.740976, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 逐日号高阶卫士 (Area: -Unknown- - Difficulty: 0)
+(@CGUID+11, 124373, 1, 14, 4982, 1, '11695', 0, 0, 0, 1370.864, -5030.2, 2.560543, 1.655265, 120, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 逐日号高阶卫士 (Area: -Unknown- - Difficulty: 0)
+
+DELETE FROM `creature_addon` WHERE `guid` BETWEEN @CGUID+0 AND @CGUID+11;
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
+(@CGUID+0, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- 女伯爵莉亚德琳
+(@CGUID+1, 0, 0, 0, 257, 0, 0, 0, 0, ''), -- -Unknown-
+(@CGUID+2, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- -Unknown-
+(@CGUID+3, 0, 0, 0, 2, 0, 0, 0, 0, ''), -- 库卡隆猎头者
+(@CGUID+4, 0, 0, 0, 257, 0, 0, 0, 0, ''), -- -Unknown-
+(@CGUID+5, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- 暗矛拥护者
+(@CGUID+6, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- 舰队司令扎戈夫
+(@CGUID+7, 0, 0, 0, 1, 0, 0, 0, 0, ''), -- 迅猛龙
+(@CGUID+8, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- 逐日号高阶卫士
+(@CGUID+9, 0, 0, 0, 2, 0, 0, 0, 0, ''), -- 库卡隆猎头者
+(@CGUID+10, 0, 0, 0, 0, 0, 0, 0, 0, ''), -- 逐日号高阶卫士
+(@CGUID+11, 0, 0, 0, 1, 0, 0, 0, 0, ''); -- 逐日号高阶卫士
+
+SET @OGUID = 101434;
+DELETE FROM `gameobject` WHERE `guid` BETWEEN @OGUID+0 AND @OGUID+7;
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `PhaseId`, `PhaseGroup`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES
+(@OGUID+0, 293961, 1, 14, 4982, 1, '0', 0, 1363.781, -4746.018, 28.09028, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+1, 293961, 1, 14, 4982, 1, '0', 0, 1355.446, -4737.952, 28.08782, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+2, 293961, 1, 14, 4982, 1, '0', 0, 1360.778, -4746.58, 28.08139, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+3, 293961, 1, 14, 4982, 1, '0', 0, 1361.653, -4736.653, 28.09441, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+4, 293961, 1, 14, 4982, 1, '0', 0, 1358.679, -4737.253, 28.08225, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+5, 269836, 1, 14, 4982, 1, '0', 0, 1380.22, -5041.241, -1.870417, 1.64869, 0, 0, 0.7341032, 0.6790379, 120, 255, 1, 27326), -- -Unknown- (Area: -Unknown- - Difficulty: 0)
+(@OGUID+6, 293961, 1, 14, 4982, 1, '0', 0, 1357.545, -4747.278, 28.092, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
+(@OGUID+7, 269837, 1, 14, 4982, 1, '0', 0, 1401.288, -5019.217, 5.444355, 4.772673, 0.2616735, -0.2623053, -0.6333103, 0.6794417, 120, 255, 1, 27326); -- 斜坡 (Area: -Unknown- - Difficulty: 0)
 
 
 DELETE FROM `creature_template_addon` WHERE `entry` IN (141963 /*141963 (暗矛猎头者) - -Unknown-*/, 141968 /*141968 (驭风者)*/, 141707 /*141707*/, 141652 /*141652*/, 142154 /*142154 (部落战争使者)*/, 141706 /*141706*/, 141804 /*141804*/, 141845 /*141845*/, 141826 /*141826*/, 143509 /*143509 - -Unknown-*/, 141767 /*141767*/, 114131 /*114131*/, 141920 /*141920 (旅行的儿子)*/, 141912 /*141912 (旅行的战士)*/, 141528 /*141528*/, 141691 /*141691*/, 141693 /*141693*/, 141702 /*141702*/, 140224 /*140224 - -Unknown-*/, 141705 /*141705*/, 141647 /*141647 - -Unknown-, -Unknown-*/, 135202 /*135202*/, 137762 /*137762*/, 141119 /*141119*/);
@@ -1522,7 +1585,7 @@ UPDATE `creature_template` SET `minlevel`=110, `maxlevel`=110 WHERE `entry`=1274
 UPDATE `creature_template` SET `minlevel`=110, `maxlevel`=110 WHERE `entry`=121589; -- -Unknown-
 UPDATE `creature_template` SET `minlevel`=85, `maxlevel`=85, `speed_run`=1.571429, `unit_flags`=32768, `unit_flags2`=2048 WHERE `entry`=88750; -- 迅猛龙
 UPDATE `creature_template` SET `faction`=126, `npcflag`=3, `unit_flags`=33536, `unit_flags2`=2048 WHERE `entry`=86884; -- 暗矛拥护者
-UPDATE `creature_template` SET `gossip_menu_id`=21282, `npcflag`=3 WHERE `entry`=122065; -- 女伯爵莉亚德琳
+UPDATE `creature_template` SET `gossip_menu_id`=21282, `npcflag`=3, `ScriptName`='npc_lady_liadrin_122065' WHERE `entry`=122065; -- 女伯爵莉亚德琳
 UPDATE `creature_template` SET `minlevel`=5, `maxlevel`=20, `dynamicflags`=4 WHERE `entry`=3108; -- 硬壳海浪蟹
 UPDATE `creature_template` SET `minlevel`=9, `unit_flags`=0, `dynamicflags`=4 WHERE `entry`=42859; -- 成年野猪
 UPDATE `creature_template` SET `minlevel`=5, `maxlevel`=20, `speed_run`=0.8571429, `BaseAttackTime`=2000, `RangeAttackTime`=2000, `dynamicflags`=4 WHERE `entry`=3123; -- 血爪锐齿龙
@@ -1806,8 +1869,16 @@ UPDATE `creature_questitem` SET `VerifiedBuild`=27326 WHERE (`CreatureEntry`=896
 
 DELETE FROM `gameobject_template` WHERE `entry` IN (269837 /*斜坡*/, 293961 /*长椅*/);
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `Name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
-(269837, 5, 9289, '斜坡', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 斜坡
-(293961, 7, 15292, '长椅', '', '', 1.5, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 长椅
+(269837, 5, 9289, '斜坡', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 斜坡
+(293961, 7, 15292, '长椅', '', '', 1.5, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 长椅
+/* modeid crash ,may be it's update in bfa
+DELETE FROM `gameobject_template` WHERE `entry` IN (269836);
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `Name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
+(269836, 5, 9008, '船只', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 
+*/
+DELETE FROM `gameobject_template` WHERE (`entry`=269836);
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES 
+(269836, 5, 18810, '船只', '', '', '', 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 27326);
 
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=244989; -- 碎石
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=272208; -- 维迪卡尔

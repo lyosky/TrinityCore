@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -132,7 +132,7 @@ public:
     }
 };
 
-// 228329 & 228330 - Téléportation
+// 228329 & 228330 - Té–˜é–œortation
 class spell_dalaran_teleportation : public SpellScript
 {
     PrepareSpellScript(spell_dalaran_teleportation);
@@ -239,8 +239,10 @@ enum
     NPC_ARCHDRUID_HAMUUL_RUNETOTEM = 101061,
 
     ///quest 47221 The Hand of Fate
-    QUEST_THE_HAND_OF_FATE = 47221,
-    CONVERSATION_THE_HAND_OF_FATE = 4904,
+    QUEST_A_THE_HAND_OF_FATE = 47221,
+    QUEST_H_THE_HAND_OF_FATE = 47835,
+    CONVERSATION_A_THE_HAND_OF_FATE = 4904,
+    CONVERSATION_H_THE_HAND_OF_FATE = 5337,
 
     QUEST_THE_DALARAN_FOUNTAIN = 40961,
     NPC_NAT_PAGLE = 88317,
@@ -357,13 +359,21 @@ public:
         }
 
         //AGUS ARRAIVE
-        if (player->GetQuestStatus(QUEST_THE_HAND_OF_FATE) == QUEST_STATUS_NONE && player->getLevel() >= 110 && player->GetZoneId() == 7502)
+        if (player->IsInAlliance() && player->GetQuestStatus(QUEST_A_THE_HAND_OF_FATE) == QUEST_STATUS_NONE && player->getLevel() >= 110 && player->GetZoneId() == 7502)
         {
-            Conversation::CreateConversation(CONVERSATION_THE_HAND_OF_FATE, player, player->GetPosition(), { player->GetGUID() });
+            Conversation::CreateConversation(CONVERSATION_A_THE_HAND_OF_FATE, player, player->GetPosition(), { player->GetGUID() });
 
-            if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_THE_HAND_OF_FATE))
+            if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_A_THE_HAND_OF_FATE))
                 player->AddQuest(quest, nullptr);
         }
+        if (player->IsInHorde() && player->GetQuestStatus(QUEST_A_THE_HAND_OF_FATE) == QUEST_STATUS_NONE && player->getLevel() >= 110 && player->GetZoneId() == 7502)
+        {
+            Conversation::CreateConversation(CONVERSATION_H_THE_HAND_OF_FATE, player, player->GetPosition(), { player->GetGUID() });
+
+            if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_H_THE_HAND_OF_FATE))
+                player->AddQuest(quest, nullptr);
+        }
+        
 
         if (player->GetQuestStatus(QUEST_BLINK_OF_AN_EYE) == QUEST_STATUS_REWARDED && player->getLevel() >= 98 && player->GetZoneId() == 7502)
         {

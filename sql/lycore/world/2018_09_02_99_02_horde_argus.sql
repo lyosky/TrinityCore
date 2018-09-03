@@ -689,7 +689,7 @@ INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, 
 (@OGUID+2, 293961, 1, 14, 4982, 1, '0', 0, 1360.778, -4746.58, 28.08139, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
 (@OGUID+3, 293961, 1, 14, 4982, 1, '0', 0, 1361.653, -4736.653, 28.09441, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
 (@OGUID+4, 293961, 1, 14, 4982, 1, '0', 0, 1358.679, -4737.253, 28.08225, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
-(@OGUID+5, 269836, 1, 14, 4982, 1, '0', 0, 1380.22, -5041.241, -1.870417, 1.64869, 0, 0, 0.7341032, 0.6790379, 120, 255, 1, 27326), -- -Unknown- (Area: -Unknown- - Difficulty: 0)
+(@OGUID+5, 269836, 1, 14, 4982, 1, '0', 0, 1380.22, -5041.241, -1.870417, 1.64869, 0, 0, 0.7341032, 0.6790379, 120, 255, 1, 27326), -- -逐火号- (Area: -Unknown- - Difficulty: 0)
 (@OGUID+6, 293961, 1, 14, 4982, 1, '0', 0, 1357.545, -4747.278, 28.092, 3.360452, 0, 0, -0.9940186, 0.1092114, 120, 255, 1, 27326), -- 长椅 (Area: -Unknown- - Difficulty: 0)
 (@OGUID+7, 269837, 1, 14, 4982, 1, '0', 0, 1401.288, -5019.217, 5.444355, 4.772673, 0.2616735, -0.2623053, -0.6333103, 0.6794417, 120, 255, 1, 27326); -- 斜坡 (Area: -Unknown- - Difficulty: 0)
 
@@ -1871,14 +1871,10 @@ DELETE FROM `gameobject_template` WHERE `entry` IN (269837 /*斜坡*/, 293961 /*
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `Name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
 (269837, 5, 9289, '斜坡', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326), -- 斜坡
 (293961, 7, 15292, '长椅', '', '', 1.5, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 长椅
-/* modeid crash ,may be it's update in bfa
-DELETE FROM `gameobject_template` WHERE `entry` IN (269836);
-INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `Name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
-(269836, 5, 9008, '船只', '', '', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27326); -- 
-*/
+
 DELETE FROM `gameobject_template` WHERE (`entry`=269836);
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
-(269836, 43, 9008, '船只', '', '', 1, 1752, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26124); -- 269836
+(269836, 43, 9008, '逐火', '', '', 1, 1752, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26124); -- 269836
 
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=244989; -- 碎石
 UPDATE `gameobject_template` SET `VerifiedBuild`=27326 WHERE `entry`=272208; -- 维迪卡尔

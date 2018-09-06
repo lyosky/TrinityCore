@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
@@ -180,6 +180,7 @@ void AddSC_instance_tomb_of_sargeras();
 //scenario
 void AddSC_scenario_the_violet_hold();
 void AddSC_scenario_artifact_ursocslair();
+void AddSC_scenario_artifact_restoacqusition();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -347,4 +348,5 @@ void AddBrokenIslesScripts()
     //scenario
     AddSC_scenario_the_violet_hold();
     AddSC_scenario_artifact_ursocslair();
+    AddSC_scenario_artifact_restoacqusition();
 }

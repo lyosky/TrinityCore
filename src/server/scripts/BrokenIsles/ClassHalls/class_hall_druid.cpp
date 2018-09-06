@@ -58,6 +58,10 @@ enum
     QUEST_THE_SCYTHE_OF_ELUNE = 40783,
     ///RESTORATION
     QUEST_MEET_WITH_MYLUNE = 40649,
+    QUEST_NECESSARY_PREPARATIONS = 41422,
+    QUEST_IN_DEEP_SLUMBER = 41436,
+    PHASE_IN_DEEP_SLUMBER = 7541,
+    NPC_NARALEX_104349 = 104349,
 
     NPC_ARCHDRUID_HAMUUL_RUNETOTEM_101064 = 101064,
     NPC_KEEPER_REMULOS_101065 = 101065,
@@ -1831,6 +1835,151 @@ Facing: 4.793286
         }
     };
 
+    struct npc_mylune_113525 : public ScriptedAI
+    {
+        npc_mylune_113525(Creature* creature) : ScriptedAI(creature) {  }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld())
+                return;
+            if (!me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if ( player->HasQuest(QUEST_MEET_WITH_MYLUNE) && player->GetQuestStatus(QUEST_MEET_WITH_MYLUNE) == QUEST_STATUS_INCOMPLETE)
+                player->ForceCompleteQuest(QUEST_MEET_WITH_MYLUNE);
+        }
+    };
+
+    struct npc_leafbeard_the_storied_97989 : public ScriptedAI
+    {
+        npc_leafbeard_the_storied_97989(Creature* creature) : ScriptedAI(creature) { Intr = false; }
+
+        void sGossipHello(Player* player)
+        {
+            if (player->GetQuestStatus(QUEST_NECESSARY_PREPARATIONS) == QUEST_STATUS_INCOMPLETE)
+            {
+                ClearGossipMenuFor(player);
+                if (!Intr)
+                {
+                    AddGossipItemFor(player, 20015, 0, 0, 0);
+                    SendGossipMenuFor(player, 27432, me->GetGUID());
+                }
+                else
+                {
+                    AddGossipItemFor(player, 19400, 0, 0, 0);
+                    SendGossipMenuFor(player, 28594, me->GetGUID());
+                } 
+            }
+        }
+
+        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
+        {
+            CloseGossipMenuFor(player);
+            if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && !Intr)
+            {
+                Intr = true;
+            }
+            else if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && Intr)
+            {
+                me->CastSpell(player, 206492, true);
+                player->KilledMonsterCredit(104342);
+                Intr = false;
+            }              
+        }
+        bool Intr;
+    };
+    ///QUEST_IN_DEEP_SLUMBER USE item 135506 cast 206548 conversation 1512?  1515 你能听见吗  say 106847 on accept 208496 208491 206552 207668 206571 206556 206566
+    /// 206773->conversation 1549 106955 你得提高警惕。千万不能让梦魇控制你。
+    ///1531 106942 你还好吗？最艰难的阶段已经过去了。  106943 你就快成功了！保持专注！
+    ///1548 106954 小心点，我感觉到梦魇在侵袭你的头脑
+    ///1563 107007 古树在上，你救下加尼尔了！
+    ///1562 107003 帮帮我！我快要压制不住这些腐蚀了！
+
+
+    ///1573 107057 加尼尔的腐蚀每时每刻都在加重。但愿你还来得及！
+    ///1564 107008 加尼尔坚持不了多久。我们必须净化它。 107009 我们得帮巴珊娜清除这里剩余的梦魇。加尼尔的命运就看莱莎和$p的了。
+    ///1576 107059 不久前，哈缪尔·符文图腾带领一支小队去诺达希尔附近调查军团的活动了。他或许能帮你。
+    ///1579 107062 净化了加尼尔，就能帮大德鲁伊巨蹄清理梦境林里的梦魇了。107063 但愿加尼尔还有救。
+    ///1596
+    ///1582 107069 $n……感谢上古诸神，你终于来了。
+    ///1597 107102 冥狱之门向我们敞开了。它们无处不在…… 107103 先去照顾其他人吧。他们的伤比我严重得多。 107104 啸天者，你得通知梦境林地。我们今天的牺牲者已经够多了。 107129 $p，救救这些伤员吧。我来准备净化仪式。
+    ///1600 107114 哦，我的头……我头晕……
+    ///1601 107116 这口井差点就毁于突袭。但只要还有一滴水，我们就有希望！
+    ///1598 107111 谢谢你，$n。我们差点就没顶住上一波攻击。
+    ///1599 107115 燃烧军团还没忘记上次的失败。
+    ///1602 107120 祝福你，$n。我的灵魂都快要回到神灵的怀抱了。
+    ///1603 107130 仪式准备好了，$n！
+    ///1609 107147 我会准备好净化所需的井水。 107148 你得保护我直到仪式完成，否则加尼尔就完了！
+    ///1612 107162 情况有些不对。万灵正在哀嚎。 107163 传送门激活了！
+    ///1623 107206 保住我们的命，我们就能为你争取足够的时间。 107207 为了加尼尔！
+    ///1631 107224 以玛诺洛斯的名义！
+    ///1635 107229 你的生命在流逝。
+    ///1632 108554 我对你很不满意。
+    ///1643 107262 月井的力量正在增强。我们得继续前进！
+    ///1634 107228 一群待宰的羔羊。
+    ///1635
+    ///1644 107263 这力量时刻都在变强。胜利在望了！
+    ///1636 107230 都化为火海吧！
+    ///1637 107231 颤抖吧！
+    ///1647 107269 仪式就快完成了。不要放弃希望！ 107222 恶魔的攻势猛烈。我需要支援！
+    ///1637
+    ///1635
+    ///1896
+    ///1850 108260 净化这根法杖吧，我的孩子。我来挡住那个畜生！ 107280 可悲的爬虫。这又是什么把戏？
+    ///3768 108261 快，英雄！我们就快成功了。把法杖给我！
+    ///1899 108566 森林之魂！自然的守护者！请聆听我们的祈祷！  108567 今天，母亲之树重获新生！加尼尔完好如初了！
+    ///spell https://cn.wowhead.com/spell=207544
+    ///https://cn.wowhead.com/spell=206776/%E6%A2%A6%E9%AD%87%E8%99%9A%E7%A9%BA
+
+    ///1649 107268 n，用加尼尔召唤森林之魂来摧毁这个恶魔吧！
+    ///https://cn.wowhead.com/spell=204873
+
+    ///1659 107307 我要杀了你！
+    ///1660 107308 这世界必将……燃烧…… 107309 成功了！回梦境林地去，把胜利的消息告诉他们吧。 107310 我们得再停留一阵子，帮助啸天者欧穆隆的部队。 107311 谢谢你，$n。没有你，我们就死定了
+    /// 206864  complete spell
+
+    ///1663 107324 要不是$p，我们早就死在海加尔山顶了。 107325 加尼尔和诺达希尔也会被燃烧军团摧毁。
+    ///2912
+    ///2921 116713 去找大德鲁伊巨蹄，把事情告诉他。我来看看它还剩下些什么。
+    class QuestInDeepSlumberUseItem : public PlayerScript
+    {
+    public:
+        QuestInDeepSlumberUseItem() : PlayerScript("QuestInDeepSlumberUseItem") { }
+
+        void OnSuccessfulSpellCast(Player* player, Spell* spell) 
+        {
+            if (spell->GetSpellInfo()->Id == 206548)
+            {
+                if (player->HasQuest(QUEST_IN_DEEP_SLUMBER))
+                {                   
+                    if (Creature* npc = player->FindNearestCreature(NPC_NARALEX_104349, 25.0f, true))
+                        npc->AI()->Talk(1);
+                    //add phase cast spell
+                    player->CastSpell(player, 206552, true);
+                    //killcredit
+                    player->CastSpell(player, 206553, true);
+                    PhasingHandler::AddPhase(player, PHASE_IN_DEEP_SLUMBER, true);
+
+                    player->CastSpell(player, 206571, true);
+                    player->CastSpell(player, 206566, true);
+                }
+            }
+        }
+
+        void OnUpdateArea(Player* player, uint32 /*newArea*/, uint32 /*oldArea*/)
+        {
+            if (player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_COMPLETE)
+            {
+                PhasingHandler::AddPhase(player, PHASE_IN_DEEP_SLUMBER, true);
+            }
+        }
+    };
+    /// spell 206637  conversation NPC 104398
+
 void AddSC_class_hall_druid()
 {
     new npc_class_hall_druid_gatewarden("npc_class_hall_druid_gatewarden_dreamgrove",   204983);
@@ -1867,4 +2016,7 @@ void AddSC_class_hall_druid()
     RegisterCreatureAI(npc_ancestral_shaman_104937);
     new playerscript_flask_of_moonwell_water();
     RegisterCreatureAI(npc_generic_bunny_103560);
+    RegisterCreatureAI(npc_mylune_113525);
+    RegisterCreatureAI(npc_leafbeard_the_storied_97989);
+    new QuestInDeepSlumberUseItem();
 }

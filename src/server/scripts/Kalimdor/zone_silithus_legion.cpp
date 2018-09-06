@@ -11,7 +11,7 @@ enum QUEST
 {
     QUEST_UNITING_THE_ISLES = 43341,
     QUEST_ANTORUS_THE_BURNING_THRONE_THE_DEATH_OF_A_TITAN = 49015,
-    /// 联盟 ALI
+    ///  ALIANCE
     QUEST_SUMMONS_TO_STORMWIND = 50371,
     QUEST_GIFTS_OF_THE_FALLEN = 49976,
     QUEST_WITNESS_TO_THE_WOUND = 49981,
@@ -23,7 +23,7 @@ enum QUEST
     QUEST_A_THE_SPEAKERS_PERSPECTIVE = 50049,
     QUEST_A_THE_SPEAKERS_CALL = 50056,
     QUEST_THE_POWER_IN_OUR_HANDS = 50057,
-    /// 部落 HORL
+    ///  HORL
     QUEST_SUMMONS_TO_ORGRIMMAR = 49977,
     QUEST_A_RECENT_DISCOVERY = 50341,
     QUEST_H_WITNESS_TO_THE_WOUND = 49982,
@@ -112,7 +112,7 @@ public:
             }
             else
             {
-                ///部落任务线
+                ///HORDE
                 if (player->GetQuestStatus(QUEST_SUMMONS_TO_ORGRIMMAR) == QUEST_STATUS_NONE)
                     if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_SUMMONS_TO_ORGRIMMAR))
                     {
@@ -128,10 +128,8 @@ public:
     {
         if (player->GetQuestStatus(QUEST_A_THE_SPEAKERS_PERSPECTIVE) == QUEST_STATUS_REWARDED || player->GetQuestStatus(QUEST_H_THE_SPEAKERS_PERSPECTIVE) == QUEST_STATUS_REWARDED || !player->IsGameMaster())
         {
-            TC_LOG_ERROR("server.worldserver", "============= HandlePhase =========== ");
             if(player->GetZoneId()== 1377&& player->GetAreaId()== 9310)
                 PhasingHandler::AddPhase(player, PHASE_AFTER_QUEST, true);
-                //player->GetPhaseShift().AddPhase(PHASE_AFTER_QUEST, PhaseFlags::None, nullptr);
         }
     }
 };
@@ -192,11 +190,10 @@ struct npc_master_mathias_shaw_132255 : public ScriptedAI
             if (const Quest* quest_gift = sObjectMgr->GetQuestTemplate(QUEST_GIFTS_OF_THE_FALLEN))
                 player->AddQuest(quest_gift, me);
     }
-    ///22009	33712	0 ClientToServer: CMSG_TALK_TO_GOSSIP (0x3495) 跟我说说雄狮之眠发生了什么。
+    ///22009	33712	0 ClientToServer: CMSG_TALK_TO_GOSSIP (0x3495) 
     void sGossipHello(Player* player)
     {
         if (player->HasQuest(QUEST_SUMMONS_TO_STORMWIND)) {
-            //TC_LOG_ERROR("server.worldserver", "QUEST_SUMMONS_TO_STORMWIND OnGossipHello ");
             player->ForceCompleteQuest(QUEST_SUMMONS_TO_STORMWIND);
             ClearGossipMenuFor(player);
             if (me->IsQuestGiver())
@@ -215,7 +212,6 @@ struct npc_master_mathias_shaw_132255 : public ScriptedAI
         }
         else
         {
-            // TC_LOG_ERROR("server.worldserver", "else OnGossipHello ");
             ClearGossipMenuFor(player);
             if (me->IsQuestGiver())
                 player->PrepareQuestMenu(me->GetGUID()); /* return true*/
@@ -238,7 +234,7 @@ struct npc_master_mathias_shaw_132255 : public ScriptedAI
 
 enum
 {
-    AURA_TIME_TRAVELLING = 255152, ///时间旅行 262016 
+    AURA_TIME_TRAVELLING = 255152, ///262016 
     SPELL_BLACK = 129809,
 };
 #define GOSSIP_ZIDORMI_1 "你能让我看看变成世界创伤前的希利苏斯是什么样吗？"
@@ -281,7 +277,7 @@ struct npc_zidormi_128607 : public ScriptedAI
         {
             m_playerGUID = player->GetGUID();
             AddPlayer();
-            me->AI()->Talk(0, player); ///你想回现在的希利苏斯时，只要说一声就行了。
+            me->AI()->Talk(0, player); /// 你想回现在的希利苏斯时，只要说一声就行了。
             m_playerGUID = ObjectGuid::Empty;
         }
     }
@@ -372,7 +368,7 @@ struct npc_tammy_tinkspinner_132606 : public ScriptedAI
         SAY_FIRST_LINE = 0, ///我们必须弄清楚，异种蝎是怎么在萨格拉斯之刃的冲击下幸存下来的！
         SAY_SECOND_LINE = 1,///多亏了你，我们现在距离理解这把剑对希利苏斯的影响又近了一步！
     };
-    //沙漠研究 接受任务或完成任务后开放
+
     void sQuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_LARVAE_BY_THE_DOZEN)
@@ -392,7 +388,7 @@ struct npc_khargus_stonemantle_132192 : public ScriptedAI
 
     enum Texts
     {
-        SAY_FIRST_LINE = 0, ///我这辈子从来没见过这种东西！这究竟是什么？         
+        SAY_FIRST_LINE = 0, ///我这辈子从来没见过这种东西！这究竟是什么？      
     };
     void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
     {

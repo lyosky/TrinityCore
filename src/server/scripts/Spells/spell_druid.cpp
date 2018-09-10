@@ -2108,7 +2108,6 @@ class aura_dru_feral_affinity_resto : public AuraScript
             (target->GetSpecializationId() == TALENT_SPEC_DRUID_RESTORATION))
             for (uint32 spellId : LearnedSpells)
                 target->LearnSpell(spellId, false);
-        }
     }
 
     void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

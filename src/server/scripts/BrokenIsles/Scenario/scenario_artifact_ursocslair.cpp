@@ -225,7 +225,8 @@ struct scenario_artifact_ursocslair : public InstanceScript
                 go->DestroyForNearbyPlayers();
             }
             ///COMPLETE SCENARIO
-            //CompleteScenario();
+            if (Scenario* scenario = instance->GetInstanceScenario())
+                scenario->CompleteScenario();
         }
 
     }
@@ -244,7 +245,7 @@ struct scenario_artifact_ursocslair : public InstanceScript
             isIntr = true;
             events.ScheduleEvent(SCENE_PLAYER_ENTER, 5s);
         }
-        //events.ScheduleEvent(TEST_EVENT, 10 * IN_MILLISECONDS);
+        events.ScheduleEvent(TEST_EVENT, 10 * IN_MILLISECONDS);
         if (InstanceScenario* scenario = instance->GetInstanceScenario())
         {
             DoUpdateCriteria(CRITERIA_TYPE_SEND_EVENT_SCENARIO, 46437, 0, nullptr);

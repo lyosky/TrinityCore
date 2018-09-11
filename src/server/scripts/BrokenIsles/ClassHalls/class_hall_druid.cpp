@@ -59,8 +59,11 @@ enum
     ///RESTORATION
     QUEST_MEET_WITH_MYLUNE = 40649,
     QUEST_NECESSARY_PREPARATIONS = 41422,
+    QUEST_JOIN_THE_DREAMER = 41449,
     QUEST_IN_DEEP_SLUMBER = 41436,
     PHASE_IN_DEEP_SLUMBER = 7541,
+    QUEST_RECONVENE = 41690,
+    QUEST_CLEANSING_THE_MOTHER_TREE = 41689,
     NPC_NARALEX_104349 = 104349,
 
     NPC_ARCHDRUID_HAMUUL_RUNETOTEM_101064 = 101064,
@@ -99,7 +102,8 @@ public:
                         who->ToPlayer()->KilledMonsterCredit(101215);
                         who->ToPlayer()->TeleportTo(1220,3756.379395f, 7132.707520f, 23.856869f, 0.401426f);
                     }                      
-                } else if (who->ToPlayer()->HasQuest(QUEST_TO_THE_HILLS) && me->GetEntry() == 107263)
+                }
+                else if (who->ToPlayer()->HasQuest(QUEST_TO_THE_HILLS) && me->GetEntry() == 107263)
                 {
                     if (!who->ToPlayer()->GetQuestObjectiveData(QUEST_TO_THE_HILLS, 1))
                     {
@@ -107,6 +111,10 @@ public:
                         who->ToPlayer()->KilledMonsterCredit(135563);
                         who->ToPlayer()->TeleportTo(571, 4475.52f, -3757.94f, 217.14f, 3.56309f);
                     }
+                }
+                else if (who->ToPlayer()->HasQuest(QUEST_CLEANSING_THE_MOTHER_TREE) && me->GetEntry() == 107262)
+                {
+                        who->ToPlayer()->TeleportTo(1599, 5465.67f, -3447.32f, 1559.12f, 4.987278f);
                 }
                 else
                     who->CastSpell(who, _teleportSpell, true);
@@ -1194,7 +1202,27 @@ Facing: 4.793286
                     ///103626 There is no one better suited for this task than $n.
                     ///Very well, your task will not be easy but I shall do all that I can to aid you.
                 }              
-            }              
+            }
+            if (!isTalking && player->GetQuestStatus(QUEST_RECONVENE) == QUEST_STATUS_COMPLETE )
+            {
+                isTalking = true;
+             
+                if (Creature* remulos = me->FindNearestCreature(NPC_KEEPER_REMULOS_103832, 15.0f))
+                {
+                    me->Say("g'hanir will not last much longer.It must be cleansed.", LANG_UNIVERSAL, remulos);
+                    _scheduler.Schedule(1s, 2s, [remulos,player](TaskContext context)
+                    {
+                        remulos->Say("We must aid Bashana in clearing out the remaining nightmare here. G'Hanir's fate rests with Lyessa and $n.", LANG_UNIVERSAL, player);
+                    });
+                }
+
+                _scheduler.Schedule(12s, 13s, [this](TaskContext context)
+                {
+                    isTalking = false;
+                });
+
+                
+            }
         }
 
         void UpdateAI(uint32 diff) override
@@ -1821,16 +1849,14 @@ Facing: 4.793286
 
         void MoveInLineOfSight(Unit* who) override
         {
-            if (!who || !who->IsInWorld())
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 10.0f, false))
                 return;
-            if (!me->IsWithinDist(who, 10.0f, false))
-            {
 
-                return;
-            }
             Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
             if (!player)
                 return;
+            if (player->HasQuest(QUEST_CLEANSING_THE_MOTHER_TREE))
+                player->KilledMonsterCredit(104608);
             player->TeleportTo(1540, 1756.753174f, 1509.99231f, 6.278654f, 2.640337f);
         }
     };
@@ -1849,8 +1875,32 @@ Facing: 4.793286
             Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
             if (!player)
                 return;
-            if ( player->HasQuest(QUEST_MEET_WITH_MYLUNE) && player->GetQuestStatus(QUEST_MEET_WITH_MYLUNE) == QUEST_STATUS_INCOMPLETE)
+            if (player->HasQuest(QUEST_MEET_WITH_MYLUNE) && player->GetQuestStatus(QUEST_MEET_WITH_MYLUNE) == QUEST_STATUS_INCOMPLETE)
+            {
+                me->Say("Oh, frends. I don't know what to do!", LANG_UNIVERSAL, player);
                 player->ForceCompleteQuest(QUEST_MEET_WITH_MYLUNE);
+            }
+            if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && player->GetQuestStatus(QUEST_NECESSARY_PREPARATIONS) == QUEST_STATUS_COMPLETE)
+            {
+                me->Say("Don't worry - $n is going to fix this, just you wait!", LANG_UNIVERSAL, player);
+            }
+        }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_NECESSARY_PREPARATIONS)
+            {
+                Talk(0);
+                me->GetScheduler().Schedule(Milliseconds(1000), [player](TaskContext context)
+                {
+                    GetContextCreature()->AI()->Talk(1);
+                });
+            }
+
+            if (quest->GetQuestId() == QUEST_NECESSARY_PREPARATIONS)
+            {
+                me->Say("Be careful - it isn't safe in the Dream right now", LANG_UNIVERSAL, player);
+            }
         }
     };
 
@@ -1885,6 +1935,7 @@ Facing: 4.793286
             }
             else if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && Intr)
             {
+                Talk(0);
                 me->CastSpell(player, 206492, true);
                 player->KilledMonsterCredit(104342);
                 Intr = false;
@@ -1892,6 +1943,54 @@ Facing: 4.793286
         }
         bool Intr;
     };
+
+    struct npc_naralex_104349 : public ScriptedAI
+    {
+        npc_naralex_104349(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_IN_DEEP_SLUMBER)
+            {
+                me->Say("You still have the moonwater, yes? Good, good, then you are ready.", LANG_UNIVERSAL, player);
+            }
+            if (quest->GetQuestId() == QUEST_RECONVENE)
+            {
+                me->Say("G'Hanir grows more corrupt with each passing moment - may your feet carry you swiftly.", LANG_UNIVERSAL, player);
+            }
+        }
+        void Initialize()
+        {
+            isTalk = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (!isTalk && player->HasQuest(QUEST_JOIN_THE_DREAMER))
+            {
+                isTalk = true;
+                Talk(0);
+                player->ForceCompleteQuest(QUEST_JOIN_THE_DREAMER);
+                isTalk = false;
+            }
+            if (!isTalk && player->HasQuest(QUEST_IN_DEEP_SLUMBER)&& (player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_REWARDED))
+            {
+                isTalk = true;
+                me->Say("By the Ancients. you have it! You have G'Hanir!", LANG_UNIVERSAL, player);
+                isTalk = false;
+            }
+            
+        }
+
+        bool isTalk;
+    };
+
     ///QUEST_IN_DEEP_SLUMBER USE item 135506 cast 206548 conversation 1512?  1515 你能听见吗  say 106847 on accept 208496 208491 206552 207668 206571 206556 206566
     /// 206773->conversation 1549 106955 你得提高警惕。千万不能让梦魇控制你。
     ///1531 106942 你还好吗？最艰难的阶段已经过去了。  106943 你就快成功了！保持专注！
@@ -1980,6 +2079,176 @@ Facing: 4.793286
     };
     /// spell 206637  conversation NPC 104398
 
+    struct npc_bashana_runetotem_104398 : public ScriptedAI
+    {
+        npc_bashana_runetotem_104398(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (IsYellHelp && !me->HasAura(206625) && IsHaveAura)
+            {
+                IsHaveAura = false;
+                Talk(0);
+                me->GetScheduler().Schedule(Milliseconds(1000), [](TaskContext context)
+                {
+                    GetContextCreature()->AI()->Talk(1);
+                });
+            }
+        }
+
+        void Initialize()
+        {
+            IsYellHelp = false;
+            IsHaveAura = true;
+            me->CastSpell(me, 206625, true);
+        }
+       
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 25.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (!IsYellHelp && player->HasQuest(QUEST_IN_DEEP_SLUMBER) )
+            {
+                IsYellHelp = true;
+                me->Yell("Anyone...someone! I can't escape these roots!", LANG_UNIVERSAL, player);
+            }
+        }
+    private:
+        bool IsYellHelp;
+        bool IsHaveAura;
+    };
+
+    struct npc_lyessa_bloomwatcher_104573 : public ScriptedAI
+    {
+        npc_lyessa_bloomwatcher_104573(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void DoAction(int32 param)
+        {
+            switch (param)
+            {
+            case 1:
+                isComplete = true;
+                Talk(0);
+                me->GetScheduler().Schedule(Milliseconds(2000), [](TaskContext context)
+                {
+                    GetContextCreature()->AI()->Talk(1);
+                    //GetContextCreature()->CastSpell(GetContextCreature(), 206863, true);
+                });
+                break;
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+
+        }
+
+        void Initialize()
+        {
+            isHelp = false;
+            isComplete = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (player->HasQuest(QUEST_IN_DEEP_SLUMBER) )
+            {
+
+                player->KilledMonsterCredit(me->GetEntry());
+
+            }
+        }
+    private:
+        bool isComplete;
+        bool isHelp;
+    };
+
+    ///248098
+    class go_g_hanir : public GameObjectScript
+    {
+    public:
+        go_g_hanir() : GameObjectScript("go_g_hanir") { }
+
+        void OnLootStateChanged(GameObject* go, uint32 state, Unit* unit)
+        {
+            if (state == GO_ACTIVATED && unit)
+            {
+                if (Creature* lyessa = go->FindNearestCreature(104573, 15.0f, true))
+                {
+                    lyessa->AI()->DoAction(1);
+                }
+                if (Player* player = unit->ToPlayer())
+                {
+                    player->KilledMonsterCredit(113098);
+                    go->GetScheduler().Schedule(Milliseconds(5000), [player](TaskContext context)
+                    {
+                        player->TeleportTo(1220, Position(4299.72f, 7422.46f, -17.13f, 2.535614f));
+                    });
+                }
+                    
+            }
+                
+        }
+    };
+
+    struct npc_lyessa_bloomwatcher_104577 : public ScriptedAI
+    {
+        npc_lyessa_bloomwatcher_104577(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_CLEANSING_THE_MOTHER_TREE)
+            {
+                Talk(0);
+                me->GetScheduler().Schedule(Milliseconds(5000), [this, player](TaskContext context)
+                {
+                    me->Say(107059, player);
+                });     
+            }
+        }
+        void Initialize()
+        {
+            isHello = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld())
+                return;
+            if (!me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (!isHello && player->HasQuest(QUEST_RECONVENE))
+            {
+                isHello = true;
+
+                isHello = false;
+            }
+        }
+    private:
+        bool isHello;
+
+    };
+
+
 void AddSC_class_hall_druid()
 {
     new npc_class_hall_druid_gatewarden("npc_class_hall_druid_gatewarden_dreamgrove",   204983);
@@ -2018,5 +2287,10 @@ void AddSC_class_hall_druid()
     RegisterCreatureAI(npc_generic_bunny_103560);
     RegisterCreatureAI(npc_mylune_113525);
     RegisterCreatureAI(npc_leafbeard_the_storied_97989);
+    RegisterCreatureAI(npc_naralex_104349);
     new QuestInDeepSlumberUseItem();
+    RegisterCreatureAI(npc_bashana_runetotem_104398);
+    RegisterCreatureAI(npc_lyessa_bloomwatcher_104573);
+    new go_g_hanir();
+    RegisterCreatureAI(npc_lyessa_bloomwatcher_104577);
 }

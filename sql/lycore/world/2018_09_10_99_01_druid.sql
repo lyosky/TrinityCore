@@ -18,6 +18,9 @@ DELETE FROM `creature_addon` WHERE `guid` = @CGUID+0 ;
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
 (@CGUID+0, 0, 0, 0, 1, 0, 0, 0, 0, ''); -- 莱莎·护蕾
 
+UPDATE `creature` SET `curhealth`=85739 WHERE `guid` = 450026 AND `id`= 104657;
+UPDATE `creature` SET `curhealth`=85739 WHERE `guid` = 200000 AND `id`= 104659;
+
 -- DRUID QUEST_IN_DEEP_SLUMBER 41436
 UPDATE `creature_template` SET `ScriptName`='npc_naralex_104349' WHERE `entry`=104349;
 UPDATE `creature_template` SET `ScriptName`='npc_bashana_runetotem_104398' WHERE `entry`=104398;
@@ -41,3 +44,4 @@ UPDATE `creature_template` SET `ScriptName`='npc_zen_tabra_104658' WHERE `entry`
 UPDATE `creature_template` SET `ScriptName`='npc_celestine_of_the_harvest_104657' WHERE `entry`=104657;
 UPDATE `creature_template` SET `ScriptName`='npc_archdruid_hamuul_runetotem_104659' WHERE `entry`=104659;
 UPDATE `creature_template` SET `ScriptName`='npc_lyessa_bloomwatcher_104628' WHERE `entry`=104628;
+UPDATE `creature_template` SET `ScriptName`='npc_destromath_104619' WHERE `entry`=104619;

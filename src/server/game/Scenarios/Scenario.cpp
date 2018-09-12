@@ -323,6 +323,8 @@ void Scenario::CompleteCurrStep()
     ScenarioStepEntry const* step = GetStep();
     if (step)
         SetStepState(step, SCENARIO_STEP_DONE);
+    else
+        return;
 
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(step->RewardQuestID))
         for (ObjectGuid guid : _players)

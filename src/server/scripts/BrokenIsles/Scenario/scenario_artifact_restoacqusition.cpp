@@ -2,6 +2,7 @@
 #include "PhasingHandler.h"
 #include "ScriptedGossip.h"
 #include "InstanceScenario.h"
+#include "SceneMgr.h"
 #include "Log.h"
 enum
 {
@@ -13,7 +14,7 @@ enum
     DATA_STAGE_5 = 5,
     DATA_STAGE_6 = 6,
     DATA_STAGE_7 = 7,
-    DATA_MAX_ENCOUNTERS = 1,
+    DATA_MAX_ENCOUNTERS = 8,
     NORMAL_PHASE = 6115,
     QUEST_CLEANSING_THE_MOTHER_TREE = 41689,
 };
@@ -25,6 +26,7 @@ enum
     NPC_CELESTINE_OF_THE_HARVEST_104657 = 104657,
     NPC_ARCHDRUID_HAMUUL_RUNETOTEM_104659 = 104659,
     NPC_LYESSA_BLOOMWATCHER_104628 = 104628,
+    NPC_DESTROMATH_104619 = 104619,
 };
 
 struct scenario_artifact_restoacqusition : public InstanceScript
@@ -41,6 +43,7 @@ struct scenario_artifact_restoacqusition : public InstanceScript
         isComplete = false;
         StepID = 1;
         stage2count = 0;
+        m_playerGUID = ObjectGuid::Empty;
     }
 
     void OnPlayerEnter(Player* player) override
@@ -49,13 +52,15 @@ struct scenario_artifact_restoacqusition : public InstanceScript
         ///player->GetMapId() == 1599
         if (player->GetMapId() == 1599 && player->HasQuest(QUEST_CLEANSING_THE_MOTHER_TREE))
         {
+            m_playerGUID = player->GetGUID();
             PhasingHandler::AddPhase(player, NORMAL_PHASE, true);
             
             if (Creature* lyessa = instance->GetCreature(_lyessaGUID))
-                lyessa->Say("Such devastation.", LANG_UNIVERSAL, player);
+                lyessa->Say(107083, player);//"Such devastation.", LANG_UNIVERSAL
 
+            //player->CastSpell(player, 207008, true);
             if (Creature* omnuron = instance->GetCreature(_omnuronGUID))
-                omnuron->Say("$n...thank the earth that you're here.", LANG_UNIVERSAL, player);
+               omnuron->Say(107069, player);//"$n...thank the earth that you're here.", LANG_UNIVERSAL
         }          
     }
 
@@ -91,6 +96,9 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             {
                 _lyessaGUID = creature->GetGUID();
                 break;
+            case NPC_DESTROMATH_104619:
+                _destromathGUID = creature->GetGUID();
+                break;
             }
         }   
     }
@@ -119,23 +127,118 @@ struct scenario_artifact_restoacqusition : public InstanceScript
 
     void SetData(uint32 type, uint32 data) override
     {
+        InstanceScript::SetData(type, data);
+        if (data == NOT_STARTED)
+            return;
+
         if (type == DATA_STAGE_1 && data == DONE)
         {
             NextStep();
             if (Creature* lyessa = instance->GetCreature(_lyessaGUID))
                 lyessa->AI()->DoAction(1);
             if (Creature* omnuron = instance->GetCreature(_omnuronGUID))
+            {
+                //omnuron->CastSpell(omnuron, 207043, true);
                 omnuron->GetMotionMaster()->MoveAwayAndDespawn(15.0f, 3000);
+            }
+            if (Creature* hamuul = instance->GetCreature(_hamuulGUID))
+                hamuul->AI()->DoAction(2);
+            if (Creature* coth = instance->GetCreature(_cothGUID))
+                coth->AI()->DoAction(2);
         }
         else if (type == DATA_STAGE_2 && data == DONE)
         {
             ++stage2count;
-            if (stage2count >= 3)
+            if (stage2count == 3 && GetData(DATA_STAGE_1) == DONE)
             {
                 NextStep();
+
+                ///delay 2s giving weapon  lyessa
+                if (Creature* lyessa = instance->GetCreature(_lyessaGUID))
+                    lyessa->AI()->DoAction(2);
             }
         }
-            
+        else if (type == DATA_STAGE_3 && data == DONE)
+        {
+            NextStep();
+            DoCastSpellOnPlayers(227997);
+            if (Creature* zentabra = instance->GetCreature(_zentabraGUID))
+                zentabra->Say(107162);//"Somethin' ain't right. Da spirits be cryin' out.", LANG_UNIVERSAL
+            //delay 1s
+            if (Creature* hamuul = instance->GetCreature(_hamuulGUID))
+                hamuul->Say(107163);//"The gaeway is activating!", LANG_UNIVERSAL
+            //show weapon
+            //delay 1s play scence destromath show
+            DoCastSpellOnPlayers(207276);
+            instance->SummonCreature(NPC_DESTROMATH_104619, Position(5446.76f, -3545.663f, 1555.387f, 1.121394f));
+
+            //ID - 92183 Detect: Quest Invis Zone 25
+
+            //hamuul fight bear
+            if (Creature* hamuul = instance->GetCreature(_hamuulGUID))
+            {
+                hamuul->CastSpell(hamuul, 207418, true);
+                hamuul->Say("For G'Hanir!", LANG_UNIVERSAL);
+                //move to destromath
+            }
+            //cat
+            if (Creature* zentabra = instance->GetCreature(_zentabraGUID))
+            {
+                zentabra->CastSpell(zentabra, 207416, true);
+                //move to destromath
+            }
+            //bird
+            if (Creature* coth = instance->GetCreature(_cothGUID))
+            {
+                coth->CastSpell(coth, 207420, true);
+                coth->Say("I'm gonna light you up!", LANG_UNIVERSAL);
+                //move to destromath
+            }
+
+            ///destromath enterCombat 207423
+            //In Mannoroth's name!
+
+            ///lyess
+            //75%
+            //I can feel the corruption receiding.We must push forward!
+            //50%
+            //The darkness is fading faster with every moment.This day will be ours!
+            //25%
+            //We are almost ther - do not give up hope!
+
+            //delay 10s summon 3 mob
+            //delay 20s summon 4 mob
+            //delay 20s summon 5 mob
+
+            //107130 仪式准备好了，$n！
+
+            ///104628
+            //107147 我会准备好净化所需的井水。
+            //107148 你得保护我直到仪式完成，否则加尼尔就完了！
+            //SMSG_MOVE_SPLINE_SET_WATER_WALK
+            //ID - 115790 Water Walking
+            //move
+            //ID - 227997 Earthquake Camera Shake 10s
+            //107162 情况有些不对。万灵正在哀嚎。
+            //107163 传送门激活了！
+            //ID - 207215 Ritual of Cleansing
+        }
+        else if (type == DATA_STAGE_4 && data == DONE)
+        {
+            NextStep();
+        }
+        else if (type == DATA_STAGE_5 && data == DONE)
+        {
+            NextStep();
+        }
+        else if (type == DATA_STAGE_6 && data == DONE)
+        {
+            NextStep();
+        }
+        else if (type == DATA_STAGE_7 && data == DONE)
+        {
+            NextStep();
+        }
     }
 
 
@@ -146,6 +249,8 @@ private:
     ObjectGuid _cothGUID;
     ObjectGuid _hamuulGUID;
     ObjectGuid _lyessaGUID;
+    ObjectGuid _destromathGUID;
+    ObjectGuid m_playerGUID;
     uint8 StepID;
     uint8 stage2count;
 };
@@ -159,20 +264,17 @@ struct npc_skylord_omnuron_104620 : public ScriptedAI
         switch (param)
         {
         case 1:
-            me->Say("The gates of hell descended upon us. They were everywhere...", LANG_UNIVERSAL);
+            me->Say(107102);//"The gates of hell descended upon us. They were everywhere...", LANG_UNIVERSAL
 
             me->GetScheduler().Schedule(Milliseconds(2000), [this](TaskContext context)
             {
-                me->Say("The other's wounds are more severe than my own. They are in dire need of aid.", LANG_UNIVERSAL);
+                me->Say(107103);//"The other's wounds are more severe than my own. They are in dire need of aid.", LANG_UNIVERSAL
             });
             ///delay 2s next step
             me->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
             {
-                DoAction(2);
+                instance->SetData(DATA_STAGE_1, DONE);
             });
-            break;
-        case 2:
-            instance->SetData(DATA_STAGE_1, DONE);
             break;
         }
     }
@@ -182,16 +284,6 @@ struct npc_skylord_omnuron_104620 : public ScriptedAI
         instance = me->GetInstanceScript();
     }
 
-    void UpdateAI(uint32 diff) override
-    {
-        _scheduler.Update(diff);
-
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-
     void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
     {
         CloseGossipMenuFor(player);
@@ -199,7 +291,6 @@ struct npc_skylord_omnuron_104620 : public ScriptedAI
     }
 private:
     InstanceScript * instance;
-    TaskScheduler _scheduler;
 };
 
 struct npc_zen_tabra_104658 : public ScriptedAI
@@ -210,7 +301,14 @@ struct npc_zen_tabra_104658 : public ScriptedAI
     {
         switch (param)
         {
-        case 1:
+        case 1:///save me
+            ishaveaura = false;
+            instance->SetData(DATA_STAGE_2, DONE);
+            me->Say(107120);//"Bless ya, $n - I could feel my soul returnin' to the loa.", LANG_UNIVERSAL
+            if (Creature* lyessa = me->FindNearestCreature(NPC_LYESSA_BLOOMWATCHER_104628, 50.0f, true))
+            {
+                me->GetMotionMaster()->MoveCloserAndStop(1, lyessa, 10.0f);
+            }
             break;
         }
     }
@@ -224,12 +322,10 @@ struct npc_zen_tabra_104658 : public ScriptedAI
     void UpdateAI(uint32 diff) override
     {
         _scheduler.Update(diff);
-
+        //save me
         if (ishaveaura && !me->HasAura(207117))
-        {
-            ishaveaura = false;
-            instance->SetData(DATA_STAGE_2, DONE);
-        }
+            DoAction(1);
+
         if (!UpdateVictim())
             return;
 
@@ -249,7 +345,19 @@ struct npc_celestine_of_the_harvest_104657 : public ScriptedAI
     {
         switch (param)
         {
-        case 1:
+        case 1:///save me
+            issaved = true;
+            instance->SetData(DATA_STAGE_2, DONE);
+            me->RemoveAura(68442);
+            me->Say(107116);//"The well was nearly lost during the assault,but so long as a single drop remains there is hope!", LANG_UNIVERSAL
+
+            if (Creature* lyessa = me->FindNearestCreature(NPC_LYESSA_BLOOMWATCHER_104628, 150.0f, true))
+            {            
+                me->GetMotionMaster()->MoveCloserAndStop(1, lyessa, 10.0f);
+            }
+            break;
+        case 2:
+            isstart = true;
             break;
         }
     }
@@ -257,20 +365,52 @@ struct npc_celestine_of_the_harvest_104657 : public ScriptedAI
     void Initialize()
     {
         instance = me->GetInstanceScript();
+        sayhelp = false;
+        issaved = false;
+        isstart = false;
+        me->SetHealth(me->GetMaxHealth()*0.15f);
+        me->CastSpell(me, 207106, true);
     }
 
     void UpdateAI(uint32 diff) override
     {
         _scheduler.Update(diff);
+        if (isstart && !issaved)
+        {
+            if (HealthAbovePct(16) && me->HasAura(207106))
+                me->RemoveAura(207106);
+            if (HealthAbovePct(95) && !me->HasAura(207106))
+                DoAction(1);
+        }
+        
 
         if (!UpdateVictim())
             return;
 
         DoMeleeAttackIfReady();
     }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (!player)
+            return;
+        if (!sayhelp && HealthBelowPct(20))
+        {
+            sayhelp = true;
+            me->Say(107114);//"Oh, my head...I feel dizzy...", LANG_UNIVERSAL
+        }
+           
+    }
 private:
     InstanceScript * instance;
     TaskScheduler _scheduler;
+    bool sayhelp;
+    bool issaved;
+    bool isstart;
 };
 
 struct npc_archdruid_hamuul_runetotem_104659 : public ScriptedAI
@@ -281,7 +421,19 @@ struct npc_archdruid_hamuul_runetotem_104659 : public ScriptedAI
     {
         switch (param)
         {
-        case 1:
+        case 1:///save me
+            issaved = true;
+            instance->SetData(DATA_STAGE_2, DONE);
+            me->RemoveAura(68442);
+            me->Say(107115);//"The Legion has not forgotten their defeat here.", LANG_UNIVERSAL
+
+            if (Creature* lyessa = me->FindNearestCreature(NPC_LYESSA_BLOOMWATCHER_104628, 150.0f, true))
+            {
+                me->GetMotionMaster()->MoveCloserAndStop(1, lyessa, 10.0f);
+            }
+            break;
+        case 2:
+            isstart = true;
             break;
         }
     }
@@ -289,20 +441,50 @@ struct npc_archdruid_hamuul_runetotem_104659 : public ScriptedAI
     void Initialize()
     {
         instance = me->GetInstanceScript();
+        sayhelp = false;
+        issaved = false;
+        isstart = false;
+        me->SetHealth(me->GetMaxHealth()*0.15f);
+        me->CastSpell(me, 207106, true);
     }
 
     void UpdateAI(uint32 diff) override
     {
         _scheduler.Update(diff);
-
+        if (isstart && !issaved)
+        {
+            if (HealthAbovePct(16) && me->HasAura(207106))
+                me->RemoveAura(207106);
+            if (HealthAbovePct(95) && !me->HasAura(207106))
+                DoAction(1);
+        }
+        
         if (!UpdateVictim())
             return;
 
         DoMeleeAttackIfReady();
     }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (!player)
+            return;
+        if (!sayhelp && HealthAbovePct(25) && HealthBelowPct(60))
+        {
+            sayhelp = true;
+            me->Say(107111);//"Thank you, Shan'do. We barely made it out of their last attack.", LANG_UNIVERSAL
+        }
+    }
 private:
     InstanceScript * instance;
     TaskScheduler _scheduler;
+    bool sayhelp;
+    bool issaved;
+    bool isstart;
 };
 
 
@@ -315,9 +497,44 @@ struct npc_lyessa_bloomwatcher_104628 : public ScriptedAI
         switch (param)
         {
         case 1:
-            me->Say("Skylord,you must inform the Dreamgrove.We will make sure no more life is lost this day", LANG_UNIVERSAL);
+            me->Say(107104);
             //move to first position
             me->GetMotionMaster()->MovePoint(1, Position(5475.65f, -3488.561f, 1555.676f), true);
+
+            me->GetScheduler().Schedule(Milliseconds(3000), [this](TaskContext context)
+            {
+                me->Say(107129);
+            });
+            break;
+        case 2:
+            me->GetScheduler().Schedule(Milliseconds(2000), [this](TaskContext context)
+            {
+                me->Say(107147);//"I will use the well's power to absorb G'Hair's corruption into my body.", LANG_UNIVERSAL
+            });
+            me->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
+            {
+                me->CastSpell(me, 115790, true);
+                //Points: X: 5474.202 Y: -3500.13 Z: 1554.453
+                me->GetMotionMaster()->MovePoint(2, Position(5474.202f, -3500.13f, 1554.453f));
+            });
+
+            me->GetScheduler().Schedule(Milliseconds(6000), [this](TaskContext context)
+            {
+                ///ID - 28892 Nature Channeling ID - 207215 Ritual of Cleansing
+                me->CastSpell(me, 207215, true);
+                //lyessa->GetMotionMaster()->MovePoint(3, Position());
+                me->Say(107148);///"You must restore my body while I fight the darkness within my soul. Only then will theritual complete!.", LANG_UNIVERSAL
+            });
+
+            me->GetScheduler().Schedule(Milliseconds(8000), [this](TaskContext context)
+            {
+                instance->SetData(DATA_STAGE_3, DONE);
+            });
+
+            me->GetScheduler().Schedule(Milliseconds(188000), [this](TaskContext context)
+            {
+                instance->SetData(DATA_STAGE_4, DONE);
+            });
             break;
         }
     }
@@ -341,6 +558,104 @@ private:
     TaskScheduler _scheduler;
 };
 
+
+struct npc_destromath_104619 : public BossAI
+{
+    npc_destromath_104619(Creature* creature) : BossAI(creature, DATA_RESTOACQUSITON) { Initialize(); }
+
+    void Reset() override
+    {
+        BossAI::Reset();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        me->Say("In Mannoroth's name!", LANG_UNIVERSAL);
+    }
+
+    void Initialize()
+    {
+        //instance = creature->GetInstanceScript();
+        m_playerGUID = ObjectGuid::Empty;
+    }
+
+    void ScheduleTasks() override
+    {
+        //events.ScheduleEvent(SPELL_REAP_SOUL, 16s);
+        //events.ScheduleEvent(SPELL_SOUL_ECHOES, 10s, 20s);
+        //events.ScheduleEvent(SPELL_SWIRLING_SCYTHE, 12s);
+    }
+
+    void DoAction(int32 param)
+    {
+        switch (param)
+        {
+        case 1:
+            break;
+        }
+    }
+
+    void ExecuteEvent(uint32 eventId) override
+    {
+        switch (eventId)
+        {
+        case 1:
+        {
+            DoCast(1);
+            events.Repeat(16s);
+            break;
+        }
+        case 2:
+        {
+            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1))
+                DoCast(target, 1);
+
+            events.Repeat(10s, 20s);
+            break;
+        }
+        case 3:
+        {
+            DoCastAOE(1);
+
+            // Summon  with 1 to 2 seconds separation
+            SummonMob(3);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    void SummonMob(uint16 count)
+    {
+        me->GetScheduler().Schedule(1s, 2s, [this, count](TaskContext context)
+        {
+            Position pos;
+            GetRandPosFromCenterInDist(me, 30.f, pos);
+            pos.m_positionZ = 20.0f;
+
+            me->SummonCreature(NPC_SKYLORD_OMNURON_104620, pos);
+
+            if (context.GetRepeatCounter() <= count)
+                context.Repeat(1s, 2s);
+        });
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+            return;
+
+        Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+        if (!player)
+            return;
+        m_playerGUID = player->GetGUID();
+    }
+private:
+    InstanceScript * instance;
+    ObjectGuid   m_playerGUID;
+};
+
 void AddSC_scenario_artifact_restoacqusition()
 {
     RegisterInstanceScript(scenario_artifact_restoacqusition, 1599);
@@ -350,4 +665,5 @@ void AddSC_scenario_artifact_restoacqusition()
     RegisterCreatureAI(npc_celestine_of_the_harvest_104657);
     RegisterCreatureAI(npc_archdruid_hamuul_runetotem_104659);
     RegisterCreatureAI(npc_lyessa_bloomwatcher_104628);
+    RegisterCreatureAI(npc_destromath_104619);
 }

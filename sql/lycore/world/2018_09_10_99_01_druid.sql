@@ -33,10 +33,11 @@ UPDATE `instance_template` SET `script`='scenario_artifact_restoacqusition', `in
 DELETE FROM `phase_area` WHERE `AreaId`=8091 AND `PhaseId`=6115;
 INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (8091, 6115, 'Phase 6115 On scenario artifact restoacqusition');
 
+/*
 DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId`=26 AND `SourceGroup`=6115 AND `SourceEntry`=8091);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 (26, 6115, 8091, 0, 0, 9, 0, 41689, 0, 0, 0, 0, "", "");
-
+*/
 UPDATE `gossip_menu_option` SET `OptionType`=1, `OptionNpcFlag`=1, `OptionBroadcastTextId`=38328, `VerifiedBuild`=22566 WHERE (`MenuId`=19406 AND `OptionIndex`=0);
 
 UPDATE `creature_template` SET `npcflag`=1, `ScriptName`='npc_skylord_omnuron_104620' WHERE `entry`=104620;
@@ -45,3 +46,10 @@ UPDATE `creature_template` SET `ScriptName`='npc_celestine_of_the_harvest_104657
 UPDATE `creature_template` SET `ScriptName`='npc_archdruid_hamuul_runetotem_104659' WHERE `entry`=104659;
 UPDATE `creature_template` SET `ScriptName`='npc_lyessa_bloomwatcher_104628' WHERE `entry`=104628;
 UPDATE `creature_template` SET `ScriptName`='npc_destromath_104619' WHERE `entry`=104619;
+
+-- G'Hanir loot
+UPDATE `gameobject_template` SET `Data1`='248499' WHERE `entry`=248499;
+DELETE FROM `gameobject_loot_template` WHERE `Entry` =248499;
+INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES 
+(248499, 128306, 0, 100, 0, 1, 0, 1, 1, 'G''Hanir druid quest');
+UPDATE `gameobject_template` SET `ScriptName`='go_g_hanir_1' WHERE `entry`=248499;

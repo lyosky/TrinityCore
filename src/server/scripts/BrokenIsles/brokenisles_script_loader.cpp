@@ -181,6 +181,7 @@ void AddSC_instance_tomb_of_sargeras();
 void AddSC_scenario_the_violet_hold();
 void AddSC_scenario_artifact_ursocslair();
 void AddSC_scenario_artifact_restoacqusition();
+void AddSC_scenario_artifact_ruins_of_falanaar();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -349,4 +350,5 @@ void AddBrokenIslesScripts()
     AddSC_scenario_the_violet_hold();
     AddSC_scenario_artifact_ursocslair();
     AddSC_scenario_artifact_restoacqusition();
+    AddSC_scenario_artifact_ruins_of_falanaar();
 }

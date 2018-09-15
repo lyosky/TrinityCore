@@ -58,6 +58,8 @@ enum DataTypes
     QUEST_WHEN_DREAMS_BECOME_NIGHTMARES = 40647,
     SCENE_PLAYER_ENTER = 1177,
     GO_CYLINDER_COLLISION = 248827,
+    DRUID_GUARDIA_ACQUISTION_ARTIFACT_LOOTED_SCENE = 1605,
+    //DoPlayScenePackageIdOnPlayers(DRUID_GUARDIA_ACQUISTION_ARTIFACT_LOOTED_SCENE); 
     TEST_EVENT = 9999,
 };
 
@@ -682,12 +684,14 @@ public:
             if (Player* player = unit->ToPlayer())
                 if (player->GetQuestStatus(QUEST_WHEN_DREAMS_BECOME_NIGHTMARES) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_WHEN_DREAMS_BECOME_NIGHTMARES) == QUEST_STATUS_COMPLETE)
                 {
-                    player->CastSpell(player, 199963, true);
-                    player->CastSpell(player, 199960, true);
-                    player->CastSpell(player, 208779, true);
+                    //player->CastSpell(player, 199963, true);
+                    //player->CastSpell(player, 199960, true);
+                    //player->CastSpell(player, 208779, true);
+                    
                     ///Scenaro Complete
                     if (instance = go->GetInstanceScript())
                     {
+                        instance->DoPlayScenePackageIdOnPlayers(DRUID_GUARDIA_ACQUISTION_ARTIFACT_LOOTED_SCENE);
                         instance->CompleteScenario();
                     }
                     player->KilledMonsterCredit(101334);
@@ -706,7 +710,7 @@ public:
                             lea->Say("balarabala", LANG_UNIVERSAL, player);
                             ///player->TeleportTo();
                         });
-                        ///BroadcastTextId: 108061 SoundId: 69750 该走了。这里没我们的事了。你准备好以后就告诉我一声，我会把我们送回现实的身躯里。
+                        ///BroadcastTextId: 108061 SoundId: 69750 ?????????????????????????,??????????????
                     }
                 }
     }

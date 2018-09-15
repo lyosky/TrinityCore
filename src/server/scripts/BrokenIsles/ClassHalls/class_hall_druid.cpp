@@ -54,6 +54,11 @@ enum
     QUEST_FALLEN_OFFERINGS = 41783,
     ///FERAL
     QUEST_THE_SHRINE_OF_ASHAMANE = 42428,
+    NPC_DELANDROS_SHIMMERMOON_107392 = 107392,
+    NPC_VERSTOK_DARKBOUGH_107520 = 107520,
+    QUEST_AID_FOR_THE_ASHEN = 42439,
+    QUEST_THE_SHRINE_IN_PERIL = 42440,
+    NPC_ALGROMON_107593 = 107593,
     ///BALANCE
     QUEST_THE_SCYTHE_OF_ELUNE = 40783,
     ///RESTORATION
@@ -1243,7 +1248,15 @@ Facing: 4.793286
 
         void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
-
+            ///https://www.wowhead.com/achievement=11063/hidden-tracking-1-acquision-line-completed
+            ///https://www.wowhead.com/achievement=11174/hidden-tracking-2-acquision-line-completed
+            if (quest->GetQuestId() == 42430 || quest->GetQuestId() == 40838 || quest->GetQuestId() == 40647 || quest->GetQuestId() == 41689)
+            {
+                if (!player->HasAchieved(11063))
+                    player->CompletedAchievement(11063);
+                else if(!player->HasAchieved(11174))
+                    player->CompletedAchievement(11174);
+            }
         }
         /*
         void sGossipHello(Player* player)
@@ -2248,6 +2261,246 @@ Facing: 4.793286
 
     };
 
+    struct npc_delandros_shimmermoon_107392 : public ScriptedAI
+    {
+        npc_delandros_shimmermoon_107392(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            issay = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            if (!issay && player->HasQuest(QUEST_THE_SHRINE_OF_ASHAMANE) )
+            {
+                issay = true;
+                if (Creature* verstok = me->FindNearestCreature(NPC_VERSTOK_DARKBOUGH_107520, 15.0f, true))
+                {
+                    verstok->Say(111906, me);
+
+                    me->GetScheduler().Schedule(Milliseconds(2000), [verstok](TaskContext context)
+                    {
+                        GetContextCreature()->Say(111926, verstok);
+                    });
+
+                    verstok->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
+                    {
+                        GetContextCreature()->Say(112269, me);
+                    });
+                }
+                
+                me->GetScheduler().Schedule(Milliseconds(30000), [this](TaskContext context)
+                {
+                    issay = false;
+                });
+            }
+
+            if (!issay && player->GetQuestStatus(QUEST_THE_SHRINE_IN_PERIL)== QUEST_STATUS_COMPLETE)
+            {
+                issay = true;
+                Talk(1);
+                me->GetScheduler().Schedule(Milliseconds(3000), [this](TaskContext context)
+                {
+                    Talk(2);
+                });
+                me->GetScheduler().Schedule(Milliseconds(30000), [this](TaskContext context)
+                {
+                    issay = false;
+                });
+            }
+        }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_THE_SHRINE_IN_PERIL)
+            {
+                player->GetSceneMgr().PlayScene(1285);
+                me->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
+                {
+                    Talk(0);
+                });
+            }
+                
+        }
+    private:
+        bool issay;
+    };
+
+    struct npc_eredar_soul_lasher_107535 : public ScriptedAI
+    {
+        npc_eredar_soul_lasher_107535(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        enum Spells
+        {
+            SPELL_TORMENT_1 = 213527,
+            SPELL_TORMENT_2 = 213528,
+            SPELL_LASH_OF_PAIN = 176185,
+            SPELL_CURSE_OF_TORMENT = 180395
+        };
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            if (Creature* druid = me->FindNearestCreature(107389, 15.0f, true))
+                me->CastSpell(druid, SPELL_TORMENT_1, true);
+        }
+
+        void EnterCombat(Unit*) override
+        {
+            me->GetScheduler().Schedule(Milliseconds(2500), [this](TaskContext context)
+            {
+                me->CastSpell(me->GetVictim(), SPELL_LASH_OF_PAIN, true);
+                
+                context.Repeat(Milliseconds(3000));
+            });
+
+            me->GetScheduler().Schedule(Seconds(5), [this](TaskContext context)
+            {
+                me->CastSpell(me->GetVictim(), SPELL_CURSE_OF_TORMENT, true);
+                context.Repeat(Seconds(15));
+            });
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            if (Creature* druid = me->FindNearestCreature(107389, 15.0f, true))
+            {
+                druid->RemoveAura(SPELL_TORMENT_2);
+                druid->AI()->Talk(urand(0, 2));
+                druid->GetMotionMaster()->MoveAwayAndDespawn(10.0f, 2000);
+            }
+        }
+    };
+
+    struct npc_investigate_shrine_kill_credit_107607 : public ScriptedAI
+    {
+        npc_investigate_shrine_kill_credit_107607(Creature* creature) : ScriptedAI(creature) {  }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (Player* player = who->ToPlayer())
+                if (player->GetDistance(me) < 5.0f)
+                    if (!player->GetQuestObjectiveData(QUEST_THE_SHRINE_IN_PERIL, 0))
+                    {
+                        player->KilledMonsterCredit(me->GetEntry());
+                        player->GetSceneMgr().PlayScene(1286);
+                    }
+        }
+    };
+
+    ///scene 1286
+    class scene_druid_feral_investigate : public SceneScript
+    {
+    public:
+        scene_druid_feral_investigate() : SceneScript("scene_druid_feral_investigate") { }
+
+        void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/)
+        {
+            TempSummon* algromon = player->SummonCreature(NPC_ALGROMON_107593, Position(3531.1899f, 5538.5698f, 323.411f, 3.1076f));
+            algromon->RemoveAura(213626);
+
+            Position pos;
+            GetRandPosFromCenterInDist(algromon, 5.0f, pos);
+
+            TempSummon* ashendruid1 = algromon->SummonCreature(107390, Position(3486.39917f, 5544.291f, 323.558136f, 6.208363f));
+            ashendruid1->AI()->Talk(0);
+            ashendruid1->GetMotionMaster()->MovePoint(1, pos, true);
+            ashendruid1->Attack(algromon, true);
+            GetRandPosFromCenterInDist(algromon, 10.f, pos);
+            TempSummon* ashendruid2 = algromon->SummonCreature(107390, Position(3486.743652f, 5537.70459f, 323.189392f, 6.208362f));
+            ashendruid2->GetMotionMaster()->MovePoint(1, pos, true);
+            ashendruid2->Attack(algromon, true);
+
+            algromon->Attack(ashendruid1, true);
+        }
+    };
+
+    enum
+    {
+        SPELL_CLEAVE = 207942,
+        SPELL_FEL_FIRESTORM = 197818,
+        SPELL_TREMBLING_STOMP = 197816,
+        PHASE_AFTER_KILL_ALGROMON = 6511,
+    };
+
+    struct npc_algromon_107593 : public BossAI
+    {
+        npc_algromon_107593(Creature* creature) : BossAI(creature, 0) { }
+
+        void JustDied(Unit* killer) override
+        {
+            BossAI::JustDied(killer);
+
+            std::list<Player*> players;
+            me->GetPlayerListInGrid(players, 50.0f);
+
+            for (Player* player : players)
+                PhasingHandler::AddPhase(player, PHASE_AFTER_KILL_ALGROMON, true);
+        }
+
+        void ScheduleTasks() override
+        {
+            events.ScheduleEvent(SPELL_CLEAVE, 10s);
+            events.ScheduleEvent(SPELL_FEL_FIRESTORM, 10s, 20s);
+            events.ScheduleEvent(SPELL_TREMBLING_STOMP, 12s);
+        }
+
+        void ExecuteEvent(uint32 eventId) override
+        {
+            switch (eventId)
+            {
+            case SPELL_CLEAVE:
+            {
+                DoCast(SPELL_CLEAVE);
+                events.Repeat(10s);
+                break;
+            }
+            case SPELL_FEL_FIRESTORM:
+            {
+                DoCast(SPELL_FEL_FIRESTORM);
+                events.Repeat(10s, 20s);
+                break;
+            }
+            case SPELL_TREMBLING_STOMP:
+            {
+                DoCast(SPELL_TREMBLING_STOMP);
+                events.Repeat(12s);
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    };
+
+    struct npc_ebonfang_107729 : public ScriptedAI
+    {
+        npc_ebonfang_107729(Creature* creature) : ScriptedAI(creature) { }
+
+        void OnSpellClick(Unit* clicker, bool& /*result*/)
+        {
+            if (Player* player = clicker->ToPlayer())
+                if(player->HasQuest(42430))
+                    player->TeleportTo(1612, Position(1940.97f, 5558.38f, 60.66f, 4.746947f));
+        }
+    };
+
 
 void AddSC_class_hall_druid()
 {
@@ -2293,4 +2546,11 @@ void AddSC_class_hall_druid()
     RegisterCreatureAI(npc_lyessa_bloomwatcher_104573);
     new go_g_hanir();
     RegisterCreatureAI(npc_lyessa_bloomwatcher_104577);
+
+    RegisterCreatureAI(npc_delandros_shimmermoon_107392);
+    RegisterCreatureAI(npc_eredar_soul_lasher_107535);
+    RegisterCreatureAI(npc_investigate_shrine_kill_credit_107607);
+    new scene_druid_feral_investigate();
+    RegisterCreatureAI(npc_algromon_107593);
+    RegisterCreatureAI(npc_ebonfang_107729);
 }

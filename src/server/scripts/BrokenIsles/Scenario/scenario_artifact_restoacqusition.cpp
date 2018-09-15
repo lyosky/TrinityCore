@@ -19,6 +19,7 @@ enum
     DATA_MAX_ENCOUNTERS = 8,
     NORMAL_PHASE = 6115,
     QUEST_CLEANSING_THE_MOTHER_TREE = 41689,
+    DRUID_RESTO_ACQUISTION_ARTIFACT_LOOTED_SCENE = 1595,
 };
 
 enum
@@ -208,23 +209,23 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             //50%
             //The darkness is fading faster with every moment.This day will be ours!
             //25%
-            //107269 式就快完成了。不要放弃希望！We are almost ther - do not give up hope!
+            //107269 ?????????????!We are almost ther - do not give up hope!
 
             //delay 10s summon 3 mob
             //delay 20s summon 4 mob
             //delay 20s summon 5 mob
 
-            //107130 仪式准备好了，$n！
+            //107130 ??????,$n!
 
             ///104628
-            //107147 我会准备好净化所需的井水。
-            //107148 你得保护我直到仪式完成，否则加尼尔就完了！
+            //107147 ?????????????
+            //107148 ???????????,????????!
             //SMSG_MOVE_SPLINE_SET_WATER_WALK
             //ID - 115790 Water Walking
             //move
             //ID - 227997 Earthquake Camera Shake 10s
-            //107162 情况有些不对。万灵正在哀嚎。
-            //107163 传送门激活了！
+            //107162 ??????????????
+            //107163 ??????!
             //ID - 207215 Ritual of Cleansing
         }
         else if (type == DATA_STAGE_4 && data == DONE)
@@ -242,15 +243,15 @@ struct scenario_artifact_restoacqusition : public InstanceScript
                 });
             }  
             //
-            //    107222 恶魔的攻势猛烈。我需要支援！ man
-            //    108260 净化这根法杖吧，我的孩子。我来挡住那个畜生！female
+            //    107222 ?????????????! man
+            //    108260 ???????,?????????????!female
 
-            //    107280 可悲的爬虫。这又是什么把戏？
-            //    108261 快，英雄！我们就快成功了。把法杖给我！
+            //    107280 ??????????????
+            //    108261 ?,??!?????????????!
 
-            //108566 森林之魂！自然的守护者！请聆听我们的祈祷！
-            //108567 今天，母亲之树重获新生！加尼尔完好如初了！
-            //https://cn.wowhead.com/spell=207544 光束 on 104726
+            //108566 ????!??????!????????!
+            //108567 ??,????????!????????!
+            //https://cn.wowhead.com/spell=207544 ?? on 104726
         }
         else if (type == DATA_STAGE_5 && data == DONE)
         {
@@ -267,6 +268,7 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             if (Creature* lyessa = instance->GetCreature(_lyessaGUID))
                 lyessa->Say(108261);
             NextStep();
+            DoPlayScenePackageIdOnPlayers(DRUID_RESTO_ACQUISTION_ARTIFACT_LOOTED_SCENE);
             DoCastSpellOnPlayers(207582);
         }
         else if (type == DATA_STAGE_7 && data == DONE)

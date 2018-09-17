@@ -61,6 +61,10 @@ enum
     NPC_ALGROMON_107593 = 107593,
     ///BALANCE
     QUEST_THE_SCYTHE_OF_ELUNE = 40783,
+    QUEST_ITS_RIGHTFUL_PLACE = 40784,
+    QUEST_A_FOE_OF_THE_DARK = 40785,
+    QUEST_FOLLOWING_THE_CURSE = 40834,
+    NPC_NARALEX_103778 = 103778,
     ///RESTORATION
     QUEST_MEET_WITH_MYLUNE = 40649,
     QUEST_NECESSARY_PREPARATIONS = 41422,
@@ -121,6 +125,15 @@ public:
                 {
                         who->ToPlayer()->TeleportTo(1599, 5465.67f, -3447.32f, 1559.12f, 4.987278f);
                 }
+                else if (who->ToPlayer()->HasQuest(QUEST_THE_SCYTHE_OF_ELUNE) && me->GetEntry() == 107260)
+                {
+                    if (!who->ToPlayer()->GetQuestObjectiveData(QUEST_THE_SCYTHE_OF_ELUNE, 0))
+                    {
+                        who->ToPlayer()->KilledMonsterCredit(103585);
+                        who->CastSpell(who, _teleportSpell, true);
+                    }
+                   
+                }    
                 else
                     who->CastSpell(who, _teleportSpell, true);
             }
@@ -1316,8 +1329,16 @@ Facing: 4.793286
             {
             case PLAYER_CHOICE_DRUID_BALANCE:
                 if (player->GetQuestStatus(QUEST_THE_SCYTHE_OF_ELUNE) == QUEST_STATUS_NONE)
-                    if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_THE_SCYTHE_OF_ELUNE))
-                        player->AddQuest(quest, nullptr);                  
+                    if (Creature* naralex = player->FindNearestCreature(NPC_NARALEX_103778, 15.0f, true))
+                    {
+                        naralex->Say(106125, player);
+                        if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_THE_SCYTHE_OF_ELUNE))
+                            player->AddQuest(quest, naralex);
+                        naralex->GetScheduler().Schedule(Milliseconds(2000), [player](TaskContext context)
+                        {
+                            GetContextCreature()->Say(106128, player);
+                        });
+                    }              
                 break;
             case PLAYER_CHOICE_DRUID_FERAL:
                 if (player->GetQuestStatus(QUEST_THE_SHRINE_OF_ASHAMANE) == QUEST_STATUS_NONE)
@@ -2501,6 +2522,212 @@ Facing: 4.793286
         }
     };
 
+    struct npc_naralex_103778 : public ScriptedAI
+    {
+        npc_naralex_103778(Creature* creature) : ScriptedAI(creature) {}
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_THE_SCYTHE_OF_ELUNE)
+            {
+                me->Say(106125, player);
+                me->GetScheduler().Schedule(Milliseconds(2000), [player](TaskContext context)
+                {
+                    GetContextCreature()->Say(106128, player);
+                });
+            }
+        }
+    };
+
+    enum PHASES
+    {
+        QUEST_THE_SCYTHE_OF_ELUNE_PHASE = 5677,
+        QUEST_ITS_RIGHTFUL_PLACE_PHASE_1 = 5678,
+        QUEST_ITS_RIGHTFUL_PLACE_PHASE_2 = 5679,
+
+        ACTION_QUEST_ITS_RIGHTFUL_PLACE = 1,
+    };
+    struct npc_valorn_stillbough_101656 : public ScriptedAI
+    {
+        npc_valorn_stillbough_101656(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void DoAction(int32 param)
+        {
+            switch (param)
+            {
+            case ACTION_QUEST_ITS_RIGHTFUL_PLACE:
+                if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
+                {
+                    if (!issay && !player->GetQuestObjectiveData(QUEST_ITS_RIGHTFUL_PLACE, 0))
+                    {
+                        issay = true;
+                        PhasingHandler::RemovePhase(player, QUEST_THE_SCYTHE_OF_ELUNE_PHASE);
+                        PhasingHandler::AddPhase(player, QUEST_ITS_RIGHTFUL_PLACE_PHASE_1);
+                        //summon 101657
+                        TempSummon* ariden = player->SummonCreature(107390, Position(-10330.9f, -488.30899f, 50.445f, 2.81726f));
+                        PhasingHandler::InheritPhaseShift(ariden, player);
+                        //cast something
+                        ariden->Yell(104055);
+
+                        player->KilledMonsterCredit(101702);
+                        if (Creature* belysra = me->FindNearestCreature(101651, 15.0f, true))
+                        {
+                            belysra->Yell(104056);
+
+                            belysra->GetScheduler().Schedule(Milliseconds(2000), [belysra](TaskContext context)
+                            {
+                                belysra->Say(104059);
+                            });
+                        }
+                            
+                        me->GetScheduler().Schedule(Milliseconds(3000), [player, ariden](TaskContext context)
+                        {
+                            PhasingHandler::AddPhase(player, QUEST_ITS_RIGHTFUL_PLACE_PHASE_2);
+                            PhasingHandler::RemovePhase(player, QUEST_ITS_RIGHTFUL_PLACE_PHASE_1);
+                            PhasingHandler::InheritPhaseShift(ariden, player);
+                        });
+                        
+                        ariden->GetMotionMaster()->MoveAwayAndDespawn(50.0f, 5000);
+                        me->GetScheduler().Schedule(Milliseconds(4000), [this](TaskContext context)
+                        {
+                            issay = false;
+                        });        
+                    }
+                }
+                break;
+            }
+        }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            m_playerGUID = player->GetGUID();
+            if (quest->GetQuestId() == QUEST_ITS_RIGHTFUL_PLACE)
+                DoAction(ACTION_QUEST_ITS_RIGHTFUL_PLACE);
+        }
+
+        void Initialize()
+        {
+            issay = false;
+            m_playerGUID = ObjectGuid::Empty;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            m_playerGUID = player->GetGUID();
+
+            if (player->HasQuest(QUEST_THE_SCYTHE_OF_ELUNE) && player->GetQuestStatus(QUEST_THE_SCYTHE_OF_ELUNE) == QUEST_STATUS_INCOMPLETE && !player->GetQuestObjectiveData(QUEST_THE_SCYTHE_OF_ELUNE, 1) )
+            {
+                me->Say(104053);
+                player->KilledMonsterCredit(101701);
+                me->GetScheduler().Schedule(Milliseconds(2000), [player](TaskContext context)
+                {
+                    GetContextCreature()->Say(104054, player);
+                });
+            }
+            if (player->HasQuest(QUEST_ITS_RIGHTFUL_PLACE) && player->GetQuestStatus(QUEST_ITS_RIGHTFUL_PLACE) == QUEST_STATUS_INCOMPLETE && !player->GetQuestObjectiveData(QUEST_ITS_RIGHTFUL_PLACE, 0))
+                DoAction(ACTION_QUEST_ITS_RIGHTFUL_PLACE);
+        }
+    private:
+        bool issay;
+        ObjectGuid   m_playerGUID;
+    };
+
+    ///
+    struct npc_revil_kost_100323 : public ScriptedAI
+    {
+        npc_revil_kost_100323(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_FOLLOWING_THE_CURSE)
+            {
+                Creature* revil = player->SummonCreature(100578, me->GetPosition());
+                PhasingHandler::InheritPhaseShift(revil, player);
+
+                revil->GetMotionMaster()->MovePoint(1, revil->GetPositionWithDistInFront(25.0f), true);
+                //WP START
+                revil->AI()->Talk(0);
+
+                revil->GetScheduler().Schedule(Milliseconds(2000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(1);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(4000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(2);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(6000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(3);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(8000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(4);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(10000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(5);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(12000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(6);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(14000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(7);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(16000), [revil](TaskContext context)
+                {
+                    revil->AI()->Talk(8);
+                });
+                revil->GetScheduler().Schedule(Milliseconds(18000), [revil, player](TaskContext context)
+                {
+                    revil->AI()->Talk(9);
+                    player->KilledMonsterCredit(100655);
+                    revil->DespawnOrUnsummon(1000);
+                });    
+            }
+        }
+        void Initialize()
+        {
+            m_playerGUID = ObjectGuid::Empty;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            m_playerGUID = player->GetGUID();
+            if (!IsLock && player->HasQuest(QUEST_A_FOE_OF_THE_DARK) && player->GetQuestStatus(QUEST_A_FOE_OF_THE_DARK) == QUEST_STATUS_INCOMPLETE && !player->GetQuestObjectiveData(QUEST_A_FOE_OF_THE_DARK, 0))
+            {
+                IsLock = true;
+                me->Say(104555, player);          
+                me->GetScheduler().Schedule(Milliseconds(2000), [player](TaskContext context)
+                {
+                    GetContextCreature()->Say(104556, player);
+                });
+                me->GetScheduler().Schedule(Milliseconds(4000), [player](TaskContext context)
+                {
+                    GetContextCreature()->Say(104557, player);
+                    player->KilledMonsterCredit(102291);
+                });
+                SetUnlock(30000);
+            }
+        }
+    private:
+        ObjectGuid   m_playerGUID;
+    };
+
 
 void AddSC_class_hall_druid()
 {
@@ -2553,4 +2780,8 @@ void AddSC_class_hall_druid()
     new scene_druid_feral_investigate();
     RegisterCreatureAI(npc_algromon_107593);
     RegisterCreatureAI(npc_ebonfang_107729);
+
+    RegisterCreatureAI(npc_naralex_103778);
+    RegisterCreatureAI(npc_valorn_stillbough_101656);
+    RegisterCreatureAI(npc_revil_kost_100323);
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -159,6 +159,14 @@ void ScriptedAI::UpdateAI(uint32 diff)
     events.Update(diff);
 
     DoMeleeAttackIfReady();
+}
+
+void ScriptedAI::SetUnlock(uint32 time)
+{
+    me->GetScheduler().Schedule(Milliseconds(time), [this](TaskContext context)
+    {
+        IsLock = false;
+    });
 }
 
 void ScriptedAI::DoStartMovement(Unit* victim, float distance, float angle)

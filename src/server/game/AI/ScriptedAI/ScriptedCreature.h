@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -187,6 +187,11 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
     SummonList summons;
     EventMap events;
     InstanceScript* const instance;
+
+    //For lock
+    bool IsLock;
+    //Delay to unlock
+    void SetUnlock(uint32 time);
 
     // *************
     //Pure virtual functions

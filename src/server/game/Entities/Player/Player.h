@@ -2532,6 +2532,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         ArchaeologyPlayerMgr& GetArchaeologyMgr() { return m_archaeologyPlayerMgr; }
 
         bool MeetPlayerCondition(uint32 conditionId) const;
+
+        // Send custom message with system message (addon, custom interfaces ...etc)
+        void SendCustomMessage(std::string const& opcode, std::string const& data = "");
+        void SendCustomMessage(std::string const& opcode, std::vector<std::string> const& data);
 				
 		/* delay teleport */
         void AddDelayedTeleport(uint32 delay, uint32 mapID, float x, float y, float z, float o)

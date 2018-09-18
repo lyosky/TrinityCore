@@ -64,6 +64,9 @@ enum
     QUEST_ITS_RIGHTFUL_PLACE = 40784,
     QUEST_A_FOE_OF_THE_DARK = 40785,
     QUEST_FOLLOWING_THE_CURSE = 40834,
+    QUEST_DISTURBING_THE_PAST = 40835,
+    QUEST_THE_DEADWIND_HUNT = 40837,
+    QUEST_THE_DARK_RIDERS = 40838,
     NPC_NARALEX_103778 = 103778,
     ///RESTORATION
     QUEST_MEET_WITH_MYLUNE = 40649,
@@ -2025,59 +2028,59 @@ Facing: 4.793286
         bool isTalk;
     };
 
-    ///QUEST_IN_DEEP_SLUMBER USE item 135506 cast 206548 conversation 1512?  1515 你能听见吗  say 106847 on accept 208496 208491 206552 207668 206571 206556 206566
-    /// 206773->conversation 1549 106955 你得提高警惕。千万不能让梦魇控制你。
-    ///1531 106942 你还好吗？最艰难的阶段已经过去了。  106943 你就快成功了！保持专注！
-    ///1548 106954 小心点，我感觉到梦魇在侵袭你的头脑
-    ///1563 107007 古树在上，你救下加尼尔了！
-    ///1562 107003 帮帮我！我快要压制不住这些腐蚀了！
+    ///QUEST_IN_DEEP_SLUMBER USE item 135506 cast 206548 conversation 1512?  1515 ?????  say 106847 on accept 208496 208491 206552 207668 206571 206556 206566
+    /// 206773->conversation 1549 106955 ??????????????????
+    ///1531 106942 ?????????????????  106943 ??????!????!
+    ///1548 106954 ???,?????????????
+    ///1563 107007 ????,???????!
+    ///1562 107003 ???!????????????!
 
 
-    ///1573 107057 加尼尔的腐蚀每时每刻都在加重。但愿你还来得及！
-    ///1564 107008 加尼尔坚持不了多久。我们必须净化它。 107009 我们得帮巴珊娜清除这里剩余的梦魇。加尼尔的命运就看莱莎和$p的了。
-    ///1576 107059 不久前，哈缪尔·符文图腾带领一支小队去诺达希尔附近调查军团的活动了。他或许能帮你。
-    ///1579 107062 净化了加尼尔，就能帮大德鲁伊巨蹄清理梦境林里的梦魇了。107063 但愿加尼尔还有救。
+    ///1573 107057 ??????????????????????!
+    ///1564 107008 ?????????????????? 107009 ????????????????????????????$p???
+    ///1576 107059 ???,????????????????????????????????????
+    ///1579 107062 ??????,????????????????????107063 ?????????
     ///1596
-    ///1582 107069 $n……感谢上古诸神，你终于来了。
-    ///1597 107102 冥狱之门向我们敞开了。它们无处不在…… 107103 先去照顾其他人吧。他们的伤比我严重得多。 107104 啸天者，你得通知梦境林地。我们今天的牺牲者已经够多了。 107129 $p，救救这些伤员吧。我来准备净化仪式。
-    ///1600 107114 哦，我的头……我头晕……
-    ///1601 107116 这口井差点就毁于突袭。但只要还有一滴水，我们就有希望！
-    ///1598 107111 谢谢你，$n。我们差点就没顶住上一波攻击。
-    ///1599 107115 燃烧军团还没忘记上次的失败。
-    ///1602 107120 祝福你，$n。我的灵魂都快要回到神灵的怀抱了。
-    ///1603 107130 仪式准备好了，$n！
-    ///1609 107147 我会准备好净化所需的井水。 107148 你得保护我直到仪式完成，否则加尼尔就完了！
-    ///1612 107162 情况有些不对。万灵正在哀嚎。 107163 传送门激活了！
-    ///1623 107206 保住我们的命，我们就能为你争取足够的时间。 107207 为了加尼尔！
-    ///1631 107224 以玛诺洛斯的名义！
-    ///1635 107229 你的生命在流逝。
-    ///1632 108554 我对你很不满意。
-    ///1643 107262 月井的力量正在增强。我们得继续前进！
-    ///1634 107228 一群待宰的羔羊。
+    ///1582 107069 $n..??????,??????
+    ///1597 107102 ?????????????????.. 107103 ???????????????????? 107104 ???,??????????????????????? 107129 $p,?????????????????
+    ///1600 107114 ?,???..???..
+    ///1601 107116 ???????????????????,??????!
+    ///1598 107111 ???,$n???????????????
+    ///1599 107115 ??????????????
+    ///1602 107120 ???,$n?????????????????
+    ///1603 107130 ??????,$n!
+    ///1609 107147 ????????????? 107148 ???????????,????????!
+    ///1612 107162 ?????????????? 107163 ??????!
+    ///1623 107206 ??????,?????????????? 107207 ?????!
+    ///1631 107224 ????????!
+    ///1635 107229 ????????
+    ///1632 108554 ????????
+    ///1643 107262 ?????????????????!
+    ///1634 107228 ????????
     ///1635
-    ///1644 107263 这力量时刻都在变强。胜利在望了！
-    ///1636 107230 都化为火海吧！
-    ///1637 107231 颤抖吧！
-    ///1647 107269 仪式就快完成了。不要放弃希望！ 107222 恶魔的攻势猛烈。我需要支援！
+    ///1644 107263 ???????????????!
+    ///1636 107230 ??????!
+    ///1637 107231 ???!
+    ///1647 107269 ??????????????! 107222 ?????????????!
     ///1637
     ///1635
     ///1896
-    ///1850 108260 净化这根法杖吧，我的孩子。我来挡住那个畜生！ 107280 可悲的爬虫。这又是什么把戏？
-    ///3768 108261 快，英雄！我们就快成功了。把法杖给我！
-    ///1899 108566 森林之魂！自然的守护者！请聆听我们的祈祷！  108567 今天，母亲之树重获新生！加尼尔完好如初了！
+    ///1850 108260 ???????,?????????????! 107280 ??????????????
+    ///3768 108261 ?,??!?????????????!
+    ///1899 108566 ????!??????!????????!  108567 ??,????????!????????!
     ///spell https://cn.wowhead.com/spell=207544
     ///https://cn.wowhead.com/spell=206776/%E6%A2%A6%E9%AD%87%E8%99%9A%E7%A9%BA
 
-    ///1649 107268 n，用加尼尔召唤森林之魂来摧毁这个恶魔吧！
+    ///1649 107268 n,??????????????????!
     ///https://cn.wowhead.com/spell=204873
 
-    ///1659 107307 我要杀了你！
-    ///1660 107308 这世界必将……燃烧…… 107309 成功了！回梦境林地去，把胜利的消息告诉他们吧。 107310 我们得再停留一阵子，帮助啸天者欧穆隆的部队。 107311 谢谢你，$n。没有你，我们就死定了
+    ///1659 107307 ?????!
+    ///1660 107308 ?????..??.. 107309 ???!??????,???????????? 107310 ?????????,???????????? 107311 ???,$n????,??????
     /// 206864  complete spell
 
-    ///1663 107324 要不是$p，我们早就死在海加尔山顶了。 107325 加尼尔和诺达希尔也会被燃烧军团摧毁。
+    ///1663 107324 ???$p,????????????? 107325 ??????????????????
     ///2912
-    ///2921 116713 去找大德鲁伊巨蹄，把事情告诉他。我来看看它还剩下些什么。
+    ///2921 116713 ????????,???????????????????
     class QuestInDeepSlumberUseItem : public PlayerScript
     {
     public:
@@ -2697,6 +2700,7 @@ Facing: 4.793286
         void Initialize()
         {
             m_playerGUID = ObjectGuid::Empty;
+            IsLock = false;
         }
 
         void MoveInLineOfSight(Unit* who) override
@@ -2722,6 +2726,125 @@ Facing: 4.793286
                     player->KilledMonsterCredit(102291);
                 });
                 SetUnlock(30000);
+            }
+        }
+    private:
+        ObjectGuid   m_playerGUID;
+    };
+    ///QUEST_DISTURBING_THE_PAST
+    struct npc_revil_kost_100729 : public ScriptedAI
+    {
+        npc_revil_kost_100729(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_DISTURBING_THE_PAST)
+            {
+                //PhasingHandler::AddPhase(player, PHASE_2
+                player->CastSpell(player, 198271, true);
+         
+                player->SendMoveKnockBack(player, 2.1f, 2.1f, 0.0f, 0.0f);
+                player->CastSpell(player, 200233, true);///conversation 1038
+
+                player->KilledMonsterCredit(245789);
+                player->KilledMonsterCredit(100732);
+
+                me->GetScheduler().Schedule(Milliseconds(2000), [player](TaskContext context)
+                {
+                    GetContextCreature()->Say(103911, player);
+                });
+            }
+        }
+
+        void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+        {
+            if (quest->GetQuestId() == QUEST_DISTURBING_THE_PAST)
+            {
+
+            }
+        }
+        void Initialize()
+        {
+            m_playerGUID = ObjectGuid::Empty;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+        }
+    private:
+        ObjectGuid   m_playerGUID;
+    };
+    ///go 245789 ->198271
+    ///157902 summon ss
+
+    ///QUEST_THE_DEADWIND_HUNT 102162, 102163, 102164, 102165
+    struct npc_credit_worgen_chased : public ScriptedAI
+    {
+        npc_credit_worgen_chased(Creature* creature) : ScriptedAI(creature) {}
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld() || !me->IsWithinDist(who, 15.0f, false))
+                return;
+           
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+
+            player->KilledMonsterCredit(me->GetEntry());
+        }
+    };
+    ///QUEST_THE_DARK_RIDERS
+    struct npc_revil_kost_100812 : public ScriptedAI
+    {
+        npc_revil_kost_100812(Creature* creature) : ScriptedAI(creature) { Initialize(); }
+
+        void sQuestAccept(Player* player, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_THE_DARK_RIDERS)
+            {
+                me->Say(106323);
+                ///https://cn.wowhead.com/spell=205426/warm-up-scythe-scenario
+                ///complete quest
+                ///player->CastSpell(player, 205426, true);
+                //tele to scenario
+                //ScenarioID: 1014
+                //.go -11018.37f -2002.739f 24.99422 1533
+                player->TeleportTo(1533, Position(-11018.37f, -2002.739f, 24.99422f, 1.369567f));
+                ///https://cn.wowhead.com/spell=222599/revil-spawned
+                ///https://cn.wowhead.com/spell=199631/ping-revil
+                //PhasingHandler::AddPhase(player, 169);
+            }
+        }
+        void Initialize()
+        {
+            m_playerGUID = ObjectGuid::Empty;
+            IsLock = false;
+        }
+
+        void MoveInLineOfSight(Unit* who) override
+        {
+            if (!who || !who->IsInWorld())
+                return;
+            if (!me->IsWithinDist(who, 15.0f, false))
+            {
+                return;
+            }
+            Player* player = who->GetCharmerOrOwnerPlayerOrPlayerItself();
+            if (!player)
+                return;
+            m_playerGUID = player->GetGUID();
+            if (!IsLock && player->HasQuest(QUEST_THE_DEADWIND_HUNT) && player->GetQuestStatus(QUEST_THE_DEADWIND_HUNT) == QUEST_STATUS_COMPLETE && player->GetQuestStatus(QUEST_THE_DEADWIND_HUNT) != QUEST_STATUS_REWARDED)
+            {
+                IsLock = true;
+                me->Say(104436, player);
+                SetUnlock(15000);
             }
         }
     private:
@@ -2784,4 +2907,7 @@ void AddSC_class_hall_druid()
     RegisterCreatureAI(npc_naralex_103778);
     RegisterCreatureAI(npc_valorn_stillbough_101656);
     RegisterCreatureAI(npc_revil_kost_100323);
+    RegisterCreatureAI(npc_revil_kost_100729);
+    RegisterCreatureAI(npc_credit_worgen_chased);
+    RegisterCreatureAI(npc_revil_kost_100812);
 }

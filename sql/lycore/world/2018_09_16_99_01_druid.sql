@@ -317,6 +317,11 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (102200, 4, 0, '|TInterface\\Icons\\spell_nature_stranglevines:20|t使用|cFFFF0000|Hspell:339|h[纠缠根须]|h|r击退或击晕埃瑞丁，防止他靠近你！', 42, 0, 100, 0, 0, 0, 106075, '埃瑞丁 to Player'),
 (102200, 5, 0, '我会再次……驰骋……', 14, 0, 100, 0, 0, 60273, 104521, '埃瑞丁 to Player');
 
+DELETE FROM `creature_text` WHERE (`CreatureID`=100938 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100937 AND `GroupID`='0' AND `ID`='0') ;
+INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
+(100938, 0, 0, '我们要拿走属于我们的东西！', 14, 0, 100, 0, 0, 0, 0, '黑暗骑士'),
+(100937, 0, 0, '神器在召唤我们！', 14, 0, 100, 0, 0, 0, 0, '黑暗骑士');
+
 DELETE FROM `creature_text_locale` WHERE ((`CreatureID`=100938 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=99875 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100323 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100323 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=100323 AND `GroupID`='2' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='2' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='3' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='4' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='5' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='6' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='7' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='8' AND `ID`='0') OR (`CreatureID`=100578 AND `GroupID`='9' AND `ID`='0') OR (`CreatureID`=100704 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100707 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100812 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100850 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=101282 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=101282 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=101282 AND `GroupID`='2' AND `ID`='0') OR (`CreatureID`=101282 AND `GroupID`='3' AND `ID`='0') OR (`CreatureID`=101286 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=101286 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=102121 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='2' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='3' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='4' AND `ID`='0') OR (`CreatureID`=102200 AND `GroupID`='5' AND `ID`='0')) AND (`locale`='zhCN') ;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Text`) VALUES
 (99875, 0, 0, 'zhCN', '一个不留！'),
@@ -370,6 +375,11 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Te
 (102200, 4, 0, 'zhCN', '|TInterface\\Icons\\spell_nature_stranglevines:20|t使用|cFFFF0000|Hspell:339|h[纠缠根须]|h|r击退或击晕埃瑞丁，防止他靠近你！'),
 (102200, 5, 0, 'zhCN', '我会再次……驰骋……');
 
+DELETE FROM `creature_text_locale` WHERE ((`CreatureID`=100938 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=100937 AND `GroupID`='0' AND `ID`='0')) AND (`locale`='zhCN') ;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Text`) VALUES
+(100938, 0, 0, 'zhCN', '我们要拿走属于我们的东西！'),
+(100937, 0, 0, 'zhCN', '神器在召唤我们！');
+
 INSERT IGNORE INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `user_type`) VALUES
 (114296, 227368, 0, 0);
 
@@ -420,7 +430,11 @@ DELETE FROM `page_text_locale` WHERE `ID`=5232 AND `locale`='zhCN';
 INSERT INTO `page_text_locale` (`ID`, `locale`, `Text`, `VerifiedBuild`) VALUES 
 (5232, 'zhCN', '箱子里装着各种神奇的小玩意。\n\n仔细检查之后，你发现这些“圣物”不过只是些高仿的赝品。', 22594);
 
+-- 5233
+
 UPDATE `creature_template` SET `ScriptName`='npc_naralex_103778' WHERE `entry`=103778;
+
+UPDATE `creature` SET `id`='101286' WHERE `guid`=453275;
 
 DELETE FROM `spell_target_position` WHERE `ID`=205013;
 INSERT INTO `spell_target_position` (`ID`, `EffectIndex`, `MapID`, `PositionX`, `PositionY`, `PositionZ`, `VerifiedBuild`) VALUES 
@@ -441,3 +455,97 @@ DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
 
 UPDATE `creature_template` SET `ScriptName`='npc_valorn_stillbough_101656' WHERE `entry`=101656;
 UPDATE `creature_template` SET `ScriptName`='npc_revil_kost_100323' WHERE `entry`=100323;
+UPDATE `creature_template` SET `ScriptName`='npc_revil_kost_100729' WHERE `entry`=100729; 
+UPDATE `creature_template` SET `ScriptName`='npc_credit_worgen_chased' WHERE `entry` IN (102162, 102163, 102164, 102165);
+UPDATE `creature_template` SET `ScriptName`='npc_revil_kost_100812' WHERE `entry`=100812;
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40834 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(40834, 'zhCN', '很奇怪，黑暗骑士没有跟来，不过我会好好把握任何有利的条件。$B$B我相信，寻找黑暗骑士的关键就在附近。我们开始搜查吧。', 22566); 
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40835 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(40835, 'zhCN', '日记本散发出黑暗能量的嗡鸣，上面似乎是埃瑞丁的字迹，记载着他在逆风小径的事情。其中一则记录令人注目：$B$B“夜行狼人近来多有骚动，到处散播着关于月神镰刀已经离开达纳苏斯的流言。它一定是接近这里了，因为狼人一直受到它的吸引。他们肯定会带我找到它的。$B$B那些该死的暗夜精灵以为武器在他们手上很安全。他们很快就会知道自己错得有多么离谱。”', 22566); 
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40837 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(40837, 'zhCN', '狼人好像被吸引到卡拉赞的地下墓穴里了。$B$B难道是……', 22566); 
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40838 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(40838, 'zhCN', '今天黑暗骑士受到了沉重的打击，暮色森林的人民获得了胜利。$B$B他们欠你一个人情，我也是。', 22566); 
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40900 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(40900, 'zhCN', '月神镰刀！$b$b我从未看过有人可以使用那把武器，却没有变成滥杀的野兽。你使它的原始野性得到了平衡。$b$b你得到了艾露恩的眷顾，$n。你做到了其他德鲁伊从未做到的事！', 22566); 
+
+-- scenario_artifact_karazhan_catacombs for Druid - BALANCE Acquisition 
+DELETE FROM `instance_template` WHERE `map` = 1533;
+INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`, `insideResurrection`) VALUES (1533, 0, 'scenario_artifact_karazhan_catacombs', 0, 1);
+
+UPDATE `creature_template` SET `ScriptName`='npc_revil_kost_101282' WHERE `entry`=101282;
+UPDATE `creature_template` SET `ScriptName`='npc_ariden_100850' WHERE `entry`=100850;
+UPDATE `creature_template` SET `ScriptName`='npc_the_conservator_101257' WHERE `entry`=101257;
+UPDATE `creature_template` SET `ScriptName`='npc_ariden_102200' WHERE `entry`=102200;
+
+UPDATE `gameobject_template` SET `ScriptName`='go_the_scythe_of_elune_1' WHERE `entry`=246436;
+-- change to summon on use go 246436
+DELETE FROM `creature` WHERE `guid`=453426 AND `id`=100850;
+
+-- go loot 246437 scythe-of-elune
+UPDATE `gameobject_template` SET `Data1`=246437, `ScriptName`='go_the_scythe_of_elune_246437' WHERE `entry`= 246437 ;
+DELETE FROM `gameobject_loot_template` WHERE `Entry`= 246437;
+INSERT INTO `gameobject_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, `MinCount`, `MaxCount`, `Comment`) VALUES 
+(246437, 128858, 0, 100, 0, 1, 0, 1, 1, 'scythe-of-elune');
+
+
+-- Dark Rider
+SET @ENTRY := 100707; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 4, 0, 100, 0, 0, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "say 0 on aggro"),
+(@ENTRY, 0, 1, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201830, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast Cursed Darkblade "),
+(@ENTRY, 0, 2, 0, 0, 0, 100, 0, 4500, 6000, 10000, 12500, '', 11, 201763, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast mark-of-the-dark-riders");
+
+-- Dark Rider
+SET @ENTRY := 100704; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 4, 0, 100, 0, 0, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "say 0 on aggro"),
+(@ENTRY, 0, 1, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201830, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast Cursed Darkblade "),
+(@ENTRY, 0, 2, 0, 0, 0, 100, 0, 4500, 6000, 10000, 12500, '', 11, 201763, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast mark-of-the-dark-riders");
+
+-- Dark Rider
+SET @ENTRY := 100937; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 4, 0, 100, 0, 0, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "say 0 on aggro"),
+(@ENTRY, 0, 1, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201830, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast Cursed Darkblade "),
+(@ENTRY, 0, 2, 0, 0, 0, 100, 0, 4500, 6000, 10000, 12500, '', 11, 201763, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast mark-of-the-dark-riders");
+
+-- Dark Rider
+SET @ENTRY := 100938; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 4, 0, 100, 0, 0, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "say 0 on aggro"),
+(@ENTRY, 0, 1, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201830, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast Cursed Darkblade "),
+(@ENTRY, 0, 2, 0, 0, 0, 100, 0, 4500, 6000, 10000, 12500, '', 11, 201763, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast mark-of-the-dark-riders");
+
+-- cursed-guardian
+SET @ENTRY := 101163; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201651, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast cursed-strike ");
+
+-- cursed-guardian
+SET @ENTRY := 103477; 
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`= @ENTRY ;
+DELETE FROM `smart_scripts` WHERE (`entryorguid`=@ENTRY AND `source_type`=0);
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@ENTRY, 0, 0, 0, 0, 0, 100, 0, 1500, 2000, 2000, 2500, '', 11, 201651, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "cast cursed-strike ");
+

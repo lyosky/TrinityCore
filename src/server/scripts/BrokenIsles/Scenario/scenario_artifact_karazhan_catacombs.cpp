@@ -76,7 +76,6 @@ struct scenario_artifact_karazhan_catacombs : public InstanceScript
             m_playerGUID = player->GetGUID();
             PhasingHandler::AddPhase(player, NORMAL_PHASE, true);
             DoCloseDoorOrButton(firstdoorGUID);
-            ///101282
         }
     }
 
@@ -163,8 +162,7 @@ struct scenario_artifact_karazhan_catacombs : public InstanceScript
         }
         else if (type == DATA_STAGE_3 && data == DONE)
         {
-            NextStep();
-           
+            NextStep();          
         }
         else if (type == DATA_STAGE_4 && data == DONE)
         {
@@ -178,10 +176,8 @@ struct scenario_artifact_karazhan_catacombs : public InstanceScript
         {
             NextStep();
             DoKilledMonsterKredit(QUEST_DRUID,100813);
-            //summon go  weapon 101361.getpostion()
             if (Creature* rabit = instance->GetCreature(targetGUID))
                 rabit->SummonGameObject(246437, Position(-10865.06f, - 1961.418f, - 39.69912f, 0.1293521f), QuaternionData(), WEEK);
-            ///summon 101282 run in and talk brbrbrbr
             TempSummon* revil = instance->SummonCreature(101282, Position(-10855.7666f, -1962.79126f, -41.23f, 3.21543f));
             revil->AI()->DoAction(4);
         }
@@ -260,7 +256,6 @@ struct npc_revil_kost_101282 : public ScriptedAI
             break;
         }
         case ACTION_STAGE_3_return:
-            //follow
             me->GetMotionMaster()->MoveFollow(me->GetOwner(), PET_FOLLOW_DIST, me->GetFollowAngle());
             break;
         case ACTION_STAGE_3_kill_conservator:
@@ -279,7 +274,7 @@ struct npc_revil_kost_101282 : public ScriptedAI
             {
                 GetContextCreature()->Say(103684);
                 GetContextCreature()->GetMotionMaster()->Clear();
-                //GetContextCreature()->GetMotionMaster()->MoveCloserAndStop(1, revil2, 0.0f);
+                GetContextCreature()->GetMotionMaster()->MovePoint(2, Position(-10960.8f, -1892.344f, -48.30285f, 1.796813f), true);
             });
             break;
         }
@@ -302,8 +297,7 @@ struct npc_revil_kost_101282 : public ScriptedAI
             me->GetScheduler().Schedule(Milliseconds(7000), [](TaskContext context)
             {
                 GetContextCreature()->AI()->Talk(3);
-            });
-            
+            });           
             break;
         }
         }
@@ -313,7 +307,6 @@ struct npc_revil_kost_101282 : public ScriptedAI
     {
         instance = me->GetInstanceScript();
         IsLock = false;
-        m_playerGUID = ObjectGuid::Empty;
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -348,11 +341,6 @@ struct npc_revil_kost_101282 : public ScriptedAI
     }
 private:
     InstanceScript * instance;
-    TaskScheduler _scheduler;
-    std::set<ObjectGuid> pList;
-    ObjectGuid   m_playerGUID;
-    uint16 uiTimerEyeGouge;
- 
 };
 
 struct npc_the_conservator_101257 : public ScriptedAI
@@ -501,8 +489,7 @@ struct npc_ariden_100850 : public ScriptedAI
 
                 revil->GetScheduler().Schedule(Milliseconds(5000), [this, revil](TaskContext context)
                 {
-                    //to do
-                    me->CastSpell(revil, 97547, true);
+                    me->CastSpell(revil, 199735, true);
                 });
 
                 revil->GetScheduler().Schedule(Milliseconds(7000), [](TaskContext context)
@@ -558,8 +545,6 @@ struct npc_ariden_102200 : public ScriptedAI
         SPELL_PHANTOM_SCYTHE = 201833,
         SPELL_BLOODREAP = 204659, 
         SPELL_EXHAUSTION = 204661,
-
-        //339
     };
 
     void DoAction(int32 param)
@@ -576,12 +561,8 @@ struct npc_ariden_102200 : public ScriptedAI
     void JustDied(Unit* /*killer*/) override
     {
         Talk(5);
-        
-
         if (instance->GetData(DATA_STAGE_6) == NOT_STARTED)
             instance->SetData(DATA_STAGE_6, DONE);
-        //if (Creature* revil1 = me->FindNearestCreature(101282, 15.0f, true))
-        //    revil1->AI()->DoAction(3);
     }
 
     void EnterCombat(Unit* victim)
@@ -620,9 +601,6 @@ struct npc_ariden_102200 : public ScriptedAI
 
         if (me->HasUnitState(UNIT_STATE_CASTING))
             return;
-
-        //if (!islow && me->GetHealthPct() <= 50)
-        //    DoAction(2);
 
         while (uint32 eventId = events.ExecuteEvent())
         {
@@ -664,8 +642,7 @@ struct npc_ariden_102200 : public ScriptedAI
         {
             issay = true;
             me->Yell(106035);
-        }
-           
+        }        
     }
 
     void MoveInLineOfSight(Unit* who) override
@@ -695,10 +672,6 @@ public:
         if (state == GO_ACTIVATED && unit && !isloot)
         {
             isloot = true;
-            //if (Player* player = unit->ToPlayer())
-            //    if (!player->GetQuestObjectiveData(42430, 1))
-            //        player->KilledMonsterCredit(107750);
-
             if (InstanceScript * instance = go->GetInstanceScript())
                 instance->SetData(DATA_STAGE_7, DONE);
         }

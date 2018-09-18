@@ -479,6 +479,14 @@ DELETE FROM `quest_offer_reward_locale` WHERE `ID`=40900 AND `locale`='zhCN';
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
 (40900, 'zhCN', '月神镰刀！$b$b我从未看过有人可以使用那把武器，却没有变成滥杀的野兽。你使它的原始野性得到了平衡。$b$b你得到了艾露恩的眷顾，$n。你做到了其他德鲁伊从未做到的事！', 22566); 
 
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=44232 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(44232, 'zhCN', '我们与你同在，$n。', 22566); 
+
+DELETE FROM `quest_offer_reward_locale` WHERE `ID`=43879 AND `locale`='zhCN';
+INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES
+(43879, 'zhCN', '太好了。等我研究出了结果，我会尽快向你汇报的。', 22566); 
+
 -- scenario_artifact_karazhan_catacombs for Druid - BALANCE Acquisition 
 DELETE FROM `instance_template` WHERE `map` = 1533;
 INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`, `insideResurrection`) VALUES (1533, 0, 'scenario_artifact_karazhan_catacombs', 0, 1);

@@ -29693,7 +29693,7 @@ void Player::UpdateItemLevelAreaBasedScaling()
         _ApplyAllItemMods();
         SetHealth(CalculatePct(GetMaxHealth(), healthPct));
     }
-    // @todo other types of power scaling such as timewalking
+    // @todo other types of power scaling
 }
 
 void Player::UnlockReagentBank()

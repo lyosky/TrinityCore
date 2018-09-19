@@ -47,6 +47,8 @@ enum
     QUEST_MORE_WEAPONS_OF_OLD = 44431,
     QUEST_WEAPONS_OF_THE_ANCIENTS = 44443,
     QUEST_SOWING_THE_SEED = 41255,
+    QUEST_SOWING_THE_SEED_PHASE = 5685,
+    QUEST_ASCENDING_THE_CIRCLE = 41332,
     QUEST_A_HEROS_WEAPON = 43409,
     ///GUARDIAN
     QUEST_MISTRESS_OF_THE_CLAW = 41468,
@@ -806,7 +808,6 @@ Facing: 4.793286
             case 4:
                 me->DespawnOrUnsummon(2000);
                 break;
-                //me->DisappearAndDie();
             default:
                 break;
             }
@@ -1260,18 +1261,23 @@ Facing: 4.793286
                     player->CastSpell(player, SPELL_WEAPONS_OF_LEGEND_PLAYER_CHOICE, true);
                 });   
             }
+            if (quest->GetQuestId() == QUEST_SOWING_THE_SEED)
+                Talk(1);
         }
 
         void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
         {
             ///https://www.wowhead.com/achievement=11063/hidden-tracking-1-acquision-line-completed
             ///https://www.wowhead.com/achievement=11174/hidden-tracking-2-acquision-line-completed
-            if (quest->GetQuestId() == 42430 || quest->GetQuestId() == 40838 || quest->GetQuestId() == 40647 || quest->GetQuestId() == 41689)
+            if (quest->GetQuestId() == 40900 || quest->GetQuestId() == 41918 || quest->GetQuestId() == 42430 || quest->GetQuestId() == 40647 || quest->GetQuestId() == 41689)
             {
                 if (!player->HasAchieved(11063))
                     player->CompletedAchievement(11063);
                 else if(!player->HasAchieved(11174))
                     player->CompletedAchievement(11174);
+                if(player->GetQuestStatus(QUEST_SOWING_THE_SEED) == QUEST_STATE_NONE)
+                    if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_SOWING_THE_SEED))
+                        player->AddQuest(quest, me);
             }
         }
         /*

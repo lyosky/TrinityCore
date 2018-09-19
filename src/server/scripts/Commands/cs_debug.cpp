@@ -120,7 +120,8 @@ public:
             { "playercondition",rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugPlayerConditionCommand,  "" },
             { "addphase" ,      rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugAddPhaseCommand,         "" },
             { "removephase" ,   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugRemovePhaseCommand,      "" },
-            { "queryphase" ,    rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugQueryPhaseCommand,       "" },           
+            { "queryphase" ,    rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugQueryPhaseCommand,       "" },     
+			{ "maxItemLevel",   rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugMaxItemLevelCommand,     "" },      
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1760,6 +1761,18 @@ public:
 
         handler->PSendSysMessage(LANG_PHASESHIFT_PHASES, phases.str().c_str());
 
+        return true;
+    }
+	
+	static bool HandleDebugMaxItemLevelCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs commandArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT });
+        if (!commandArgs.ValidArgs())
+            return false;
+
+        uint32 effectiveLevel = commandArgs.GetNextArg<uint32>();
+        uint32 maxItemLevel = commandArgs.GetNextArg<uint32>();
+        handler->getSelectedPlayerOrSelf()->SetEffectiveLevelAndMaxItemLevel(effectiveLevel, maxItemLevel);
         return true;
     }
 };

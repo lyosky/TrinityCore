@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -27,7 +27,7 @@
 
 enum NPCIDS
 {
-    creature_portal_bunny           = 39834
+    creature_portal_bunny           = 39834,
     creature_burning_exile          = 39829,
     creature_thundering_windfury    = 39831,
     creature_glacial_exile          = 39830,

@@ -183,6 +183,8 @@ void AddSC_scenario_artifact_ursocslair();
 void AddSC_scenario_artifact_restoacqusition();
 void AddSC_scenario_artifact_ruins_of_falanaar();
 void AddSC_scenario_artifact_karazhan_catacombs();
+void AddSC_scenario_artifact_brokenshore();
+void AddSC_scenario_artifact_tirisfal_glades();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -353,4 +355,6 @@ void AddBrokenIslesScripts()
     AddSC_scenario_artifact_restoacqusition();
     AddSC_scenario_artifact_ruins_of_falanaar();
     AddSC_scenario_artifact_karazhan_catacombs();
+    AddSC_scenario_artifact_brokenshore();
+    AddSC_scenario_artifact_tirisfal_glades();
 }

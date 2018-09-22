@@ -60,6 +60,8 @@ enum Phases
 enum Quests
 {
     QUEST_H_A_DESPERATE_PLEA = 41052,
+    QUEST_H_RETURN_TO_THE_BROKEN_SHORE = 38904,
+
     QUEST_A_AN_IMPORTANT_MISSION = 42814,
 
     QUEST_ODYN_AND_THE_VALARJAR = 39654
@@ -1009,6 +1011,78 @@ public:
     }
 };
 
+struct npc_high_overlord_saurfang_93773 : public ScriptedAI
+{
+    npc_high_overlord_saurfang_93773(Creature* creature) : ScriptedAI(creature) { }
+
+    void DoAction(int32 param)
+    {
+        switch (param)
+        {
+        case 1:
+            break;
+        }
+    }
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_H_RETURN_TO_THE_BROKEN_SHORE)
+        {
+            //PhasingHandler::AddPhase(player, PHASE_2);
+        }
+    }
+
+    void sQuestReward(Player* player, Quest const* quest, uint32 /*opt*/)  override
+    {
+        if (quest->GetQuestId() == QUEST_H_A_DESPERATE_PLEA)
+        {
+
+        }
+    }
+
+    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
+    {
+        CloseGossipMenuFor(player);
+        if (player->HasQuest(QUEST_H_A_DESPERATE_PLEA))
+        {
+            player->KilledMonsterCredit(123);
+            me->Say(114668);
+        }
+        if (player->HasQuest(QUEST_H_RETURN_TO_THE_BROKEN_SHORE))
+        {
+
+        }
+    }
+private:
+};
+
+struct npc_makka_100519 : public ScriptedAI
+{
+    npc_makka_100519(Creature* creature) : ScriptedAI(creature) { }
+
+    void DoAction(int32 param)
+    {
+        switch (param)
+        {
+        case 1:
+            break;
+        }
+    }
+
+    void OnSpellClick(Unit* clicker, bool& /*result*/)
+    {
+        if (Player* player = clicker->ToPlayer())
+        {
+            if (player->GetQuestStatus(QUEST_H_RETURN_TO_THE_BROKEN_SHORE) == QUEST_STATUS_INCOMPLETE)
+            {
+                player->KilledMonsterCredit(me->GetEntry());
+                me->DespawnOrUnsummon(5000);
+            }
+        }
+    }
+private:
+};
+
 void AddSC_class_hall_warrior()
 {
     RegisterCreatureAI(npc_eitrigg_93775);
@@ -1035,4 +1109,7 @@ void AddSC_class_hall_warrior()
     RegisterCreatureAI(npc_valkyr_of_odyn_7);
     RegisterCreatureAI(npc_weapon_inspector_valarjar);
     new scene_odyn_intro();
+
+    RegisterCreatureAI(npc_high_overlord_saurfang_93773);
+    RegisterCreatureAI(npc_makka_100519);
 }

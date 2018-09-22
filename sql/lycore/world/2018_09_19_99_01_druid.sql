@@ -28,8 +28,8 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Te
 
 DELETE FROM `creature_text` WHERE (`CreatureID`=101195 AND `GroupID`='1' AND `ID`='0')  ;
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(101195, 1, 0, '这颗种子需要充足的空气和水。到我们身后的山上去找一个理想的地方吧。', 12, 0, 100, 0, 0, 62250, 106382, '伦萨·巨蹄 to Player'),
+(101195, 1, 0, '这颗种子需要充足的空气和水。到我们身后的山上去找一个理想的地方吧。', 12, 0, 100, 0, 0, 62250, 106382, '伦萨·巨蹄 to Player');
 
 DELETE FROM `creature_text_locale` WHERE (`CreatureID`=101195 AND `GroupID`='1' AND `ID`='0' AND `locale`='zhCN')  ;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `locale`, `Text`) VALUES
-(101195, 1, 0, 'zhCN', '这颗种子需要充足的空气和水。到我们身后的山上去找一个理想的地方吧。'),
+(101195, 1, 0, 'zhCN', '这颗种子需要充足的空气和水。到我们身后的山上去找一个理想的地方吧。');

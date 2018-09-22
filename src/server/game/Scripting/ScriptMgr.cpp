@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -2471,6 +2471,16 @@ void ScriptMgr::OnPlayerChangeShapeshift(Player* player, ShapeshiftForm form)
 void ScriptMgr::OnPlayerStartChallengeMode(Player* player, uint8 level)
 {
     FOREACH_SCRIPT(PlayerScript)->OnStartChallengeMode(player, level);
+}
+
+void ScriptMgr::OnPlayerUnsummonPetTemporary(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnUnsummonPetTemporary(player);
+}
+
+void ScriptMgr::OnPlayerResummonPetTemporary(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnResummonPetTemporary(player);
 }
 
 // Account

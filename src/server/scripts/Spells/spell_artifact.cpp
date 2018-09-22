@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellHistory.h"
 #include "TemporarySummon.h"
+#include "Log.h"
 
 enum SpellIds
 {
@@ -63,6 +64,9 @@ enum SpellIds
     SPELL_WARLOCK_TEAR_CHAOS_BOLT                   = 215279,
     SPELL_WARLOCK_TEAR_SHADOW_BOLT                  = 196657,
     SPELL_PALADIN_TYR_DELIVERANCE_HEAL              = 200654,
+    SPELL_HUNTER_HATIS_BOND                         = 197344,
+    SPELL_HUNTER_STORMBOUND                         = 197388,
+    SPELL_HUNTER_BROKENOUND                         = 211117,
 };
 
 // Ebonbolt - 214634
@@ -715,6 +719,157 @@ class aura_artifact_shaman_stormkeeper : public AuraScript
     }
 };
 
+// 197344 - hatis-bond
+class aura_artifact_hunter_hatis_bond : public AuraScript
+{
+    PrepareAuraScript(aura_artifact_hunter_hatis_bond);
+
+    void HandleApply(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* player = GetCaster()->ToPlayer();
+        if (!player)
+            return;
+
+        std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
+        for (Creature* target : clists)
+            if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
+                target->DespawnOrUnsummon();
+
+        if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324) && !player->HasAura(SPELL_HUNTER_BROKENOUND))
+            player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+    }
+
+    void HandleRemove(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* player = GetCaster()->ToPlayer();
+        if (!player)
+            return;
+        if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
+            hatis->DespawnOrUnsummon();
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(aura_artifact_hunter_hatis_bond::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(aura_artifact_hunter_hatis_bond::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 211117 - broken-bond
+class aura_artifact_hunter_broken_bond : public AuraScript
+{
+    PrepareAuraScript(aura_artifact_hunter_broken_bond);
+
+    void HandleApply(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
+    {
+        int32 dur = 30000;
+        if (Aura* aur = GetCaster()->GetAura(SPELL_HUNTER_BROKENOUND ))
+            if (dur)
+                aur->SetDuration(dur);
+
+        Player* player = GetCaster()->ToPlayer();
+        if (!player)
+            return;
+        if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
+            hatis->DespawnOrUnsummon();
+    }
+
+    void HandleRemove(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
+    {       
+        Player* player = GetCaster()->ToPlayer();
+        if (!player)
+            return;
+
+        std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
+        for (Creature* target : clists)
+            if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
+                target->DespawnOrUnsummon();
+
+        if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324))
+            player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(aura_artifact_hunter_broken_bond::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectRemoveFn(aura_artifact_hunter_broken_bond::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+class playerscript_hunter_summon_pet_trigger : public PlayerScript
+{
+public:
+    playerscript_hunter_summon_pet_trigger() : PlayerScript("playerscript_hunter_summon_pet_trigger") { skipupdate = false; }
+
+    void RemoveHati(Player* player)
+    {
+        if (player->getClass() == CLASS_HUNTER)
+        {
+            std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
+            for (Creature* target : clists)
+                if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
+                    target->DespawnOrUnsummon();
+        }      
+    }
+
+    void AddHati(Player* player)
+    {
+        if (player->getClass() == CLASS_HUNTER && player->HasAura(SPELL_HUNTER_HATIS_BOND) && !player->HasAura(SPELL_HUNTER_BROKENOUND))
+            if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324))
+                player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);           
+    }
+
+    void OnUnsummonPetTemporary(Player* player) 
+    {
+        skipupdate = true;
+        RemoveHati(player);
+    }
+
+    void OnResummonPetTemporary(Player* player) 
+    {
+        skipupdate = false;
+        AddHati(player);
+    }
+
+    void OnSuccessfulSpellCast(Player* player, Spell* spell)
+    {
+        switch (spell->GetSpellInfo()->Id)
+        {
+        case 982:
+        ///Call Pet
+        case 883:
+        case 83242:
+        case 83243:
+        case 83244:
+        case 83245:
+            RemoveHati(player);
+            AddHati(player);
+            break;
+        case 2641:
+            RemoveHati(player);
+            break;
+        }
+    }
+
+    void OnLogin(Player* player, bool /*firstLogin*/)
+    {
+        RemoveHati(player);
+    }
+
+    void OnUpdate(Player* player, uint32 diff)
+    {
+        if (checkTimer <= diff)
+        {
+            if(!skipupdate)
+                AddHati(player);
+            checkTimer = 4000;
+        }
+        else checkTimer -= diff;
+    }
+    uint32 checkTimer = 4000;
+    bool skipupdate;
+};
+
 void AddSC_artifact_spell_scripts()
 {
     RegisterSpellScript(spell_arti_dru_new_moon);
@@ -747,4 +902,7 @@ void AddSC_artifact_spell_scripts()
     RegisterSpellScript(spell_arti_pal_tyr_deliverance);
     
     RegisterAuraScript(aura_artifact_shaman_stormkeeper);
+    RegisterAuraScript(aura_artifact_hunter_hatis_bond);
+    RegisterAuraScript(aura_artifact_hunter_broken_bond);
+    new playerscript_hunter_summon_pet_trigger();
 }

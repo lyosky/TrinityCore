@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -877,6 +877,8 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
         SetPowerType(POWER_ENERGY);
     else if (IsPetImp() || IsPetFelhunter() || IsPetVoidwalker() || IsPetSuccubus() || IsPetDoomguard() || IsPetFelguard()) // Warlock pets have energy (since 5.x)
         SetPowerType(POWER_ENERGY);
+    else if (IsHati())
+        SetPowerType(POWER_FOCUS);
     else 
         SetPowerType(POWER_MANA);
 

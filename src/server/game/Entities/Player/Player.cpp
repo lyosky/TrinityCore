@@ -2025,7 +2025,7 @@ void Player::Regenerate(Powers power)
         return;
 
     float addvalue = 0.0f;
-    if (!IsInCombat())
+    if (!IsInCombat() && power != POWER_INSANITY)
     {
         if (powerType->RegenInterruptTimeMS && GetMSTimeDiffToNow(m_combatExitTime) < uint32(powerType->RegenInterruptTimeMS))
             return;
@@ -27265,6 +27265,7 @@ void Player::UnsummonPetTemporaryIfAny()
     }
 
     RemovePet(pet, PET_SAVE_DISMISS);
+    sScriptMgr->OnPlayerUnsummonPetTemporary(this);
 }
 
 void Player::ResummonPetTemporaryUnSummonedIfAny()
@@ -27284,8 +27285,9 @@ void Player::ResummonPetTemporaryUnSummonedIfAny()
         NewPet->UpdateAllStats();
     else
         delete NewPet;
-
+ 
     m_temporaryUnsummonedPetNumber = 0;
+    sScriptMgr->OnPlayerResummonPetTemporary(this);
 }
 
 bool Player::IsPetNeedBeTemporaryUnsummoned() const

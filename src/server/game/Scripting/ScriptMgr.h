@@ -830,6 +830,12 @@ class TC_GAME_API PlayerScript : public UnitScript
 		
 		//Called when a player Start ChallengeMode
         virtual void OnStartChallengeMode(Player* /*player*/, uint8 /*level*/) { }
+
+        // Called when a player UnsummonPetTemporary
+        virtual void OnUnsummonPetTemporary(Player* /*player*/) { }
+
+        // Called when a player ResummonPetTemporary
+        virtual void OnResummonPetTemporary(Player* /*player*/) { }
 		
 };
 
@@ -1269,6 +1275,8 @@ class TC_GAME_API ScriptMgr
         void OnPlayerStartChallengeMode(Player* player, uint8 level);
         void OnCooldownStart(Player* player, SpellInfo const* spellInfo, uint32 itemId, int32& cooldown, uint32& categoryId, int32& categoryCooldown);
         void OnChargeRecoveryTimeStart(Player* player, uint32 chargeCategoryId, int32& chargeRecoveryTime);
+        void OnPlayerUnsummonPetTemporary(Player* player);
+        void OnPlayerResummonPetTemporary(Player* player);
 
     public: /* AccountScript */
 

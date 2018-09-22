@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -36,7 +36,10 @@ enum PetEntry
     PET_ABOMINATION     = 106848,
 
     // Shaman pet
-    PET_SPIRIT_WOLF     = 29264
+    PET_SPIRIT_WOLF     = 29264,
+
+    // Hunter Pet
+    PET_HATI            = 100324,
 };
 
 struct SummonPropertiesEntry;
@@ -75,7 +78,9 @@ enum PetEntries
     ENTRY_NIUZAO                  = 73967,
     ENTRY_CHI_JI                  = 100868,
     // Druid Pet/Minion
-    ENTRY_TREANT                  = 1964
+    ENTRY_TREANT                  = 1964,
+    // Hunter Pet/minion
+    ENTRY_HATI                    = 100324,
 };
 
 class TC_GAME_API TempSummon : public Creature
@@ -133,6 +138,9 @@ class TC_GAME_API Minion : public TempSummon
 
         // Shaman pet
         bool IsSpiritWolf() const { return GetEntry() == PET_SPIRIT_WOLF; } // Spirit wolf from feral spirits
+
+        // Hunter pet
+        bool IsHati() const { return GetEntry() == PET_HATI; } // hati
 
         bool IsGuardianPet() const;
         bool IsWarlockMinion() const;

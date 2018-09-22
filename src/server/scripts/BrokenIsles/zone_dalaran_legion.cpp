@@ -132,7 +132,7 @@ public:
     }
 };
 
-// 228329 & 228330 - T閘閜ortation
+// 228329 & 228330 - T??ortation
 class spell_dalaran_teleportation : public SpellScript
 {
     PrepareSpellScript(spell_dalaran_teleportation);
@@ -294,6 +294,7 @@ enum
     NPC_SERGEANT_DALTON_108961 = 108961,
     QUEST_H_A_DESPERATE_PLEA = 41052,
     QUEST_A_AN_IMPORTANT_MISSION = 42814,
+    
 };
 //
 class zone_legion_dalaran: public ZoneScript

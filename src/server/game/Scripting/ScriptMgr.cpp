@@ -2483,6 +2483,11 @@ void ScriptMgr::OnPlayerResummonPetTemporary(Player* player)
     FOREACH_SCRIPT(PlayerScript)->OnResummonPetTemporary(player);
 }
 
+void ScriptMgr::OnPlayerItemLevelChange(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnItemLevelChange(player);
+}
+
 // Account
 void ScriptMgr::OnAccountLogin(uint32 accountId)
 {

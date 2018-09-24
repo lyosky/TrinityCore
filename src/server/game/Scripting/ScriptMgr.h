@@ -836,6 +836,12 @@ class TC_GAME_API PlayerScript : public UnitScript
 
         // Called when a player ResummonPetTemporary
         virtual void OnResummonPetTemporary(Player* /*player*/) { }
+
+        // Called when a player Itemlevel changed
+        virtual void OnItemLevelChange(Player* /*player*/) { }
+
+        
+            
 		
 };
 
@@ -1277,6 +1283,7 @@ class TC_GAME_API ScriptMgr
         void OnChargeRecoveryTimeStart(Player* player, uint32 chargeCategoryId, int32& chargeRecoveryTime);
         void OnPlayerUnsummonPetTemporary(Player* player);
         void OnPlayerResummonPetTemporary(Player* player);
+        void OnPlayerItemLevelChange(Player* player);
 
     public: /* AccountScript */
 

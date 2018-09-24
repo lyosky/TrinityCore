@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1379,6 +1379,12 @@ class TC_GAME_API Unit : public WorldObject
         void SetCritterGUID(ObjectGuid guid) { SetGuidValue(UNIT_FIELD_CRITTER, guid); }
         ObjectGuid GetCritterGUID() const { return GetGuidValue(UNIT_FIELD_CRITTER); }
 
+        //m_HatiGUID
+        void SetHatiGUID(ObjectGuid guid) { m_HatiGUID = guid; }
+        ObjectGuid GetHatiGUID() const { return m_HatiGUID; }
+        Creature* GetHati() const;
+        bool IsHati() const;
+
         bool IsControlledByPlayer() const { return m_ControlledByPlayer; }
         ObjectGuid GetCharmerOrOwnerGUID() const;
         ObjectGuid GetCharmerOrOwnerOrOwnGUID() const;
@@ -1621,6 +1627,8 @@ class TC_GAME_API Unit : public WorldObject
 
         ObjectGuid m_SummonSlot[MAX_SUMMON_SLOT];
         ObjectGuid m_ObjectSlot[MAX_GAMEOBJECT_SLOT];
+
+        ObjectGuid m_HatiGUID;
 
         void AddSummonedCreature(ObjectGuid guid, uint32 entry);
         void RemoveSummonedCreature(ObjectGuid guid);

@@ -12441,6 +12441,9 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
     UpdateCriteria(CRITERIA_TYPE_EQUIP_ITEM, pItem->GetEntry());
     UpdateCriteria(CRITERIA_TYPE_EQUIP_EPIC_ITEM, pItem->GetEntry(), slot);
 
+    // hook for player on itemlevel change
+    sScriptMgr->OnPlayerItemLevelChange(this);
+
     return pItem;
 }
 
@@ -13748,6 +13751,9 @@ void Player::SwapItem(uint16 src, uint16 dst)
 
     AutoUnequipOffhandIfNeed();
     UpdateAverageItemLevel();
+
+    // hook for player on itemlevel change
+    sScriptMgr->OnPlayerItemLevelChange(this);
 }
 
 void Player::AddItemToBuyBackSlot(Item* pItem)

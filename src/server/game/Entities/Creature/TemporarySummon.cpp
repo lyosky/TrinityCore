@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -331,6 +331,21 @@ void Minion::RemoveFromWorld()
 
     GetOwner()->SetMinion(this, false);
     TempSummon::RemoveFromWorld();
+}
+
+bool Minion::IsHati() const
+{
+    switch (GetEntry())
+    {
+    case ENTRY_HATI_1:
+    case ENTRY_HATI_2:
+    case ENTRY_HATI_3:
+    case ENTRY_HATI_4:
+    case ENTRY_HATI_5:
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool Minion::IsGuardianPet() const

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -10536,6 +10536,37 @@ void Unit::TriggerAurasProcOnEvent(ProcEventInfo& eventInfo, AuraApplicationProc
 SpellSchoolMask Unit::GetMeleeDamageSchoolMask() const
 {
     return SPELL_SCHOOL_MASK_NORMAL;
+}
+
+Creature * Unit::GetHati() const
+{
+    ObjectGuid pet_guid = GetHatiGUID();
+    if (!pet_guid.IsEmpty())
+    {
+        if (Creature* pet = ObjectAccessor::GetCreatureOrPetOrVehicle(*this, pet_guid))
+            if (pet->IsHati())
+                return (Creature*)pet;
+
+        TC_LOG_FATAL("entities.unit", "Unit::GetHati: Hati %s not exist.", pet_guid.ToString().c_str());
+        const_cast<Unit*>(this)->SetHatiGUID(ObjectGuid::Empty);
+    }
+
+    return NULL;
+}
+
+bool Unit::IsHati() const
+{
+    switch (GetEntry())
+    {
+    case ENTRY_HATI_1:
+    case ENTRY_HATI_2:
+    case ENTRY_HATI_3:
+    case ENTRY_HATI_4:
+    case ENTRY_HATI_5:
+        return true;
+    default:
+        return false;
+    }
 }
 
 ObjectGuid Unit::GetCharmerOrOwnerGUID() const

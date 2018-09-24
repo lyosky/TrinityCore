@@ -1084,7 +1084,11 @@ void Guardian::UpdateArmor()
                     pctFromOwnerArmor = 300.f;
                     break;
                 // Hunter
-                case ENTRY_HATI:
+                case ENTRY_HATI_1:
+                case ENTRY_HATI_2:
+                case ENTRY_HATI_3:
+                case ENTRY_HATI_4:
+                case ENTRY_HATI_5:
                     pctFromOwnerArmor = 170.f;
                     break;
                 case ENTRY_NIUZAO:
@@ -1167,7 +1171,11 @@ void Guardian::UpdateMaxHealth()
                 case ENTRY_IMP:
                     pctFromOwnerHealth = 30.f;
                     break;
-                case ENTRY_HATI:
+                case ENTRY_HATI_1:
+                case ENTRY_HATI_2:
+                case ENTRY_HATI_3:
+                case ENTRY_HATI_4:
+                case ENTRY_HATI_5:
                     pctFromOwnerHealth = 70.f;
                     break;
                 default:
@@ -1254,7 +1262,11 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
                 case ENTRY_ABOMINATION:
                     value = CalculatePct(m_owner->GetTotalAttackPowerValue(BASE_ATTACK), 50.f);
                     break;
-                case ENTRY_HATI:
+                case ENTRY_HATI_1:
+                case ENTRY_HATI_2:
+                case ENTRY_HATI_3:
+                case ENTRY_HATI_4:
+                case ENTRY_HATI_5:
                     value = CalculatePct(m_owner->GetTotalAttackPowerValue(ranged ? RANGED_ATTACK : BASE_ATTACK), 60.f);
                     break;
                 default:

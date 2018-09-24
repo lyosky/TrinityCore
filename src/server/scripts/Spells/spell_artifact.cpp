@@ -67,6 +67,7 @@ enum SpellIds
     SPELL_HUNTER_HATIS_BOND                         = 197344,
     SPELL_HUNTER_STORMBOUND                         = 197388,
     SPELL_HUNTER_BROKENOUND                         = 211117,
+    SPELL_HUNTER_BESTIAL_WRATH                      = 19574,
 };
 
 // Ebonbolt - 214634
@@ -730,6 +731,11 @@ class aura_artifact_hunter_hatis_bond : public AuraScript
         if (!player)
             return;
 
+        if (Creature* hati = player->GetHati())
+            hati->DespawnOrUnsummon();
+        if (player->GetPet() && !player->GetHati() && !player->HasAura(SPELL_HUNTER_BROKENOUND))
+            player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+        /*
         std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
         for (Creature* target : clists)
             if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
@@ -737,6 +743,33 @@ class aura_artifact_hunter_hatis_bond : public AuraScript
 
         if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324) && !player->HasAura(SPELL_HUNTER_BROKENOUND))
             player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+            */
+        //if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
+        //{
+        //    player->SetHatiGUID(hatis->GetGUID());
+            //if (!hatis->IsPet())
+            //   hatis->AddUnitTypeMask(UNIT_MASK_PET);
+            //if (!hatis->IsHunterPet())
+            //    hatis->AddUnitTypeMask(UNIT_MASK_HUNTER_PET);
+
+            //if (hatis->IsAIEnabled && hatis->ToPet())
+            //{
+                
+                
+             //   TC_LOG_ERROR("server.worldserver", "====================(hatis->IsAIEnabled && hatis->ToPet()====================== ");
+                /*
+                hatis->ToPet()->ClearUnitState(UNIT_STATE_FOLLOW);
+                if (hatis->ToPet()->GetVictim())
+                    hatis->ToPet()->AttackStop();
+                hatis->GetMotionMaster()->Clear();
+                hatis->ToPet()->GetCharmInfo()->SetIsCommandAttack(true);
+                hatis->ToPet()->GetCharmInfo()->SetIsAtStay(false);
+                hatis->ToPet()->GetCharmInfo()->SetIsReturning(false);
+                hatis->ToPet()->GetCharmInfo()->SetIsFollowing(false);
+                */
+                //caster->ToCreature()->AI()->AttackStart(target);
+            //}
+        //}
     }
 
     void HandleRemove(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
@@ -744,8 +777,13 @@ class aura_artifact_hunter_hatis_bond : public AuraScript
         Player* player = GetCaster()->ToPlayer();
         if (!player)
             return;
-        if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
-            hatis->DespawnOrUnsummon();
+        if (Creature* hati = player->GetHati())
+            hati->DespawnOrUnsummon();
+        /*
+        std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
+        for (Creature* target : clists)
+            if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
+                target->DespawnOrUnsummon();*/
     }
 
     void Register() override
@@ -770,8 +808,8 @@ class aura_artifact_hunter_broken_bond : public AuraScript
         Player* player = GetCaster()->ToPlayer();
         if (!player)
             return;
-        if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
-            hatis->DespawnOrUnsummon();
+        if (Creature* hati = player->GetHati())
+            hati->DespawnOrUnsummon();
     }
 
     void HandleRemove(AuraEffect const* /*aurEffect*/, AuraEffectHandleModes /*mode*/)
@@ -780,12 +818,9 @@ class aura_artifact_hunter_broken_bond : public AuraScript
         if (!player)
             return;
 
-        std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
-        for (Creature* target : clists)
-            if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
-                target->DespawnOrUnsummon();
-
-        if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324))
+        if (Creature* hati = player->GetHati())
+            hati->DespawnOrUnsummon();
+        if (player->GetPet() && !player->GetHati() && !player->HasAura(SPELL_HUNTER_BROKENOUND))
             player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
     }
 
@@ -805,18 +840,45 @@ public:
     {
         if (player->getClass() == CLASS_HUNTER)
         {
+            if (Creature* hati = player->GetHati())
+                hati->DespawnOrUnsummon();
+            /*
             std::list<Creature*> clists = player->FindNearestCreatures(100324, 20.0f);
             for (Creature* target : clists)
                 if (target->GetCharmerOrOwnerGUID() == player->GetGUID())
                     target->DespawnOrUnsummon();
+                    */
         }      
     }
 
     void AddHati(Player* player)
     {
         if (player->getClass() == CLASS_HUNTER && player->HasAura(SPELL_HUNTER_HATIS_BOND) && !player->HasAura(SPELL_HUNTER_BROKENOUND))
-            if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324))
-                player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);           
+            if (player->GetPet() && !player->GetHati())
+                player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+        /*    if (player->GetPet() && !player->GetSummonedCreatureByEntry(100324))
+            {
+                player->CastSpell(player, SPELL_HUNTER_STORMBOUND, true);
+                if (Creature* hatis = player->GetSummonedCreatureByEntry(100324))
+                {
+                 
+                    if (hatis->IsAIEnabled && hatis->ToPet())
+                    {
+                        hatis->ToPet()->ClearUnitState(UNIT_STATE_FOLLOW);
+                        if (hatis->ToPet()->GetVictim())
+                            hatis->ToPet()->AttackStop();
+                        hatis->GetMotionMaster()->Clear();
+                        hatis->ToPet()->GetCharmInfo()->SetIsCommandAttack(true);
+                        hatis->ToPet()->GetCharmInfo()->SetIsAtStay(false);
+                        hatis->ToPet()->GetCharmInfo()->SetIsReturning(false);
+                        hatis->ToPet()->GetCharmInfo()->SetIsFollowing(false);
+
+                        //caster->ToCreature()->AI()->AttackStart(target);
+                    }
+                    
+                }
+            }*/
+        skipupdate = false;
     }
 
     void OnUnsummonPetTemporary(Player* player) 
@@ -826,8 +888,14 @@ public:
     }
 
     void OnResummonPetTemporary(Player* player) 
+    {       
+        AddHati(player);
+    }
+
+    void OnItemLevelChange(Player* player)
     {
-        skipupdate = false;
+        skipupdate = true;
+        RemoveHati(player);
         AddHati(player);
     }
 
@@ -847,6 +915,10 @@ public:
             break;
         case 2641:
             RemoveHati(player);
+            break;
+        case SPELL_HUNTER_BESTIAL_WRATH:
+            if (Creature* hati = player->GetHati())
+                hati->CastSpell(hati, 186254, true);
             break;
         }
     }

@@ -14,3 +14,18 @@ DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_hun_beast_cleave';
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
 (2643, 'spell_hun_beast_cleave'),
 (115939, 'spell_hun_beast_cleave');
+
+-- titans thunder
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_arti_hun_titans_thunder';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(207068, 'spell_arti_hun_titans_thunder');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'aura_arti_hun_titans_thunder';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(207094, 'aura_arti_hun_titans_thunder');
+
+
+-- 239042 concordance_of_the_legionfall
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'aura_concordance_of_the_legionfall';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(239042, 'aura_concordance_of_the_legionfall');

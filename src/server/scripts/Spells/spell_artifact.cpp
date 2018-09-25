@@ -68,6 +68,10 @@ enum SpellIds
     SPELL_HUNTER_STORMBOUND                         = 197388,
     SPELL_HUNTER_BROKENOUND                         = 211117,
     SPELL_HUNTER_BESTIAL_WRATH                      = 19574,
+    SPELL_HUNTER_TITANS_THUNDER                     = 207068,
+    SPELL_HUNTER_TITANS_THUNDER_TRIGGER             = 207081,
+    SPELL_HUNTER_TITANS_THUNDER_AURA                = 207094,
+    SPELL_HUNTER_TITANS_THUNDER_DAMAGE              = 218635,
 };
 
 // Ebonbolt - 214634
@@ -942,6 +946,152 @@ public:
     bool skipupdate;
 };
 
+/*
+SPELL_HUNTER_TITANS_THUNDER                     = 207068,
+SPELL_HUNTER_TITANS_THUNDER_TRIGGER             = 207081,
+SPELL_HUNTER_TITANS_THUNDER_AURA                = 207094,
+SPELL_HUNTER_TITANS_THUNDER_DAMAGE              = 218635,
+*/
+///SPELL_HUNTER_TITANS_THUNDER 207068
+class spell_arti_hun_titans_thunder : public SpellScript
+{
+    PrepareSpellScript(spell_arti_hun_titans_thunder);
+
+    void HandleAfterCast()
+    {
+        if (Player* player = GetCaster()->ToPlayer())
+        {
+            if (Pet* pet = player->GetPet())
+                pet->CastSpell(pet, SPELL_HUNTER_TITANS_THUNDER_AURA, true);
+                    
+            if (Creature* hati = player->GetHati())
+                hati->CastSpell(hati, SPELL_HUNTER_TITANS_THUNDER_AURA, true);
+                    
+        } 
+    }
+    
+    void Register()
+    {
+        AfterCast += SpellCastFn(spell_arti_hun_titans_thunder::HandleAfterCast);
+    }
+};
+///SPELL_HUNTER_TITANS_THUNDER_AURA (On Pet) 207094 
+class aura_arti_hun_titans_thunder : public AuraScript
+{
+    PrepareAuraScript(aura_arti_hun_titans_thunder);
+    uint32 waitTime = 0;
+    void OnUpdate(uint32 diff)
+    {
+        if (waitTime > diff)
+        {
+            waitTime -= diff;
+            return;
+        }
+        waitTime = 1000;
+        Unit* caster = GetCaster();
+        Unit* target = caster->GetVictim();
+        if (target)
+            caster->CastSpell(target, SPELL_HUNTER_TITANS_THUNDER_DAMAGE, true);
+    }
+
+    void OnTick(const AuraEffect* aurEff)
+    {     
+        Unit* caster = GetCaster();
+        Unit* target = caster->GetVictim();
+        if(target)
+            caster->CastSpell(target, SPELL_HUNTER_TITANS_THUNDER_DAMAGE, true);
+    }
+
+    void Register() override
+    {
+        OnAuraUpdate += AuraUpdateFn(aura_arti_hun_titans_thunder::OnUpdate);
+        //OnEffectPeriodic += AuraEffectPeriodicFn(aura_arti_hun_titans_thunder::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+//239042
+class aura_concordance_of_the_legionfall : public AuraScript
+{
+    PrepareAuraScript(aura_concordance_of_the_legionfall);
+    enum Spells
+    {
+        SPELL_VERSATILITY = 243096,
+        SPELL_STRENGTH    = 242583,
+        SPELL_AGILITY     = 242584,
+        SPELL_INTELLECT   = 242586,
+    };
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (eventInfo.GetSpellInfo()->Id == 239042)
+            return true;
+
+        return false;
+    }
+
+    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    {
+        PreventDefaultAction();
+
+        if (Unit* caster = GetCaster())
+        {
+            switch (caster->ToPlayer()->GetSpecializationId())
+            {
+            case TALENT_SPEC_MAGE_ARCANE:
+            case TALENT_SPEC_MAGE_FIRE: 
+            case TALENT_SPEC_MAGE_FROST:
+            case TALENT_SPEC_PRIEST_DISCIPLINE:
+            case TALENT_SPEC_PRIEST_HOLY: 
+            case TALENT_SPEC_PRIEST_SHADOW:
+            case TALENT_SPEC_SHAMAN_RESTORATION:
+            case TALENT_SPEC_SHAMAN_ELEMENTAL:
+            case TALENT_SPEC_WARLOCK_AFFLICTION:
+            case TALENT_SPEC_WARLOCK_DEMONOLOGY:
+            case TALENT_SPEC_WARLOCK_DESTRUCTION:
+            case TALENT_SPEC_DRUID_RESTORATION:
+            case TALENT_SPEC_DRUID_BALANCE:
+            case TALENT_SPEC_PALADIN_HOLY:
+            case TALENT_SPEC_MONK_BATTLEDANCER:
+                caster->CastSpell(caster, SPELL_INTELLECT, true);
+                break;
+            case TALENT_SPEC_WARRIOR_ARMS: 
+            case TALENT_SPEC_WARRIOR_FURY:
+            case TALENT_SPEC_DEATHKNIGHT_FROST:
+            case TALENT_SPEC_DEATHKNIGHT_UNHOLY:
+            case TALENT_SPEC_PALADIN_RETRIBUTION:
+                caster->CastSpell(caster, SPELL_STRENGTH, true);
+                break;
+            case TALENT_SPEC_HUNTER_BEASTMASTER:
+            case TALENT_SPEC_HUNTER_MARKSMAN: 
+            case TALENT_SPEC_HUNTER_SURVIVAL:            
+            case TALENT_SPEC_ROGUE_ASSASSINATION:
+            case TALENT_SPEC_ROGUE_COMBAT:
+            case TALENT_SPEC_ROGUE_SUBTLETY:
+            case TALENT_SPEC_DEMON_HUNTER_HAVOC:
+            case TALENT_SPEC_DRUID_CAT:
+            case TALENT_SPEC_SHAMAN_ENHANCEMENT:
+            case TALENT_SPEC_MONK_MISTWEAVER:
+                caster->CastSpell(caster, SPELL_AGILITY, true);
+                break; 
+            case TALENT_SPEC_DEMON_HUNTER_VENGEANCE:
+            case TALENT_SPEC_WARRIOR_PROTECTION:
+            case TALENT_SPEC_PALADIN_PROTECTION:
+            case TALENT_SPEC_DRUID_BEAR:
+            case TALENT_SPEC_DEATHKNIGHT_BLOOD:
+            case TALENT_SPEC_MONK_BREWMASTER:
+                caster->CastSpell(caster, SPELL_VERSATILITY, true);
+                break;
+            default:
+                break;
+            }          
+        }
+    }
+
+    void Register() override
+    {
+        //DoCheckProc += AuraCheckProcFn(aura_concordance_of_the_legionfall::CheckProc);
+        OnEffectProc += AuraEffectProcFn(aura_concordance_of_the_legionfall::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+    }
+};
+
 void AddSC_artifact_spell_scripts()
 {
     RegisterSpellScript(spell_arti_dru_new_moon);
@@ -977,4 +1127,7 @@ void AddSC_artifact_spell_scripts()
     RegisterAuraScript(aura_artifact_hunter_hatis_bond);
     RegisterAuraScript(aura_artifact_hunter_broken_bond);
     new playerscript_hunter_summon_pet_trigger();
+    RegisterSpellScript(spell_arti_hun_titans_thunder);
+    RegisterAuraScript(aura_arti_hun_titans_thunder);
+    RegisterAuraScript(aura_concordance_of_the_legionfall);
 }
